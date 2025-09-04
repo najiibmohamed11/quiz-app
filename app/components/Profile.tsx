@@ -11,7 +11,6 @@ function Profile() {
   const { signOut } = useClerk();
   const [isOpen, setIsOpen] = useState(false);
   const navigater = useRouter();
-
   if (!isLoaded) {
     return (
       <div className="relative">
