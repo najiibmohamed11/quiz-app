@@ -16,46 +16,41 @@ import { useMutation } from "convex/react";
 import { useRouter } from "next/navigation";
 
 import { useState } from "react";
-type durstion={
-  hour:number,
-  minute:number
-}
+type durstion = {
+  hour: number;
+  minute: number;
+};
 export default function CreateRoom() {
-  const [name,setName]=useState<string>('')
-  const [duration,setDuration]=useState<durstion>({
-    hour:0,
-    minute:0
-  })
-  const [isloading,setIsloading]=useState(false)
-  const [error,setErorr]=useState('')
+  const [name, setName] = useState<string>("");
+  const [duration, setDuration] = useState<durstion>({
+    hour: 0,
+    minute: 0,
+  });
+  const [isloading, setIsloading] = useState(false);
+  const [error, setErorr] = useState("");
   const mutateSomething = useMutation(api.room.creatRoom);
   const router = useRouter();
 
-async function handleCreat(){
-    if(!name){
-      return ;
-    }
-    if(!duration){
+  async function handleCreat() {
+    if (!name) {
       return;
     }
-    try{
-      
-      setIsloading(true)
-      const id= await mutateSomething({name:name,duration:duration})
-      if(!id){
-        return
+    if (!duration) {
+      return;
+    }
+    try {
+      setIsloading(true);
+      const id = await mutateSomething({ name: name, duration: duration });
+      if (!id) {
+        return;
       }
-      router.push(`teacher/${id}`)
-
-      
-    }catch(e){
-      console.log(e)
-      setErorr("some thing went wrong during room creation")
-      setIsloading(false)
-
-    }finally{
-            setIsloading(false)
-
+      router.push(`teacher/${id}`);
+    } catch (e) {
+      console.log(e);
+      setErorr("some thing went wrong during room creation");
+      setIsloading(false);
+    } finally {
+      setIsloading(false);
     }
   }
   return (
@@ -71,7 +66,14 @@ async function handleCreat(){
           <div className="grid gap-4">
             <div className="grid gap-3">
               <Label htmlFor="name-1">Room Name</Label>
-              <Input id="name-1" name="name" defaultValue="" onChange={(e)=>{setName(e.target.value)}} />
+              <Input
+                id="name-1"
+                name="name"
+                defaultValue=""
+                onChange={(e) => {
+                  setName(e.target.value);
+                }}
+              />
             </div>
             <div className="grid gap-3">
               <Label htmlFor="username-1">Duration</Label>
@@ -82,27 +84,43 @@ async function handleCreat(){
                   id="time-picker"
                   defaultValue="00"
                   className="w-16"
-                  min='0'
-                  onChange={(e)=>setDuration({minute:duration?.minute??0,hour:Number(e.target.value)})}
+                  min="0"
+                  onChange={(e) =>
+                    setDuration({
+                      minute: duration?.minute ?? 0,
+                      hour: Number(e.target.value),
+                    })
+                  }
                 />
                 <div>:</div>
                 <Input
                   type="number"
                   id="time-picker"
-                  min='0'
+                  min="0"
                   defaultValue="00"
                   className="w-16"
-                  onChange={(e)=>setDuration({hour:duration?.hour??0,minute:Number(e.target.value)})}
+                  onChange={(e) =>
+                    setDuration({
+                      hour: duration?.hour ?? 0,
+                      minute: Number(e.target.value),
+                    })
+                  }
                 />
               </div>
             </div>
           </div>
           <DialogFooter>
-            <Button disabled={isloading} type="submit" onClick={handleCreat} className="cursor-pointer">{isloading?'creating....': 'Create'}</Button>
+            <Button
+              disabled={isloading}
+              type="submit"
+              onClick={handleCreat}
+              className="cursor-pointer"
+            >
+              {isloading ? "creating...." : "Create"}
+            </Button>
           </DialogFooter>
-            <div className="text-red-500 text-center">{error}</div>
+          <div className="text-red-500 text-center">{error}</div>
         </DialogContent>
-
       </form>
     </Dialog>
   );
