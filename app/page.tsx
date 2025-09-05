@@ -10,7 +10,7 @@ export default function Home() {
       </h2>{" "}
       <div className="flex gap-10 ">
         <Link
-          href="./teacher"
+          href="./sign-in"
           className="w-44 h-34 bg-purple-700 font-medium  text-center items-center flex justify-center text-l text-amber-50 border rounded-lg"
         >
           teacher
