@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
+import { ConvexError } from "convex/values";
 import { useRouter } from "next/navigation";
 
 import { useState } from "react";
@@ -46,9 +47,8 @@ export default function CreateRoom() {
       }
       router.push(`teacher/${id}`);
     } catch (e) {
-      console.log(e);
-      setErorr("some thing went wrong during room creation");
-      setIsloading(false);
+     const errorMessage=e instanceof ConvexError? e.data:"some thing went wrong"
+     setErorr(errorMessage);
     } finally {
       setIsloading(false);
     }
@@ -85,6 +85,7 @@ export default function CreateRoom() {
                   defaultValue="00"
                   className="w-16"
                   min="0"
+                  max="12"
                   onChange={(e) =>
                     setDuration({
                       minute: duration?.minute ?? 0,
@@ -92,11 +93,12 @@ export default function CreateRoom() {
                     })
                   }
                 />
-                <div>:</div>
+                <div className="text-2xl">:</div>
                 <Input
                   type="number"
                   id="time-picker"
                   min="0"
+                  max="60"
                   defaultValue="00"
                   className="w-16"
                   onChange={(e) =>

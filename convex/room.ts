@@ -1,6 +1,7 @@
 import { error } from "node:console";
 import { mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { ConvexError } from "convex/values";
 
 export const creatRoom = mutation({
   args: {
@@ -10,8 +11,17 @@ export const creatRoom = mutation({
   handler: async (ctx, args) => {
     const teacher = await ctx.auth.getUserIdentity();
     if (!teacher?.subject) {
-      throw new Error("not authanticated");
+      throw new ConvexError("not authanticated");
     }
+    const isRoomExsist=await ctx.db
+    .query("rooms")
+    .filter((room)=>room.eq(room.field("name"),args.name))
+    .first()
+    console.log(isRoomExsist)
+    if(isRoomExsist){
+      throw new ConvexError("This Room Already exsist")
+    }
+
     const roomId = await ctx.db.insert("rooms", {
       teacher: teacher.subject,
       name: args.name,
