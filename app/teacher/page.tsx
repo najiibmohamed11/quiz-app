@@ -18,11 +18,9 @@ export default function Teacher() {
           <Profile />
         </div>
       </header>
-         {/* <ErrorBoundary fallback={<div>this shit is crashed</div>} > */}
-      <RoomsList/>
-         {/* </ErrorBoundary> */}
+      {/* <ErrorBoundary fallback={<div>this shit is crashed</div>} > */}
+      <RoomsList />
+      {/* </ErrorBoundary> */}
     </div>
   );
 }
-
-
