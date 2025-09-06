@@ -27,6 +27,7 @@ export const creatRoom = mutation({
       name: args.name,
       duration: args.duration,
     });
+    
 
     return roomId;
   },
