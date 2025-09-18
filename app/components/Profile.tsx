@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Avatar } from "@/components/ui/avatar";
 import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { ChevronDown, Hand, LogOut, User } from "lucide-react";
-import { SignedOut, useClerk, useUser } from "@clerk/nextjs";
+import { ChevronDown, LogOut } from "lucide-react";
+import { useClerk, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -10,26 +10,29 @@ function Profile() {
   const { user, isLoaded } = useUser();
   const { signOut } = useClerk();
   const [isOpen, setIsOpen] = useState(false);
-  const profileRef=useRef<HTMLDivElement>(null)
+  const profileRef = useRef<HTMLDivElement>(null);
   const navigater = useRouter();
 
-    useEffect(()=>{
-      if(!isOpen){
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+    const handleClick = (e: Event) => {
+      if (
+        !profileRef.current ||
+        profileRef.current.contains(e.target as Node)
+      ) {
         return;
       }
-      const handleClick=(e:Event)=>{
-        if(!profileRef.current||profileRef.current.contains(e.target as Node) ){
-          return;
-        }
-        
-        setIsOpen(false);
-      }
-  
-      document.addEventListener('mousedown',handleClick)
-      return()=>{document.removeEventListener('mousedown',handleClick)}
-  },[isOpen])
 
+      setIsOpen(false);
+    };
 
+    document.addEventListener("mousedown", handleClick);
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+    };
+  }, [isOpen]);
 
   if (!isLoaded) {
     return (
@@ -81,7 +84,7 @@ function Profile() {
         />
       </button>
       {isOpen && (
-        <div  className="w-65 h-33  absolute right-1 top-11 rounded-xl bg-white border-1 border-gray-300 p-4 transition-all ease-in-out duration-200  slide-in-from-top-5 animate-in">
+        <div className="w-65 h-33  absolute right-1 top-11 rounded-xl bg-white border-1 border-gray-300 p-4 transition-all ease-in-out duration-200  slide-in-from-top-5 animate-in">
           <div className="flex items-center gap-2  font-medium truncate ">
             <Avatar>
               <AvatarImage src={user.imageUrl} alt="profile" />
