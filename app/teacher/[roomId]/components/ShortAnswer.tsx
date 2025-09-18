@@ -16,14 +16,6 @@ import { useParams } from 'next/navigation'
 
 
 
-const formSchema=z.object({
-  question:z.string().min(1,"question is required "),
-  answer:z.string(),
-    questionType:z.literal(['MCQ','True/False','Short Answer'])
-  
-})
-
-console.log(typeof formSchema==typeof shortAnswerSchema)
 function ShortAnswer() {
 
   const [form,setForm]=useState<z.infer<typeof shortAnswerSchema>>({
@@ -49,7 +41,7 @@ function ShortAnswer() {
   }
   const handleSubmit=(e:FormEvent)=>{
     e.preventDefault()
-    const result=formSchema.safeParse(form)
+    const result=shortAnswerSchema.safeParse(form)
     if(!result.success){
       console.log(result)
       setError(result.error.issues[0].message);
@@ -59,7 +51,7 @@ function ShortAnswer() {
   
     setError("")
 
-       const creatingPromise= createShortAnswerQuestion({...form,roomId:roomId as Id<'rooms'> })
+    const creatingPromise= createShortAnswerQuestion({...form,roomId:roomId as Id<'rooms'> })
        
      toast.promise(creatingPromise,{
       loading:'Loading....',

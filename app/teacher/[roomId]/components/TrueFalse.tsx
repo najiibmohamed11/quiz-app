@@ -1,8 +1,6 @@
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import React, { ChangeEvent, Dispatch, FormEvent, SetStateAction, useState } from 'react'
-import { trueFalse } from './AddQuestion';
+import React, { ChangeEvent, FormEvent, useState } from 'react'
 import { Textarea } from '@/components/ui/textarea';
 import * as z from 'zod'
 import { useMutation } from 'convex/react';
@@ -14,7 +12,6 @@ import { useParams } from 'next/navigation';
 import { Id } from '@/convex/_generated/dataModel';
 
 
-console.log(TrueFalseSchema)
 function TrueFalse() {
    const [form,setForm]=useState<z.infer<typeof TrueFalseSchema>>({
     question:"",
@@ -42,14 +39,10 @@ function TrueFalse() {
       e.preventDefault()
      const result=TrueFalseSchema.safeParse(form)
      if(!result.success){
-      console.log(form)
-      console.log(result)
       setError(result.error.issues[0].message)
       return;
      }
-      setError("")
-      console.log("rooooooooom id")
-      console.log(roomId)
+     
      const creatingPromise= createTrueFalseQuestion({...form,roomId:roomId as Id<'rooms'> })
 
      toast.promise(creatingPromise,{
@@ -65,7 +58,6 @@ function TrueFalse() {
             setError(errorMessage)
              return 'Error'
           }
-
      })
     }
   return (
@@ -73,20 +65,17 @@ function TrueFalse() {
       <Textarea
         value={form.question}
         placeholder="enter her question that you want "
-        onChange={questionOnchange}
-        
+        onChange={questionOnchange}       
       />
       <div className="grid  gap-3">
        <RadioGroup value={form.correctAnswerIndex?.toString()??""} onValueChange={(value)=>setForm((prev)=>{
-        console.log(typeof value)
         return (
           {
             ...prev,
             correctAnswerIndex:value=="0"?0:1
           }
         )
-       })} >     
-   
+       })} >        
             <div className="flex items-center gap-3">
              <RadioGroupItem value="0" className=" border-black" />
               <Button
@@ -97,15 +86,14 @@ function TrueFalse() {
             </div>
    
             <div className="flex   items-center  gap-3">
-             <RadioGroupItem value="1" className=" border-black" />
+             <RadioGroupItem  value="1" className=" border-black" />
               <Button
                 type='button'
                 variant="outline">
                     False
               </Button>
             </div>
-
-          
+                      
        </RadioGroup>
 
       </div>

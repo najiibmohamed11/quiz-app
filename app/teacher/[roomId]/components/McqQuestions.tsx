@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { X } from "lucide-react"
-import { toast, Toaster } from "sonner"
+import { toast } from "sonner"
 import * as z from 'zod'
 import { api } from "@/convex/_generated/api"
 import { useMutation } from "convex/react"

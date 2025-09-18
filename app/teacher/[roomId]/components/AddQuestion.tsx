@@ -11,10 +11,7 @@ import TrueFalse from './TrueFalse'
 import ShortAnswer from './ShortAnswer'
 import { Toaster } from 'sonner'
 
-export type trueFalse = {
-  question: string;
-  correctAnswerIndex:null|String
-};
+
 
 type questionType="MCQ"|"True/False"|"shortAnswer"
 

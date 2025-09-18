@@ -10,8 +10,7 @@ function Profile() {
   const { user, isLoaded } = useUser();
   const { signOut } = useClerk();
   const [isOpen, setIsOpen] = useState(false);
-  const profileRef=useRef(null)
-  const renderCount=useRef(0)
+  const profileRef=useRef<HTMLDivElement>(null)
   const navigater = useRouter();
 
     useEffect(()=>{
@@ -19,7 +18,7 @@ function Profile() {
         return;
       }
       const handleClick=(e:Event)=>{
-        if(!profileRef.current||profileRef.current.contains(e.target as Node)){
+        if(!profileRef.current||profileRef.current.contains(e.target as Node) ){
           return;
         }
         
@@ -30,11 +29,8 @@ function Profile() {
       return()=>{document.removeEventListener('mousedown',handleClick)}
   },[isOpen])
 
-  useEffect(()=>{
-    renderCount.current++
-  })
-  console.log("profile component cause re-render")
-  console.log("renders",renderCount)
+
+
   if (!isLoaded) {
     return (
       <div className="relative">
