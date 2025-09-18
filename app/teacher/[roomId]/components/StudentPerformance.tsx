@@ -140,7 +140,7 @@ function StudentPerformance() {
       </CardHeader>
       <CardContent>
         <Table>
-          <TableHeader>
+          <TableHeader className='p-20'>
             <TableRow >  
             <TableHead>
             Name
@@ -153,7 +153,7 @@ function StudentPerformance() {
                 return(
 
             <TableHead>
-              <div className={`${question.questionType=='MCQ'?'bg-blue-100 w-24 max-w-24':(question.questionType=='SHORT_ANSWER'?'bg-orange-100':'bg-red-100 w-24 max-w-24')}   cursor-pointer  min-w-24 min-h-10  flex items-center justify-center rounded-sm flex-col`}>
+              <div className={`${question.questionType=='MCQ'?'bg-blue-100 w-24 max-w-24':(question.questionType=='SHORT_ANSWER'?'bg-orange-100':'bg-red-100 w-24 max-w-24')}   cursor-pointer  min-w-24 min-h-10  flex items-center justify-center rounded-sm flex-col mb-2`}>
                 <div className='w-full truncate px-2 text-center'>
                  {question.question}
                 </div>
@@ -166,8 +166,8 @@ function StudentPerformance() {
 
             </TableRow>
           </TableHeader>
-          <TableBody>
-            <TableRow>
+          <TableBody >
+            <TableRow >
               <TableCell>
                 Abdinajib
               </TableCell>

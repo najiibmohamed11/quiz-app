@@ -32,6 +32,7 @@ export const creatRoom = mutation({
     return roomId;
   },
 });
+
 export const getRooms = query({
   args: {},
   handler: async (ctx) => {

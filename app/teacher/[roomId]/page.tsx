@@ -5,9 +5,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ShieldQuestionMark, MoveLeft, User, Copy } from "lucide-react";
 import { useParams } from "next/navigation";
 import StudentPerformance from "./components/StudentPerformance";
-
+import QuestionsList from "./components/QuestionsList";
+import AddQuestion from "./components/AddQuestion";
+import { useState } from "react";
+type tab="answers"|"questions"|"settings"
 export default function Room() {
   const { roomId } = useParams();
+  const [activeTab,setActiveTab]=useState<tab>("questions")
   return (
     <div className=" max-w-6xl  min-h-screen mx-auto">
       <header className="flex gap-3 mt-8  flex-col ">
@@ -67,14 +71,20 @@ export default function Room() {
       </Card>
 
       <div className=" mt-10">
-        <Tabs defaultValue="answers">
+        <Tabs defaultValue={activeTab} onValueChange={(value)=>setActiveTab(value as tab)}>
+          <div className="flex justify-between">
           <TabsList>
-            <TabsTrigger value="answers">Student Answers</TabsTrigger>
-            <TabsTrigger value="Questions">Questions</TabsTrigger>
+            <TabsTrigger value="answers" >Student Answers</TabsTrigger>
+            <TabsTrigger value="questions">Questions</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
+           {activeTab==='questions'&& <AddQuestion/>}
+          </div>
           <TabsContent value="answers">
             <StudentPerformance/>
+          </TabsContent>
+          <TabsContent value="questions">
+            <QuestionsList/>
           </TabsContent>
         </Tabs>
       </div>
