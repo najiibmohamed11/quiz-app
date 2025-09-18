@@ -5,7 +5,7 @@ import { ConvexError } from "convex/values";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-function Error({ error }) {
+function Error({ error }:{error:Error & { digest?: string }}) {
   const navigator = useRouter();
   if (error instanceof ConvexError) {
     return (
@@ -18,7 +18,7 @@ function Error({ error }) {
   return (
     <div>
       <div className="flex justify-center items-center min-h-screen flex-col">
-        <h1>⚠️"an expected error hapened"</h1>{" "}
+        <h1>⚠️an expected error hapened</h1>
         <Button onClick={() => navigator.push("/")}>refresh</Button>
       </div>
     </div>

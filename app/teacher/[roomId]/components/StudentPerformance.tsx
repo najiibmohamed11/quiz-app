@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Table,
@@ -11,17 +10,7 @@ import {
 import { Eye } from "lucide-react";
 import React, { useState } from "react";
 
-const data = [
-  {
-    name: "abdinajib",
-    score: 20,
-    answers: {
-      questionId: "xzswjcnk",
-      usersAnswer: "false",
-      isCorrect: "correct||not correct ||pending", //pendding when the question is short answer and need to check the teacher
-    },
-  },
-];
+
 
 const Questions = [
   {
@@ -139,7 +128,7 @@ const Questions = [
 ];
 
 function StudentPerformance() {
-  const [questions, setQuestions] = useState([...Questions]);
+  const [questions] = useState([...Questions]);
   return (
     <Card>
       <CardHeader>
@@ -151,9 +140,9 @@ function StudentPerformance() {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Score</TableHead>
-              {questions.map((question) => {
+              {questions.map((question,index) => {
                 return (
-                  <TableHead>
+                  <TableHead key={index}>
                     <div
                       className={`${question.questionType == "MCQ" ? "bg-blue-100 w-24 max-w-24" : question.questionType == "SHORT_ANSWER" ? "bg-orange-100" : "bg-red-100 w-24 max-w-24"}   cursor-pointer  min-w-24 min-h-10  flex items-center justify-center rounded-sm flex-col mb-2`}
                     >

@@ -3,14 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ShieldQuestionMark, MoveLeft, User, Copy } from "lucide-react";
-import { useParams } from "next/navigation";
 import StudentPerformance from "./components/StudentPerformance";
 import QuestionsList from "./components/QuestionsList";
 import AddQuestion from "./components/AddQuestion";
 import { useState } from "react";
 type tab = "answers" | "questions" | "settings";
 export default function Room() {
-  const { roomId } = useParams();
   const [activeTab, setActiveTab] = useState<tab>("questions");
   return (
     <div className=" max-w-6xl  min-h-screen mx-auto">
