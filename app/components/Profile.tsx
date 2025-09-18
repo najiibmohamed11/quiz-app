@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Avatar } from "@/components/ui/avatar";
 import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { ChevronDown, Hand, LogOut, User } from "lucide-react";
@@ -10,7 +10,31 @@ function Profile() {
   const { user, isLoaded } = useUser();
   const { signOut } = useClerk();
   const [isOpen, setIsOpen] = useState(false);
+  const profileRef=useRef(null)
+  const renderCount=useRef(0)
   const navigater = useRouter();
+
+    useEffect(()=>{
+      if(!isOpen){
+        return;
+      }
+      const handleClick=(e:Event)=>{
+        if(!profileRef.current||profileRef.current.contains(e.target as Node)){
+          return;
+        }
+        
+        setIsOpen(false);
+      }
+  
+      document.addEventListener('mousedown',handleClick)
+      return()=>{document.removeEventListener('mousedown',handleClick)}
+  },[isOpen])
+
+  useEffect(()=>{
+    renderCount.current++
+  })
+  console.log("profile component cause re-render")
+  console.log("renders",renderCount)
   if (!isLoaded) {
     return (
       <div className="relative">
@@ -44,8 +68,9 @@ function Profile() {
       .join("")
       .toUpperCase();
   };
+
   return (
-    <div className=" relative">
+    <div className=" relative" ref={profileRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex justify-center items-center gap-1 cursor-pointer"
@@ -60,7 +85,7 @@ function Profile() {
         />
       </button>
       {isOpen && (
-        <div className="w-65 h-33  absolute right-1 top-11 rounded-xl bg-white border-1 border-gray-300 p-4 transition-all ease-in-out duration-200  slide-in-from-top-5 animate-in">
+        <div  className="w-65 h-33  absolute right-1 top-11 rounded-xl bg-white border-1 border-gray-300 p-4 transition-all ease-in-out duration-200  slide-in-from-top-5 animate-in">
           <div className="flex items-center gap-2  font-medium truncate ">
             <Avatar>
               <AvatarImage src={user.imageUrl} alt="profile" />
