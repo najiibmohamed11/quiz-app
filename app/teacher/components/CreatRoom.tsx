@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -47,8 +46,9 @@ export default function CreateRoom() {
       }
       router.push(`teacher/${id}`);
     } catch (e) {
-     const errorMessage=e instanceof ConvexError? e.data:"some thing went wrong"
-     setErorr(errorMessage);
+      const errorMessage =
+        e instanceof ConvexError ? e.data : "some thing went wrong";
+      setErorr(errorMessage);
     } finally {
       setIsloading(false);
     }

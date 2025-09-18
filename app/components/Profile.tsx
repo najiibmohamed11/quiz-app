@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Avatar } from "@/components/ui/avatar";
 import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { ChevronDown, Hand, LogOut, User } from "lucide-react";
-import { SignedOut, useClerk, useUser } from "@clerk/nextjs";
+import { ChevronDown, LogOut } from "lucide-react";
+import { useClerk, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -10,7 +10,30 @@ function Profile() {
   const { user, isLoaded } = useUser();
   const { signOut } = useClerk();
   const [isOpen, setIsOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
   const navigater = useRouter();
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+    const handleClick = (e: Event) => {
+      if (
+        !profileRef.current ||
+        profileRef.current.contains(e.target as Node)
+      ) {
+        return;
+      }
+
+      setIsOpen(false);
+    };
+
+    document.addEventListener("mousedown", handleClick);
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+    };
+  }, [isOpen]);
+
   if (!isLoaded) {
     return (
       <div className="relative">
@@ -44,8 +67,9 @@ function Profile() {
       .join("")
       .toUpperCase();
   };
+
   return (
-    <div className=" relative">
+    <div className=" relative" ref={profileRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex justify-center items-center gap-1 cursor-pointer"
