@@ -7,7 +7,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { useQueries, useQuery } from "convex/react";
 import { Eye } from "lucide-react";
+import { useParams } from "next/navigation";
 import React, { useState } from "react";
 
 
@@ -128,7 +132,18 @@ const Questions = [
 ];
 
 function StudentPerformance() {
-  const [questions] = useState([...Questions]);
+  const {roomId}=useParams()
+  const questions=useQuery(api.question.getRoomeQuestions,{roomId:roomId as Id<"rooms">})
+
+  if(!questions){
+    return <h1 className="flex justify-center items-center">loading....</h1>
+  }
+
+  if(questions.length==0){
+    return <h1 className="flex justify-center items-center">room doesn't have any question please add questions first </h1>
+  }
+
+
   return (
     <Card>
       <CardHeader>
@@ -140,11 +155,11 @@ function StudentPerformance() {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Score</TableHead>
-              {questions.map((question,index) => {
+              {questions.map((question) => {
                 return (
-                  <TableHead key={index}>
+                  <TableHead key={question._id}>
                     <div
-                      className={`${question.questionType == "MCQ" ? "bg-blue-100 w-24 max-w-24" : question.questionType == "SHORT_ANSWER" ? "bg-orange-100" : "bg-red-100 w-24 max-w-24"}   cursor-pointer  min-w-24 min-h-10  flex items-center justify-center rounded-sm flex-col mb-2`}
+                      className={`${question.questionType == "MCQ" ? "bg-blue-100 w-24 max-w-24" : question.questionType === "Short Answer" ? "bg-orange-100" : "bg-red-100 w-24 max-w-24"}   cursor-pointer  min-w-24 min-h-10  flex items-center justify-center rounded-sm flex-col mb-2`}
                     >
                       <div className="w-full truncate px-2 text-center">
                         {question.question}
