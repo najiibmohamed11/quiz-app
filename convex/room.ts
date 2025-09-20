@@ -46,3 +46,21 @@ export const getRooms = query({
     return rooms;
   },
 });
+
+
+export const FindRoom=query({
+  args:{roomName:v.string()},
+  handler:async (ctx,arg)=>{
+    if(!arg.roomName){
+      return "please provide room name"
+    }
+
+    const isRoomExsist =await ctx.db
+    .query('rooms')
+    .filter((room)=>room.eq(room.field("name"),arg.roomName))
+    .first()
+    return isRoomExsist?isRoomExsist:"This room does not exist. Please check the room name and try again."
+
+  }
+  
+})

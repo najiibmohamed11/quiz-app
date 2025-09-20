@@ -29,7 +29,7 @@ export default function CreateRoom() {
   const [isloading, setIsloading] = useState(false);
   const [error, setErorr] = useState("");
   const mutateSomething = useMutation(api.room.creatRoom);
-  const router = useRouter();
+  const navigater = useRouter();
 
   async function handleCreat() {
     if (!name) {
@@ -44,7 +44,7 @@ export default function CreateRoom() {
       if (!id) {
         return;
       }
-      router.push(`teacher/${id}`);
+      navigater.push(`teacher/${id}`);
     } catch (e) {
       const errorMessage =
         e instanceof ConvexError ? e.data : "some thing went wrong";
