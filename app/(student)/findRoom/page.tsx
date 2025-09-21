@@ -44,7 +44,7 @@ function FindRoom() {
             setError(isRoomExsist)
             return
         }
-        navigator.push(`/${isRoomExsist._id}`)
+        navigator.push(`/${isRoomExsist._id}/student`)
         
     }catch(e){
         setError("something went wrong!")
@@ -57,7 +57,7 @@ function FindRoom() {
     }
   return (
     <div className='flex justify-center items-center min-h-screen'>
-    <Card className='w-96'>
+    <Card className='w-80'>
         <CardHeader>
             <h1 className='font-bold text-center'>
             Quiz Details

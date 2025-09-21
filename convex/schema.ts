@@ -39,6 +39,11 @@ export default defineSchema({
       )
     ),
   }),
+  students:defineTable({
+    name:v.string(),
+    roomId:v.id("rooms"),
+    completedQuestions:v.number()
+  }).index('by_room',['roomId'])
 },
 
 

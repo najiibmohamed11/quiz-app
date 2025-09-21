@@ -1,3 +1,4 @@
+import { Id } from "./_generated/dataModel";
 import { mutation, query } from "./_generated/server";
 import { ConvexError, v } from "convex/values";
 
@@ -46,4 +47,18 @@ export const getRoomeQuestions=query({
         return questions;
     },
 
+})
+
+export const getStudentsQuestions=query({
+    args:{roomId:v.string()},
+    handler:async(ctx,args)=>{
+        const id=ctx.db.normalizeId('rooms',args.roomId)
+        if(!id){
+            return null
+        }
+        const questions=ctx.db.query("questions").withIndex("by_room",(question)=>{
+            return question.eq("roomId",id)
+        }).collect()
+        return questions;
+    }
 })

@@ -15,6 +15,7 @@ import type {
 } from "convex/server";
 import type * as question from "../question.js";
 import type * as room from "../room.js";
+import type * as student from "../student.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -27,6 +28,7 @@ import type * as room from "../room.js";
 declare const fullApi: ApiFromModules<{
   question: typeof question;
   room: typeof room;
+  student: typeof student;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
