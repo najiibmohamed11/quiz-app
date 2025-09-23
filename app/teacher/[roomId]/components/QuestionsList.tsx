@@ -8,6 +8,7 @@ import { api } from "@/convex/_generated/api";
 import { useParams } from "next/navigation";
 import { Id } from "@/convex/_generated/dataModel";
 import { Skeleton } from "@/components/ui/skeleton";
+import AddQuestion from "./AddQuestion";
 function QuestionsList() {
   const { roomId } = useParams();
   const questions = useQuery(api.question.getRoomeQuestions, {
@@ -29,9 +30,9 @@ function QuestionsList() {
   if (questions.length <= 0) {
     return (
       <Card>
-        <CardContent>
+        <CardContent className="flex flex-col justify-center items-center gap-5">
           <h1>no questions in this quiz</h1>
-          <Button>add questions</Button>
+          <AddQuestion/>
         </CardContent>
       </Card>
     );

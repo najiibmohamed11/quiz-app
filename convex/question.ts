@@ -59,6 +59,7 @@ export const getStudentsQuestions=query({
         const questions=ctx.db.query("questions").withIndex("by_room",(question)=>{
             return question.eq("roomId",id)
         }).collect()
+        console.log("get called")
         return questions;
     }
 })

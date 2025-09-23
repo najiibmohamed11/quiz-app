@@ -11,7 +11,7 @@ export const mcqSchema=baseSchema.extend({
 }).superRefine((data,ctx)=>{
   if(data.correctAnswerIndex===undefined){
     ctx.addIssue({
-      code:z.ZodIssueCode.custom,
+      code:"custom",
       message:"choose the correct answer",
       path:["correctAnswerIndex"]
     })
@@ -21,7 +21,6 @@ export const mcqSchema=baseSchema.extend({
 
 export const TrueFalseSchema=baseSchema.extend({
     correctAnswerIndex:z.literal([0,1]).optional(),
-
 }).superRefine((data,ctx)=>{
   if(data.correctAnswerIndex===undefined){
     ctx.addIssue({

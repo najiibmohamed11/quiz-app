@@ -42,8 +42,17 @@ export default defineSchema({
   students:defineTable({
     name:v.string(),
     roomId:v.id("rooms"),
-    completedQuestions:v.number()
-  }).index('by_room',['roomId'])
+    completedQuestions:v.number(),
+
+  }).index('by_room',['roomId']),
+  answers:defineTable({
+    studentId:v.id("students"),
+    roomId:v.id("rooms"),
+    questionId:v.id("questions"),
+    answer:v.union(v.string(),v.number())
+  }).index("by_room",["roomId"])
+    .index("by_student",["studentId"])
+    .index("by_question",["questionId"])
 },
 
 

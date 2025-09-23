@@ -1,6 +1,7 @@
 import { ConvexError, v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
+import { error } from "console";
 
 export const creatStudent=mutation({
     args:{name:v.string(),roomId:v.string()},
@@ -10,7 +11,7 @@ export const creatStudent=mutation({
         const studentId=await ctx.db.insert('students',{
             name:args.name,
             roomId:roomId,
-            completedQuestions:0
+            completedQuestions:0,
         })
         return studentId
 
@@ -28,3 +29,5 @@ export const getStudent=query({
         return studentInfo
     }
 })
+
+
