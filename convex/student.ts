@@ -31,3 +31,23 @@ export const getStudent=query({
 })
 
 
+export const getAllStudentsInRoom=query({
+    args:{roomId:v.string()},
+    handler:async(ctx,args)=>{
+        const roomId=ctx.db.normalizeId("rooms",args.roomId)
+        if(!roomId){
+            return "this room  is not valid room"
+        }
+        const students=await ctx.db.query("students")
+        .withIndex("by_room",(student)=>{
+            return student.eq("roomId",roomId)
+        }).collect()
+        const studentAnswers=await ctx.db.query("answers").withIndex("by_room",(answer)=>answer.eq("roomId",roomId)).collect()
+      const studentWithAnswers=  students.map((student)=>{
+        const thisStudentsAnswers=studentAnswers.filter((answer)=>answer.studentId===student._id)
+        const completeData={...student,answers:thisStudentsAnswers}
+        return completeData
+        })
+        return studentWithAnswers;
+    }
+})

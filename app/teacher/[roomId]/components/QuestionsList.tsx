@@ -12,7 +12,7 @@ import AddQuestion from "./AddQuestion";
 function QuestionsList() {
   const { roomId } = useParams();
   const questions = useQuery(api.question.getRoomeQuestions, {
-    roomId: roomId as Id<"rooms">,
+    roomId: roomId as string,
   });
 
   if (!questions) {
@@ -27,16 +27,27 @@ function QuestionsList() {
       </div>
     );
   }
-  if (questions.length <= 0) {
+  if (questions.length === 0) {
     return (
       <Card>
         <CardContent className="flex flex-col justify-center items-center gap-5">
           <h1>no questions in this quiz</h1>
-          <AddQuestion/>
+          <AddQuestion />
         </CardContent>
       </Card>
     );
   }
+  if (typeof questions === "string") {
+    return (
+      <Card>
+        <CardContent className="flex flex-col justify-center items-center gap-5">
+          <h1>room id is not valid id</h1>
+          <AddQuestion />
+        </CardContent>
+      </Card>
+    );
+  }
+  console.log(questions);
   return (
     <div className="flex flex-col gap-4 mb-4">
       {questions.map((question, index) => {

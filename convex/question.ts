@@ -38,10 +38,14 @@ export const createQuestion=mutation({
 
 
 export const getRoomeQuestions=query({
-    args:{roomId:v.id("rooms")},
+    args:{roomId:v.string()},
     handler:(ctx,arg)=>{
+        const roomId=ctx.db.normalizeId("rooms",arg.roomId)
+        if(!roomId){
+            return "invalid room id"
+        }
         const questions=ctx.db.query("questions").withIndex("by_room",(question)=>{
-            return question.eq("roomId",arg.roomId)
+            return question.eq("roomId",roomId)
 
         }).collect()
         return questions;

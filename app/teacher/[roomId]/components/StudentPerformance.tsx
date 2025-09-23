@@ -1,5 +1,10 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import {
   Table,
   TableBody,
   TableCell,
@@ -7,143 +12,106 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useQueries, useQuery } from "convex/react";
-import { Eye } from "lucide-react";
+import { CheckCircle, Eye } from "lucide-react";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
 
-
-
-const Questions = [
-  {
-    question: "JavaScript is ________.",
-    options: ["Static type", "Dynamic type", "Markup language"],
-    correctAnswer: ["Dynamic type"],
-    questionType: "MCQ",
-  },
-  {
-    question: "HTML stands for?",
-    options: [
-      "HyperText Markup Language",
-      "HighText Markdown Language",
-      "Hyper Transfer Machine Language",
-    ],
-    correctAnswer: ["HyperText Markup Language"],
-    questionType: "MCQ",
-  },
-  {
-    question: "React is a ________.",
-    options: ["Database", "Frontend library", "Backend framework"],
-    correctAnswer: ["Frontend library"],
-    questionType: "MCQ",
-  },
-  {
-    question: "CSS is mainly used for?",
-    options: ["Data storage", "Styling web pages", "Server communication"],
-    correctAnswer: ["Styling web pages"],
-    questionType: "MCQ",
-  },
-  {
-    question: "TypeScript is a superset of JavaScript. (True/False)",
-    correctAnswer: ["True"],
-    questionType: "TRUE_FALSE",
-  },
-  {
-    question: "Node.js can run JavaScript outside the browser. (True/False)",
-    correctAnswer: ["True"],
-    questionType: "TRUE_FALSE",
-  },
-  {
-    question: "CSS Grid is used for layout design. (True/False)",
-    correctAnswer: ["True"],
-    questionType: "TRUE_FALSE",
-  },
-  {
-    question: "Java is the same as JavaScript. (True/False)",
-    correctAnswer: ["False"],
-    questionType: "TRUE_FALSE",
-  },
-  {
-    question: "What does API stand for?",
-    correctAnswer: ["Application Programming Interface"],
-    questionType: "SHORT_ANSWER",
-  },
-  {
-    question: "What is the default port of HTTP?",
-    correctAnswer: ["80"],
-    questionType: "SHORT_ANSWER",
-  },
-  {
-    question: "What does CSS stand for?",
-    correctAnswer: ["Cascading Style Sheets"],
-    questionType: "SHORT_ANSWER",
-  },
-  {
-    question: "Which HTML tag is used to define a paragraph?",
-    options: ["<p>", "<para>", "<paragraph>"],
-    correctAnswer: ["<p>"],
-    questionType: "MCQ",
-  },
-  {
-    question: "Which protocol is more secure: HTTP or HTTPS?",
-    options: ["HTTP", "HTTPS"],
-    correctAnswer: ["HTTPS"],
-    questionType: "MCQ",
-  },
-  {
-    question: "JSON is used for data exchange. (True/False)",
-    correctAnswer: ["True"],
-    questionType: "TRUE_FALSE",
-  },
-  {
-    question: "The DOM stands for Document Object Model. (True/False)",
-    correctAnswer: ["True"],
-    questionType: "TRUE_FALSE",
-  },
-  {
-    question: "What is the extension of a JavaScript file?",
-    correctAnswer: [".js"],
-    questionType: "SHORT_ANSWER",
-  },
-  {
-    question: "What is React primarily used for?",
-    correctAnswer: ["Building user interfaces"],
-    questionType: "SHORT_ANSWER",
-  },
-  {
-    question: "SQL is used to manage ________.",
-    options: ["Databases", "Stylesheets", "APIs"],
-    correctAnswer: ["Databases"],
-    questionType: "MCQ",
-  },
-  {
-    question: "Which of these is NOT a JavaScript framework?",
-    options: ["Angular", "Vue", "Django"],
-    correctAnswer: ["Django"],
-    questionType: "MCQ",
-  },
-  {
-    question: "HTML is used to structure content on the web. (True/False)",
-    correctAnswer: ["True"],
-    questionType: "TRUE_FALSE",
-  },
-];
+type question = {
+  _id: Id<"questions">;
+  _creationTime: number;
+  options?: string[] | undefined;
+  correctAnswerIndex?: number | undefined;
+  answer?: string | undefined;
+  roomId: Id<"rooms">;
+  question: string;
+  questionType: "MCQ" | "True/False" | "Short Answer";
+};
 
 function StudentPerformance() {
-  const {roomId}=useParams()
-  const questions=useQuery(api.question.getRoomeQuestions,{roomId:roomId as Id<"rooms">})
-
-  if(!questions){
-    return <h1 className="flex justify-center items-center">loading....</h1>
+  const { roomId } = useParams();
+  const questions = useQuery(api.question.getRoomeQuestions, {
+    roomId: roomId as string,
+  });
+  const students = useQuery(api.student.getAllStudentsInRoom, {
+    roomId: roomId as string,
+  });
+  console.log(students);
+  if (!questions || !students) {
+    return <h1 className="flex justify-center items-center">loading....</h1>;
   }
 
-  if(questions.length==0){
-    return <h1 className="flex justify-center items-center">room doesn't have any question please add questions first </h1>
+  if (questions.length == 0) {
+    return (
+      <h1 className="flex justify-center items-center">
+        room doesn't have any question please add questions first{" "}
+      </h1>
+    );
+  }
+  if (typeof questions === "string" || typeof students === "string") {
+    return (
+      <h1 className="flex justify-center items-center">
+        this room is not valid room
+      </h1>
+    );
   }
 
+  const formatStudentAnswers = (
+    question: question,
+    answer: string | number,
+  ) => {
+    if (answer === undefined) {
+      console.log("question//.......");
+      console.log(question);
+      return "---";
+    }
+    if (question.options && typeof answer === "number") {
+      return String.fromCharCode(answer + 65);
+    }
+    if (typeof answer === "number") {
+      return answer === 0 ? "True" : "False";
+    }
 
+    return answer;
+  };
+
+  const formatCorrectAnswer = (question: question) => {
+    if (question.options && question.correctAnswerIndex != undefined) {
+      return (
+        <>
+          <div className="text-muted-foreground text-xs flex gap-4">
+            <CheckCircle className="h-4 w-4 text-green-600 " />
+            {String.fromCharCode(question.correctAnswerIndex + 65)}
+          </div>
+        </>
+      );
+    }
+
+    if (question.correctAnswerIndex != undefined) {
+      return (
+        <div className="text-muted-foreground text-xs flex gap-4">
+          <CheckCircle className="h-4 w-4 text-green-600 " />
+          {question.correctAnswerIndex === 0 ? "True" : "False"}
+        </div>
+      );
+    }
+
+    if (question.answer) {
+      return (
+        <div className="text-muted-foreground text-xs flex gap-4">
+          <CheckCircle className="h-4 w-4 text-green-600 " />
+          {question.answer}
+        </div>
+      );
+    }
+  };
   return (
     <Card>
       <CardHeader>
@@ -157,28 +125,57 @@ function StudentPerformance() {
               <TableHead>Score</TableHead>
               {questions.map((question) => {
                 return (
-                  <TableHead key={question._id}>
-                    <div
-                      className={`${question.questionType == "MCQ" ? "bg-blue-100 w-24 max-w-24" : question.questionType === "Short Answer" ? "bg-orange-100" : "bg-red-100 w-24 max-w-24"}   cursor-pointer  min-w-24 min-h-10  flex items-center justify-center rounded-sm flex-col mb-2`}
-                    >
-                      <div className="w-full truncate px-2 text-center">
-                        {question.question}
+                  <HoverCard>
+                    <HoverCardTrigger asChild>
+                      <TableHead key={question._id}>
+                        <div
+                          className={`${question.questionType == "MCQ" ? "bg-blue-100 w-24 max-w-24" : question.questionType === "Short Answer" ? "bg-orange-100" : "bg-red-100 w-24 max-w-24"}   cursor-pointer  min-w-24 min-h-10  flex items-center justify-center rounded-sm flex-col mb-2`}
+                        >
+                          <div className="w-full truncate px-2 text-center">
+                            {question.question}
+                          </div>
+                          <Eye size={12} />
+                        </div>
+                      </TableHead>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-86">
+                      <div className="space-y-1">
+                        <p className="text-sm">{question.question}</p>
+                        {formatCorrectAnswer(question)}
                       </div>
-                      <Eye size={12} />
-                    </div>
-                  </TableHead>
+                    </HoverCardContent>
+                  </HoverCard>
                 );
               })}
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell>Abdinajib</TableCell>
-              <TableCell>50%</TableCell>
-              <TableCell>A</TableCell>
-              <TableCell>B</TableCell>
-              <TableCell>True</TableCell>
-            </TableRow>
+            {students.map((student, index) => {
+              return (
+                <TableRow className="text-center">
+                  <TableCell>{student.name}</TableCell>
+                  <TableCell>50%</TableCell>
+                  {questions.map((question, index) => {
+                    console.log(student.answers);
+                    const answerOfThisQuestion = student.answers.find(
+                      (answer) => answer.questionId === question._id,
+                    );
+                    if (!answerOfThisQuestion) {
+                      return <TableCell>.....</TableCell>;
+                    }
+
+                    return (
+                      <TableCell className="text-center">
+                        {formatStudentAnswers(
+                          question,
+                          answerOfThisQuestion.answer,
+                        )}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </CardContent>

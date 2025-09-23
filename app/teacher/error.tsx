@@ -5,7 +5,7 @@ import { ConvexError } from "convex/values";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-function Error({ error }:{error:Error & { digest?: string }}) {
+function Error({ error }: { error: Error & { digest?: string } }) {
   const navigator = useRouter();
   if (error instanceof ConvexError) {
     return (

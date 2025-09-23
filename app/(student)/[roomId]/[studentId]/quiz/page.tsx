@@ -24,7 +24,7 @@ const answerSchema = z
     answer: z.optional(z.union([z.string(), z.number()])),
   })
   .superRefine((data, ctx) => {
-    if (data.answer==undefined) {
+    if (data.answer == undefined) {
       ctx.addIssue({
         code: "custom",
         message: "answer is required at submission.",
@@ -74,36 +74,34 @@ function page() {
     );
   }
 
-  const handleNext =async () => {
+  const handleNext = async () => {
     const result = answerSchema.safeParse(answer);
     if (!result.success) {
-        console.log(result.error.issues[0])
+      console.log(result.error.issues[0]);
       setError(result.error.issues[0].message);
       return;
     }
 
-    try{
-   await submitAnswer({
-      questionId: answer.questionId,
-      answer: answer.answer,
-      studentId:studentId,
-      roomId:roomId
-    });
-    setAnswer({ questionId: "", answer: undefined });
-    if (questions.length-1 === currentQuestionIndex) {
-      return;
+    try {
+      await submitAnswer({
+        questionId: answer.questionId,
+        answer: answer.answer,
+        studentId: studentId,
+        roomId: roomId,
+      });
+      setAnswer({ questionId: "", answer: undefined });
+      if (questions.length - 1 === currentQuestionIndex) {
+        return;
+      }
+      setCurrentQuestionIndex((prev) => prev + 1);
+
+      setError("");
+    } catch (e) {
+      const errorMessage =
+        e instanceof ConvexError ? e.data : "something went wrong";
+      setError(errorMessage);
+      console.log(e);
     }
-    setCurrentQuestionIndex((prev) => prev + 1);
-    
-     setError("")
-
-    }catch(e){
-        const errorMessage=e instanceof ConvexError ? e.data:"something went wrong";
-        setError(errorMessage);
-        console.log(e)
-
-    }
-
   };
 
   return (
@@ -167,6 +165,7 @@ function page() {
           ) : (
             <div>
               <Textarea
+                value={answer.answer ?? ""}
                 placeholder="write the answer her"
                 onChange={(e) =>
                   setAnswer({
@@ -177,10 +176,10 @@ function page() {
               />
             </div>
           )}
-          <p className="text-red-500 text-center mt-3">{error&& error}</p>
+          <p className="text-red-500 text-center mt-3">{error && error}</p>
         </CardContent>
         <CardFooter className="flex justify-end cursor-pointer">
-          <Button  onClick={handleNext}>Submit</Button>
+          <Button onClick={handleNext}>Submit</Button>
         </CardFooter>
       </Card>
     </div>
