@@ -6,12 +6,12 @@ import { CheckCircle, Pen, Trash } from "lucide-react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useParams } from "next/navigation";
-import { Id } from "@/convex/_generated/dataModel";
 import { Skeleton } from "@/components/ui/skeleton";
+import AddQuestion from "./AddQuestion";
 function QuestionsList() {
   const { roomId } = useParams();
   const questions = useQuery(api.question.getRoomeQuestions, {
-    roomId: roomId as Id<"rooms">,
+    roomId: roomId as string,
   });
 
   if (!questions) {
@@ -26,16 +26,27 @@ function QuestionsList() {
       </div>
     );
   }
-  if (questions.length <= 0) {
+  if (questions.length === 0) {
     return (
       <Card>
-        <CardContent>
+        <CardContent className="flex flex-col justify-center items-center gap-5">
           <h1>no questions in this quiz</h1>
-          <Button>add questions</Button>
+          <AddQuestion />
         </CardContent>
       </Card>
     );
   }
+  if (typeof questions === "string") {
+    return (
+      <Card>
+        <CardContent className="flex flex-col justify-center items-center gap-5">
+          <h1>room id is not valid id</h1>
+          <AddQuestion />
+        </CardContent>
+      </Card>
+    );
+  }
+  console.log(questions);
   return (
     <div className="flex flex-col gap-4 mb-4">
       {questions.map((question, index) => {
@@ -64,13 +75,13 @@ function QuestionsList() {
                   {question.options ? (
                     question.options.map((option, optionIndex) => {
                       return question.correctAnswerIndex === optionIndex ? (
-                        <span className="text-green-800 flex items-center gap-1 ">
+                        <span className="text-green-800 flex items-center gap-1 " key={optionIndex}>
                           {" "}
                           <CheckCircle className="h-4 w-4 text-green-600 " />
                           {option}
                         </span>
                       ) : (
-                        <span className="ml-4">{option}</span>
+                        <span className="ml-4" key={optionIndex}>{option}</span>
                       );
                     })
                   ) : (

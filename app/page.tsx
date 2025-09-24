@@ -15,7 +15,7 @@ export default function Home() {
           teacher
         </Link>
         <Link
-          href="./student"
+          href="./findroom"
           className="w-44 h-34 border-purple-700  font-medium  text-center items-center flex justify-center text-l text-black border rounded-lg"
         >
           student

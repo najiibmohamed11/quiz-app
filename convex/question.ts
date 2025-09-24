@@ -37,13 +37,32 @@ export const createQuestion=mutation({
 
 
 export const getRoomeQuestions=query({
-    args:{roomId:v.id("rooms")},
+    args:{roomId:v.string()},
     handler:(ctx,arg)=>{
+        const roomId=ctx.db.normalizeId("rooms",arg.roomId)
+        if(!roomId){
+            return "invalid room id"
+        }
         const questions=ctx.db.query("questions").withIndex("by_room",(question)=>{
-            return question.eq("roomId",arg.roomId)
+            return question.eq("roomId",roomId)
 
         }).collect()
         return questions;
     },
 
+})
+
+export const getStudentsQuestions=query({
+    args:{roomId:v.string()},
+    handler:async(ctx,args)=>{
+        const id=ctx.db.normalizeId('rooms',args.roomId)
+        if(!id){
+            return null
+        }
+        const questions=ctx.db.query("questions").withIndex("by_room",(question)=>{
+            return question.eq("roomId",id)
+        }).collect()
+        console.log("get called")
+        return questions;
+    }
 })
