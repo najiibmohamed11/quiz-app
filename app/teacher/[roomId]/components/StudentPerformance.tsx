@@ -65,11 +65,9 @@ function StudentPerformance() {
 
   const formatStudentAnswers = (
     question: question,
-    answer: string | number,
+    answer: string | number|undefined,
   ) => {
     if (answer === undefined) {
-      console.log("question//.......");
-      console.log(question);
       return "---";
     }
     if (question.options && typeof answer === "number") {
@@ -86,9 +84,12 @@ function StudentPerformance() {
     if (question.options && question.correctAnswerIndex != undefined) {
       return (
         <>
-          <div className="text-muted-foreground text-xs flex gap-4">
+          <div className="text-muted-foreground text-xs flex gap-2">
             <CheckCircle className="h-4 w-4 text-green-600 " />
-            {String.fromCharCode(question.correctAnswerIndex + 65)}
+            <h1 className="font-bold">
+            {String.fromCharCode(question.correctAnswerIndex + 65)})
+            </h1>
+            {question.options[question.correctAnswerIndex]}
           </div>
         </>
       );
@@ -125,7 +126,7 @@ function StudentPerformance() {
               <TableHead>Score</TableHead>
               {questions.map((question) => {
                 return (
-                  <HoverCard>
+                  <HoverCard key={question._id}>
                     <HoverCardTrigger asChild>
                       <TableHead key={question._id}>
                         <div
@@ -150,25 +151,21 @@ function StudentPerformance() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {students.map((student, index) => {
+            {students.map((student) => {
               return (
-                <TableRow className="text-center">
-                  <TableCell>{student.name}</TableCell>
+                <TableRow className="text-center" key={student._id}>
+                  <TableCell className="text-start">{student.name}</TableCell>
                   <TableCell>50%</TableCell>
-                  {questions.map((question, index) => {
-                    console.log(student.answers);
+                  {questions.map((question) => {
                     const answerOfThisQuestion = student.answers.find(
                       (answer) => answer.questionId === question._id,
                     );
-                    if (!answerOfThisQuestion) {
-                      return <TableCell>.....</TableCell>;
-                    }
-
+             
                     return (
-                      <TableCell className="text-center">
+                      <TableCell className="text-center" key={question._id}>
                         {formatStudentAnswers(
                           question,
-                          answerOfThisQuestion.answer,
+                          answerOfThisQuestion?.answer,
                         )}
                       </TableCell>
                     );

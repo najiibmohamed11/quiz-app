@@ -76,13 +76,13 @@ function QuestionsList() {
                   {question.options ? (
                     question.options.map((option, optionIndex) => {
                       return question.correctAnswerIndex === optionIndex ? (
-                        <span className="text-green-800 flex items-center gap-1 ">
+                        <span className="text-green-800 flex items-center gap-1 " key={optionIndex}>
                           {" "}
                           <CheckCircle className="h-4 w-4 text-green-600 " />
                           {option}
                         </span>
                       ) : (
-                        <span className="ml-4">{option}</span>
+                        <span className="ml-4" key={optionIndex}>{option}</span>
                       );
                     })
                   ) : (
