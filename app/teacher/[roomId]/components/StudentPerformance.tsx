@@ -187,8 +187,8 @@ function StudentPerformance() {
           <TableBody>
             {students.map((student) => {
               return (
-                <TableRow className="text-center" key={student._id} >
-                  <TableCell> {student.name}</TableCell>
+                <TableRow  key={student._id} >
+                  <TableCell > {student.name}</TableCell>
                   <TableCell>{calculateStudentsScore(student.answers)}</TableCell>
                   {questions.map((question) => {
                     const answerOfThisQuestion = student.answers.find(
@@ -198,7 +198,7 @@ function StudentPerformance() {
              
                     return (
                       <TableCell className="text-center" key={question._id}>
-                      <TableCell className="text-start bg-gray-200 rounded-md flex justify-center items-center">
+                      <TableCell className=" bg-gray-200 rounded-md flex justify-center items-center">
                         {formatStudentAnswers(
                           question,
                           answerOfThisQuestion?.answer,

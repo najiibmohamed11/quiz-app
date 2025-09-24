@@ -7,11 +7,21 @@ import StudentPerformance from "./components/StudentPerformance";
 import QuestionsList from "./components/QuestionsList";
 import AddQuestion from "./components/AddQuestion";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useQueries, useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 type tab = "answers" | "questions" | "settings";
 export default function Room() {
   const [activeTab, setActiveTab] = useState<tab>("answers");
   const rout = useRouter();
+  const {roomId}=useParams()
+  const roomDetails=useQuery(api.room.getRoomDetails,{roomId:roomId as string})
+  if(typeof roomDetails==="string"){
+    return <div>this room is not valid please go back</div>
+  }
+  if(!roomDetails?.roomInfo){
+    return <div>this room is not valid please go back</div>
+  }
   return (
     <div className=" max-w-6xl  min-h-screen mx-auto">
       <header className="flex gap-3 mt-8  flex-col ">
@@ -21,7 +31,7 @@ export default function Room() {
         >
           <MoveLeft /> Back
         </button>
-        <h1 className="font-bold text-2xl mx-5 ">CA211</h1>
+        <h1 className="font-bold text-2xl mx-5 ">{roomDetails?.roomInfo.name}</h1>
       </header>
       <Card className="p-5 mt-4 grid grid-cols-3 h-50">
         <div className="gap-y-2 ">
@@ -29,14 +39,14 @@ export default function Room() {
             <h1 className="font-semibold text-l">Queations</h1>
             <div className="mt-2 flex items-center gap-2   ">
               <ShieldQuestionMark size={18} />
-              <h1 className="font-semibold">10</h1>
+              <h1 className="font-semibold">{roomDetails.questionLength}</h1>
             </div>
           </div>
           <div className="mt-2">
             <h1 className="font-semibold text-l">Participants</h1>
             <div className="mt-2 flex items-center gap-2   ">
               <User size={18} />
-              <h1 className="font-semibold">10</h1>
+              <h1 className="font-semibold">{roomDetails.participants}</h1>
             </div>
           </div>
         </div>

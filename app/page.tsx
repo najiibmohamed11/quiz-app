@@ -9,13 +9,13 @@ export default function Home() {
       </h2>{" "}
       <div className="flex gap-10 ">
         <Link
-          href="./sign-in"
+          href="/sign-in"
           className="w-44 h-34 bg-purple-700 font-medium  text-center items-center flex justify-center text-l text-amber-50 border rounded-lg"
         >
           teacher
         </Link>
         <Link
-          href="./findroom"
+          href="/findroom"
           className="w-44 h-34 border-purple-700  font-medium  text-center items-center flex justify-center text-l text-black border rounded-lg"
         >
           student
