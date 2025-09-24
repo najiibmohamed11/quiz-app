@@ -20,7 +20,7 @@ import {
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useQueries, useQuery } from "convex/react";
-import { CheckCircle, Eye } from "lucide-react";
+import { CheckCircle, CircleX, Eye } from "lucide-react";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
 
@@ -35,6 +35,14 @@ type question = {
   questionType: "MCQ" | "True/False" | "Short Answer";
 };
 
+type answers={
+        _id: Id<"answers">;
+        _creationTime: number;
+        roomId: Id<"rooms">;
+        answer: string | number;
+        studentId: Id<"students">;
+        questionId: Id<"questions">;
+    }
 function StudentPerformance() {
   const { roomId } = useParams();
   const questions = useQuery(api.question.getRoomeQuestions, {
@@ -63,6 +71,7 @@ function StudentPerformance() {
     );
   }
 
+
   const formatStudentAnswers = (
     question: question,
     answer: string | number|undefined,
@@ -71,14 +80,43 @@ function StudentPerformance() {
       return "---";
     }
     if (question.options && typeof answer === "number") {
-      return String.fromCharCode(answer + 65);
+      return (<div className="flex justify-center items-center gap-2">
+      {question.correctAnswerIndex===answer?<CheckCircle className="h-4 w-4 text-green-600 "/>:<CircleX className="h-4 w-4 text-red-600 " />}  
+      {String.fromCharCode(answer + 65)}
+      </div>)
     }
     if (typeof answer === "number") {
-      return answer === 0 ? "True" : "False";
+      return (
+      <div className="flex justify-center items-center gap-2">
+        {question.correctAnswerIndex===answer?<CheckCircle className="h-4 w-4 text-green-600 "/>:<CircleX className="h-4 w-4 text-red-600 " />}
+        {answer===0?"True":"False"}
+      </div>
+      )
     }
 
     return answer;
   };
+
+  const calculateStudentsScore=(answer: answers[])=>{
+    let correctAnswerCount=0;
+    // if(answer.length>questions.length){
+    //   return "---"
+    // }
+    questions.map((question)=>{
+      const answerOfthisQuestion=answer.find((answer)=>answer.questionId===question._id)
+
+      if(!answerOfthisQuestion){
+        return 
+      }
+    if (question.options && typeof answerOfthisQuestion.answer === "number"&&question.correctAnswerIndex===answerOfthisQuestion.answer) {
+      correctAnswerCount++;
+    }else if(typeof answerOfthisQuestion.answer === "number"&&question.correctAnswerIndex===answerOfthisQuestion.answer){
+      correctAnswerCount++;
+    }
+    
+  })
+  return `${((correctAnswerCount/questions.length)*100).toFixed(0)}%`
+  }
 
   const formatCorrectAnswer = (question: question) => {
     if (question.options && question.correctAnswerIndex != undefined) {
@@ -153,20 +191,23 @@ function StudentPerformance() {
           <TableBody>
             {students.map((student) => {
               return (
-                <TableRow className="text-center" key={student._id}>
-                  <TableCell className="text-start">{student.name}</TableCell>
-                  <TableCell>50%</TableCell>
+                <TableRow className="text-center" key={student._id} >
+                  <TableCell> {student.name}</TableCell>
+                  <TableCell>{calculateStudentsScore(student.answers)}</TableCell>
                   {questions.map((question) => {
                     const answerOfThisQuestion = student.answers.find(
                       (answer) => answer.questionId === question._id,
                     );
+                    
              
                     return (
                       <TableCell className="text-center" key={question._id}>
+                      <TableCell className="text-start bg-gray-200 rounded-md flex justify-center items-center">
                         {formatStudentAnswers(
                           question,
                           answerOfThisQuestion?.answer,
                         )}
+                        </TableCell>
                       </TableCell>
                     );
                   })}

@@ -14,7 +14,8 @@ import { Id } from "@/convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
 import { ConvexError } from "convex/values";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import Router from "next/router";
 import React, { useState } from "react";
 import z from "zod";
 
@@ -47,6 +48,7 @@ function page() {
   const studentInfo = useQuery(api.student.getStudent, { studentId, roomId });
   const questions = useQuery(api.question.getStudentsQuestions, { roomId });
   const submitAnswer = useMutation(api.answers.submitAnswer);
+  const navigator=useRouter()
 
   if (studentInfo === undefined || !questions) {
     return (
@@ -91,6 +93,7 @@ function page() {
       });
       setAnswer({ questionId: "", answer: undefined });
       if (questions.length - 1 === currentQuestionIndex) {
+        navigator.push(`/${roomId}/${studentId}/result`)
         return;
       }
       setCurrentQuestionIndex((prev) => prev + 1);
@@ -121,6 +124,7 @@ function page() {
               {questions[currentQuestionIndex].options ? (
                 questions[currentQuestionIndex].options.map((option, index) => (
                   <Button
+                  key={index}
                     variant={`${answer.answer === index ? "default" : "outline"}`}
                     className={`w-full h-14  flex justify-start `}
                     onClick={() =>

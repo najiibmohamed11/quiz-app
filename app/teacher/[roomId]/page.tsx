@@ -10,7 +10,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 type tab = "answers" | "questions" | "settings";
 export default function Room() {
-  const [activeTab, setActiveTab] = useState<tab>("questions");
+  const [activeTab, setActiveTab] = useState<tab>("answers");
   const rout = useRouter();
   return (
     <div className=" max-w-6xl  min-h-screen mx-auto">
