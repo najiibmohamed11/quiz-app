@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ShieldQuestionMark, MoveLeft, User, Copy } from "lucide-react";
+import { ShieldQuestionMark, MoveLeft, User, Copy, Check } from "lucide-react";
 import StudentPerformance from "./components/StudentPerformance";
 import QuestionsList from "./components/QuestionsList";
 import AddQuestion from "./components/AddQuestion";
@@ -16,11 +16,24 @@ export default function Room() {
   const rout = useRouter();
   const {roomId}=useParams()
   const roomDetails=useQuery(api.room.getRoomDetails,{roomId:roomId as string})
+  const [isCopied,setIscopied]=useState(false)
   if(typeof roomDetails==="string"){
     return <div>this room is not valid please go back</div>
   }
   if(!roomDetails?.roomInfo){
     return <div>this room is not valid please go back</div>
+  }
+  const quizeUrl=`http//localhost:3000/${roomId}`
+  const copyToClipboard=async()=>{
+    try{
+      await navigator.clipboard.writeText(quizeUrl)
+      setIscopied(true)
+      setTimeout(()=>{
+        setIscopied(false)
+      },1000)
+    }catch(e){
+      console.log(e)
+    }
   }
   return (
     <div className=" max-w-6xl  min-h-screen mx-auto">
@@ -33,7 +46,7 @@ export default function Room() {
         </button>
         <h1 className="font-bold text-2xl mx-5 ">{roomDetails?.roomInfo.name}</h1>
       </header>
-      <Card className="p-5 mt-4 grid grid-cols-3 h-50">
+      <Card className="p-5 mt-4 grid grid-cols-2 h-50">
         <div className="gap-y-2 ">
           <div>
             <h1 className="font-semibold text-l">Queations</h1>
@@ -50,7 +63,7 @@ export default function Room() {
             </div>
           </div>
         </div>
-        <div className="gap-y-2 ">
+        {/* <div className="gap-y-2 ">
           <div>
             <h1 className="font-semibold text-l">Queations</h1>
             <div className="mt-2 flex items-center gap-2   ">
@@ -65,19 +78,19 @@ export default function Room() {
               <h1 className="font-semibold">10</h1>
             </div>
           </div>
-        </div>
-        <div className="flex flex-col justify-between h-full">
-          <h1 className="font-semibold text-l">Queations</h1>
+        </div> */}
+        <div className="flex flex-col justify-between h-full items-end">
+          <h1 className="font-semibold text-start mr-50">share quiz</h1>
           <div className="flex ">
             <div className="w-full bg-purple-100 p-2 rounded-md text-l font-semibold text-purple-700">
               http://quiz-app/room/we.........
             </div>
-            <Button variant="ghost">
-              <Copy />
+            <Button variant="ghost" className="hover:bg-transparent" onClick={copyToClipboard}>
+             {isCopied?<Check/>: <Copy />}
             </Button>
           </div>
-          <Button className="w-full">Finish</Button>
-          <Button className="w-full" variant="outline">
+          <Button className="w-60 mr-9">Finish</Button>
+          <Button className="w-60 mr-9" variant="outline">
             puase
           </Button>
         </div>
