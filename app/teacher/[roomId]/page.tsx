@@ -7,13 +7,15 @@ import StudentPerformance from "./components/StudentPerformance";
 import QuestionsList from "./components/QuestionsList";
 import AddQuestion from "./components/AddQuestion";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 type tab = "answers" | "questions" | "settings";
 export default function Room() {
   const [activeTab, setActiveTab] = useState<tab>("questions");
+  const rout=useRouter()
   return (
     <div className=" max-w-6xl  min-h-screen mx-auto">
       <header className="flex gap-3 mt-8  flex-col ">
-        <button className="cursor-pointer  w-20 flex justify-around ">
+        <button className="cursor-pointer  w-20 flex justify-around " onClick={()=>rout.back()}>
           <MoveLeft /> Back
         </button>
         <h1 className="font-bold text-2xl mx-5 ">CA211</h1>
