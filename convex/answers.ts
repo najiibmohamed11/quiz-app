@@ -16,7 +16,7 @@ export const submitAnswer=mutation({
         if(args.answer==undefined){
             throw new ConvexError("answer is required") 
         }
-        const answerId=await ctx.db.insert("answers",{studentId:studentId,roomId:roomId,answer:args.answer,questionId:args.questionId as Id<"questions">})
+        await ctx.db.insert("answers",{studentId:studentId,roomId:roomId,answer:args.answer,questionId:args.questionId as Id<"questions">})
         
     }
 })

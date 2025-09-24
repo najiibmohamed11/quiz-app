@@ -6,7 +6,6 @@ import { CheckCircle, Pen, Trash } from "lucide-react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useParams } from "next/navigation";
-import { Id } from "@/convex/_generated/dataModel";
 import { Skeleton } from "@/components/ui/skeleton";
 import AddQuestion from "./AddQuestion";
 function QuestionsList() {

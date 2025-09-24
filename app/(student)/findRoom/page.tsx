@@ -4,14 +4,10 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { api } from "@/convex/_generated/api";
 import { Label } from "@radix-ui/react-label";
-import { useConvex, useQuery } from "convex/react";
+import { useConvex } from "convex/react";
 import { useRouter } from "next/navigation";
 import React, {
   FormEvent,
-  FormEventHandler,
-  useContext,
-  useEffect,
-  useRef,
   useState,
 } from "react";
 import z from "zod";

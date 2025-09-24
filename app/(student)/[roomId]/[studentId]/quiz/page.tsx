@@ -7,15 +7,12 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
 import { ConvexError } from "convex/values";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import Router from "next/router";
 import React, { useState } from "react";
 import z from "zod";
 
@@ -33,7 +30,7 @@ const answerSchema = z
       });
     }
   });
-function page() {
+function Quiz() {
   const { roomId, studentId } = useParams<{
     roomId: string;
     studentId: string;
@@ -190,4 +187,4 @@ function page() {
   );
 }
 
-export default page;
+export default Quiz;

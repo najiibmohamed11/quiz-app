@@ -12,17 +12,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { useQueries, useQuery } from "convex/react";
+import {  useQuery } from "convex/react";
 import { CheckCircle, CircleX, Eye } from "lucide-react";
 import { useParams } from "next/navigation";
-import React, { useState } from "react";
 
 type question = {
   _id: Id<"questions">;
@@ -59,7 +53,7 @@ function StudentPerformance() {
   if (questions.length == 0) {
     return (
       <h1 className="flex justify-center items-center">
-        room doesn't have any question please add questions first{" "}
+        {"room doesn't have any question please add questions first"}
       </h1>
     );
   }
