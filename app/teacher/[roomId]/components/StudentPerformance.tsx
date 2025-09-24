@@ -29,6 +29,7 @@ type question = {
   questionType: "MCQ" | "True/False" | "Short Answer";
 };
 
+
 type answers={
         _id: Id<"answers">;
         _creationTime: number;
@@ -110,6 +111,7 @@ function StudentPerformance() {
     
   })
   return `${((correctAnswerCount/questions.length)*100).toFixed(0)}%`
+
   }
 
   const formatCorrectAnswer = (question: question) => {
