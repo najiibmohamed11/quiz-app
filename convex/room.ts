@@ -47,6 +47,19 @@ export const getRooms = query({
   },
 });
 
+export const getRoomDetails=query({
+  args:{roomId:v.string()},
+  handler:async (ctx,args)=>{
+    const roomId=ctx.db.normalizeId("rooms",args.roomId)
+    if(!roomId){
+      return "this room not valid thing"
+    }
+    const roomInfo=await ctx.db.get(roomId)
+    const questions=await ctx.db.query("questions").withIndex("by_room",(question)=>question.eq("roomId",roomId)).collect()
+    const students=await ctx.db.query("students").withIndex("by_room",(student)=>student.eq("roomId",roomId)).collect()
+    return {roomInfo,questionLength:questions.length,participants:students.length}
+  }
+})
 
 export const FindRoom=query({
   args:{roomName:v.string()},

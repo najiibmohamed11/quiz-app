@@ -52,11 +52,13 @@ function QuestionsList() {
       {questions.map((question, index) => {
         return (
           <Card key={question._id}>
-            <CardHeader className="flex justify-center ">
+            <CardHeader className="flex  ">
               <Badge className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums">
                 {index + 1}
               </Badge>
-              <h1 className="font-semibold mx-5 flex-1">{question.question}</h1>
+              <h1 className="font-semibold mx-5 flex-1 break-words min-w-96">
+                {question.question}
+              </h1>
               <div className="flex flex-col justify-center items-center">
                 <Badge variant="secondary">{question.questionType}</Badge>
                 <div className="flex ">
@@ -75,13 +77,18 @@ function QuestionsList() {
                   {question.options ? (
                     question.options.map((option, optionIndex) => {
                       return question.correctAnswerIndex === optionIndex ? (
-                        <span className="text-green-800 flex items-center gap-1 " key={optionIndex}>
+                        <span
+                          className="text-green-800 flex items-center gap-1 "
+                          key={optionIndex}
+                        >
                           {" "}
                           <CheckCircle className="h-4 w-4 text-green-600 " />
                           {option}
                         </span>
                       ) : (
-                        <span className="ml-4" key={optionIndex}>{option}</span>
+                        <span className="ml-4" key={optionIndex}>
+                          {option}
+                        </span>
                       );
                     })
                   ) : (

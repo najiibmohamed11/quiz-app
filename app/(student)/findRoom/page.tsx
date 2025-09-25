@@ -6,10 +6,7 @@ import { api } from "@/convex/_generated/api";
 import { Label } from "@radix-ui/react-label";
 import { useConvex } from "convex/react";
 import { useRouter } from "next/navigation";
-import React, {
-  FormEvent,
-  useState,
-} from "react";
+import React, { FormEvent, useState } from "react";
 import z from "zod";
 const formSchema = z.string().min(1, "please enter room name");
 // const roomSchema=z.object({

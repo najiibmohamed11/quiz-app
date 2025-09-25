@@ -13,20 +13,20 @@ export const createQuestion=mutation({
     answer:v.optional(v.string()),
     roomId:v.id("rooms")
 },
-    handler:async(ctx,arg)=>{
+    handler:async(ctx,args)=>{
         //common checks 
-        if(arg.questionType=="MCQ"&&(!arg.options||typeof arg.correctAnswerIndex!="number"||arg.correctAnswerIndex>=arg.options.length)){
-            throw new ConvexError(`${!arg.options?"options are missing":typeof arg.correctAnswerIndex==='number'?"correct answer is missing":"invalid option index"}`)
-        }else if(arg.questionType=="True/False"&&typeof arg.correctAnswerIndex !='number'){
+        if(args.questionType=="MCQ"&&(!args.options||typeof args.correctAnswerIndex!="number"||args.correctAnswerIndex>=args.options.length)){
+            throw new ConvexError(`${!args.options?"options are missing":typeof args.correctAnswerIndex==='number'?"correct answer is missing":"invalid option index"}`)
+        }else if(args.questionType=="True/False"&&typeof args.correctAnswerIndex !='number'){
             throw new ConvexError('correct answer is missing')
         }
         const id=await ctx.db.insert('questions',{
-            question:arg.question,
-            options:arg.options,
-            correctAnswerIndex:arg.correctAnswerIndex,
-            answer:arg.answer,
-            questionType:arg.questionType,
-            roomId:arg.roomId
+            question:args.question,
+            options:args.options,
+            correctAnswerIndex:args.correctAnswerIndex,
+            answer:args.answer,
+            questionType:args.questionType,
+            roomId:args.roomId
             
         })
 
