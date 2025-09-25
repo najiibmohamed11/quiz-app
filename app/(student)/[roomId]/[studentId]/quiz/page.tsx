@@ -45,7 +45,7 @@ function Quiz() {
   const studentInfo = useQuery(api.student.getStudent, { studentId, roomId });
   const questions = useQuery(api.question.getStudentsQuestions, { roomId });
   const submitAnswer = useMutation(api.answers.submitAnswer);
-  const navigator=useRouter()
+  const navigator = useRouter();
 
   if (studentInfo === undefined || !questions) {
     return (
@@ -90,7 +90,7 @@ function Quiz() {
       });
       setAnswer({ questionId: "", answer: undefined });
       if (questions.length - 1 === currentQuestionIndex) {
-        navigator.push(`/${roomId}/${studentId}/result`)
+        navigator.push(`/${roomId}/${studentId}/result`);
         return;
       }
       setCurrentQuestionIndex((prev) => prev + 1);
@@ -121,7 +121,7 @@ function Quiz() {
               {questions[currentQuestionIndex].options ? (
                 questions[currentQuestionIndex].options.map((option, index) => (
                   <Button
-                  key={index}
+                    key={index}
                     variant={`${answer.answer === index ? "default" : "outline"}`}
                     className={`w-full h-14  flex justify-start `}
                     onClick={() =>

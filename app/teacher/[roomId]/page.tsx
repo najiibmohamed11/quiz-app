@@ -8,33 +8,35 @@ import QuestionsList from "./components/QuestionsList";
 import AddQuestion from "./components/AddQuestion";
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useQueries, useQuery } from "convex/react";
+import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 type tab = "answers" | "questions" | "settings";
 export default function Room() {
   const [activeTab, setActiveTab] = useState<tab>("answers");
   const rout = useRouter();
-  const {roomId}=useParams()
-  const roomDetails=useQuery(api.room.getRoomDetails,{roomId:roomId as string})
-  const [isCopied,setIscopied]=useState(false)
-  if(typeof roomDetails==="string"){
-    return <div>this room is not valid please go back</div>
+  const { roomId } = useParams();
+  const roomDetails = useQuery(api.room.getRoomDetails, {
+    roomId: roomId as string,
+  });
+  const [isCopied, setIscopied] = useState(false);
+  if (typeof roomDetails === "string") {
+    return <div>this room is not valid please go back</div>;
   }
-  if(!roomDetails?.roomInfo){
-    return <div>this room is not valid please go back</div>
+  if (!roomDetails?.roomInfo) {
+    return <div>this room is not valid please go back</div>;
   }
-  const quizeUrl=`localhost:3000/${roomId}/student`
-  const copyToClipboard=async()=>{
-    try{
-      await navigator.clipboard.writeText(quizeUrl)
-      setIscopied(true)
-      setTimeout(()=>{
-        setIscopied(false)
-      },1000)
-    }catch(e){
-      console.log(e)
+  const quizeUrl = `localhost:3000/${roomId}/student`;
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(quizeUrl);
+      setIscopied(true);
+      setTimeout(() => {
+        setIscopied(false);
+      }, 1000);
+    } catch (e) {
+      console.log(e);
     }
-  }
+  };
   return (
     <div className=" max-w-6xl  min-h-screen mx-auto">
       <header className="flex gap-3 mt-8  flex-col ">
@@ -44,7 +46,9 @@ export default function Room() {
         >
           <MoveLeft /> Back
         </button>
-        <h1 className="font-bold text-2xl mx-5 ">{roomDetails?.roomInfo.name}</h1>
+        <h1 className="font-bold text-2xl mx-5 ">
+          {roomDetails?.roomInfo.name}
+        </h1>
       </header>
       <Card className="p-5 mt-4 grid grid-cols-2 h-50">
         <div className="gap-y-2 ">
@@ -84,8 +88,12 @@ export default function Room() {
             <div className="w-full bg-purple-100 p-2 rounded-md text-l font-semibold text-purple-700">
               http://quiz-app/room/we.........
             </div>
-            <Button variant="ghost" className="hover:bg-transparent" onClick={copyToClipboard}>
-             {isCopied?<Check/>: <Copy />}
+            <Button
+              variant="ghost"
+              className="hover:bg-transparent"
+              onClick={copyToClipboard}
+            >
+              {isCopied ? <Check /> : <Copy />}
             </Button>
           </div>
           <Button className="w-60 mr-9">00 : 30 : 10</Button>
