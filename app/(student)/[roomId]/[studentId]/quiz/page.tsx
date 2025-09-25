@@ -113,7 +113,7 @@ function Quiz() {
           </Badge>
         </CardHeader>
         <CardContent className="">
-          <h1 className="text-xl font-bold">
+          <h1 className="text-xl font-bold break-words mb-6">
             {questions[currentQuestionIndex].question}
           </h1>
           {questions[currentQuestionIndex].questionType != "Short Answer" ? (

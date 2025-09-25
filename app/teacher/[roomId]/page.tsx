@@ -23,7 +23,7 @@ export default function Room() {
   if(!roomDetails?.roomInfo){
     return <div>this room is not valid please go back</div>
   }
-  const quizeUrl=`http//localhost:3000/${roomId}`
+  const quizeUrl=`localhost:3000/${roomId}/student`
   const copyToClipboard=async()=>{
     try{
       await navigator.clipboard.writeText(quizeUrl)
@@ -80,7 +80,6 @@ export default function Room() {
           </div>
         </div> */}
         <div className="flex flex-col justify-between h-full items-end">
-          <h1 className="font-semibold text-start mr-50">share quiz</h1>
           <div className="flex ">
             <div className="w-full bg-purple-100 p-2 rounded-md text-l font-semibold text-purple-700">
               http://quiz-app/room/we.........
@@ -89,7 +88,7 @@ export default function Room() {
              {isCopied?<Check/>: <Copy />}
             </Button>
           </div>
-          <Button className="w-60 mr-9">Finish</Button>
+          <Button className="w-60 mr-9">00 : 30 : 10</Button>
           <Button className="w-60 mr-9" variant="outline">
             puase
           </Button>

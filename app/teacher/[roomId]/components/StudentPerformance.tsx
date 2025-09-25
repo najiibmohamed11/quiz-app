@@ -164,16 +164,16 @@ function StudentPerformance() {
                     <HoverCardTrigger asChild>
                       <TableHead key={question._id}>
                         <div
-                          className={`${question.questionType == "MCQ" ? "bg-blue-100 w-24 max-w-24" : question.questionType === "Short Answer" ? "bg-orange-100" : "bg-red-100 w-24 max-w-24"}   cursor-pointer  min-w-24 min-h-10  flex items-center justify-center rounded-sm flex-col mb-2`}
+                          className={`${question.questionType == "MCQ" ? "bg-blue-100 w-24 max-w-24" : question.questionType === "Short Answer" ? "bg-orange-100 max-w-24" : "bg-red-100 w-24 max-w-24"}    cursor-pointer  min-w-24 min-h-10  flex items-center justify-center rounded-sm flex-col mb-2`}
                         >
-                          <div className="w-full truncate px-2 text-center">
+                          <div className="w-full truncate px-2 text-center ">
                             {question.question}
                           </div>
                           <Eye size={12} />
                         </div>
                       </TableHead>
                     </HoverCardTrigger>
-                    <HoverCardContent className="w-86">
+                    <HoverCardContent className="w-86 break-words">
                       <div className="space-y-1">
                         <p className="text-sm">{question.question}</p>
                         {formatCorrectAnswer(question)}
@@ -198,12 +198,32 @@ function StudentPerformance() {
              
                     return (
                       <TableCell className="text-center" key={question._id}>
-                      <TableCell className=" bg-gray-200 rounded-md flex justify-center items-center">
+                    {question.questionType!="Short Answer"? 
+                     <div className="w-24 h-10  bg-gray-200 rounded-md flex justify-center items-center">
                         {formatStudentAnswers(
                           question,
                           answerOfThisQuestion?.answer,
                         )}
-                        </TableCell>
+                        </div>:
+                        <HoverCard >
+                        <HoverCardTrigger asChild >
+                        <div className="w-24 h-10   bg-gray-200 rounded-md flex justify-center items-center">
+                        <p className="w-full truncate px-2 text-center">
+                        {formatStudentAnswers(
+                          question,
+                          answerOfThisQuestion?.answer,
+                        )}
+                        </p>
+                        </div>
+                        </HoverCardTrigger>
+                         <HoverCardContent className="">
+                      <div className="space-y-1">
+                        <p className="text-sm">{answerOfThisQuestion?.answer}</p>
+                      </div>
+                    </HoverCardContent>
+                        </HoverCard>
+                        
+                        }
                       </TableCell>
                     );
                   })}
