@@ -3,6 +3,7 @@
 import CreateRoom from "./components/CreatRoom";
 import Profile from "../components/Profile";
 import RoomsList from "./components/RoomsList";
+import ErrorBoundary from "./components/ErrorBoundary";
 export default function Teacher() {
   return (
     <div className="max-w-6xl px-8 min-h-screen mx-auto ">

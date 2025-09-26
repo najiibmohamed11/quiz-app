@@ -15,11 +15,11 @@ export default defineSchema({
     answer:v.optional(v.string()),
     }).index("by_room",["roomId"]),
   rooms: defineTable({
-    duration: v.object({
-      hour: v.float64(),
-      minute: v.float64(),
-    }),
-    name: v.string(),
+      name: v.string(),
+    duration: v.number(),
+    status:v.union(v.literal("active"),v.literal("pause")),
+    remainingTime:v.number(),
+    expiresAt:v.optional(v.number()),
     teacher: v.optional(
       v.union(
         v.string(),

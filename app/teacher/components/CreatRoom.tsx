@@ -40,7 +40,11 @@ export default function CreateRoom() {
     }
     try {
       setIsloading(true);
-      const id = await mutateSomething({ name: name, duration: duration });
+      const hoursInMilliSecong=duration.hour*60*60*1000 //1h is equal to 3,600,000 milliseconds
+      const minutsInMilliSecong=duration.minute*60*1000
+
+      const durationInMillisecong=hoursInMilliSecong+minutsInMilliSecong
+      const id = await mutateSomething({ name: name, duration: durationInMillisecong });
       if (!id) {
         return;
       }
