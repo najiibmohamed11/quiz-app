@@ -15,6 +15,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import z from "zod";
+import Timer from "./components/Timer";
 
 const answerSchema = z
   .object({
@@ -42,19 +43,18 @@ function Quiz() {
     answer: undefined,
   });
 
-  const studentInfo = useQuery(api.student.getStudent, { studentId, roomId });
-  const questions = useQuery(api.question.getStudentsQuestions, { roomId });
+  const fullQuizData = useQuery(api.student.getFullQuizData, { studentId, roomId });
   const submitAnswer = useMutation(api.answers.submitAnswer);
   const navigator = useRouter();
-
-  if (studentInfo === undefined || !questions) {
+  const [isTimerEnd,setIsTimerEnd]=useState(false)
+  if (fullQuizData === undefined ) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         loading for student info....
       </div>
     );
   }
-  if (studentInfo === null || questions === null) {
+  if (fullQuizData === null) {
     return (
       <div className="flex flex-col justify-center items-center min-h-screen gap-5">
         <h1>opps something went wrong in url please </h1>
@@ -65,13 +65,30 @@ function Quiz() {
     );
   }
 
-  if (questions.length == 0) {
+  if (fullQuizData==="no questions") {
     return (
       <div className="flex justify-center items-center">
         there is no question in this room
       </div>
     );
   }
+  if (fullQuizData==="paused") {
+    return (
+      <div className="flex justify-center items-center">
+        wait until teacher starts the quiz
+      </div>
+    );
+  }
+  if (fullQuizData==="expired"||isTimerEnd) {
+    return (
+      <div className="flex justify-center items-center">
+          time of the quiz ended
+      </div>
+    );
+  }
+
+  const questions=fullQuizData.questions
+  const roomInfo=fullQuizData.roomInfo
 
   const handleNext = async () => {
     const result = answerSchema.safeParse(answer);
@@ -94,7 +111,6 @@ function Quiz() {
         return;
       }
       setCurrentQuestionIndex((prev) => prev + 1);
-
       setError("");
     } catch (e) {
       const errorMessage =
@@ -107,10 +123,13 @@ function Quiz() {
   return (
     <div className="flex justify-center items-center min-h-screen">
       <Card className="w-2xl ">
-        <CardHeader>
+        <CardHeader className="flex justify-between">
           <Badge>
             question {currentQuestionIndex + 1}/{questions.length}
           </Badge>
+          {
+         ( roomInfo.duration!=0&&roomInfo.expiresAt!=undefined)&&<Timer expiresAt={roomInfo.expiresAt} setIsTimerEnd={setIsTimerEnd}/>
+          }
         </CardHeader>
         <CardContent className="">
           <h1 className="text-xl font-bold break-words mb-6">

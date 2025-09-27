@@ -49,7 +49,7 @@ function Profile() {
   }
 
   if (!user) {
-    return;
+    return null;
   }
 
   const handleSignOut = async () => {

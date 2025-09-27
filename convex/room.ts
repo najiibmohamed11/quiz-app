@@ -5,7 +5,7 @@ import { ConvexError } from "convex/values";
 export const creatRoom = mutation({
   args: {
     name: v.string(),
-    duration: v.object({ hour: v.number(), minute: v.number() }),
+    duration: v.number(),
   },
   handler: async (ctx, args) => {
     const teacher = await ctx.auth.getUserIdentity();
@@ -25,9 +25,11 @@ export const creatRoom = mutation({
       teacher: teacher.subject,
       name: args.name,
       duration: args.duration,
+      status:"pause",
+      remainingTime:args.duration,
+      expiresAt:undefined
     });
     
-
     return roomId;
   },
 });
@@ -37,7 +39,7 @@ export const getRooms = query({
   handler: async (ctx) => {
     const user = await ctx.auth.getUserIdentity();
     if (!user?.subject) {
-     throw  new ConvexError("not authanticated");
+     return "not authenticated"
     }
     const rooms = await ctx.db
       .query("rooms")
@@ -76,4 +78,38 @@ export const FindRoom=query({
 
   }
   
+})
+
+
+export const changeRoomStatus=mutation({
+  args:{roomId:v.string()},
+  handler:async(ctx,args)=>{
+    const roomId=ctx.db.normalizeId("rooms",args.roomId)
+    if(!roomId){
+      throw new ConvexError("room is invalid one")
+    }
+    const room=await ctx.db.get(roomId);
+    if(!room){
+      throw new ConvexError("room is invalid one")
+    }
+    //activation the room when room have remaing time
+    if(room.status==="pause" && room.remainingTime){
+      const now= Date.now()
+      const expiresAt=now+room.remainingTime;
+      await ctx.db.patch(roomId,{expiresAt,status:"active"})
+    }
+    //pause when the toom is active and have expiaraton Date
+    else if(room.status==="active"&&room.expiresAt&&room.duration){
+      const now = Date.now();
+      const remainingTime=Math.max(0,room.expiresAt-now)
+     await ctx.db.patch(roomId,{expiresAt:undefined,status:"pause",remainingTime:remainingTime})
+    }
+    //if the room doesnt have timing thing
+    else if(!room.duration&&!room.remainingTime&&!room.expiresAt){
+      await ctx.db.patch(roomId,{status:room.status==="active"? "pause":"active"})
+    }else{
+      throw new ConvexError("you can't restart ended room")
+    }
+  }
+ 
 })

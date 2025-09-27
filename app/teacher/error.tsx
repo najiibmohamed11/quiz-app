@@ -6,23 +6,24 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 function Error({ error }: { error: Error & { digest?: string } }) {
-  const navigator = useRouter();
+  const navigator = useRouter(); // ✅ always runs, top-level
+
   if (error instanceof ConvexError) {
     return (
       <div className="flex justify-center items-center min-h-screen flex-col gap-4 text-2xl">
-        <h1>⚠️{error.data}</h1>{" "}
+        <h1>⚠️ {error.data}</h1>
         <Button onClick={() => navigator.push("/sign-in")}>sign in</Button>
       </div>
     );
   }
+
   return (
-    <div>
-      <div className="flex justify-center items-center min-h-screen flex-col">
-        <h1>⚠️an expected error hapened</h1>
-        <Button onClick={() => navigator.push("/")}>refresh</Button>
-      </div>
+    <div className="flex justify-center items-center min-h-screen flex-col">
+      <h1>⚠️ an unexpected error happened</h1>
+      <Button onClick={() => navigator.push("/")}>refresh</Button>
     </div>
   );
 }
 
 export default Error;
+
