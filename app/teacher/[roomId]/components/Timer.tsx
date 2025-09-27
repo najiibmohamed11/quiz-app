@@ -9,32 +9,30 @@ type TimerProp={
 
 
 function Timer({expiresAt,roomStatus,remainingTime}:TimerProp) {
-  const [timer, setTimer] = useState(0);
+  const [timer, setTimer] = useState(()=>expiresAt?Math.max(0,expiresAt-Date.now()):remainingTime??0);
 
   useEffect(()=>{
+    console.log("in db",remainingTime)
+    console.log("in actual one drived from expire",timer)
     if(!expiresAt||roomStatus==="pause"){
-      setTimer(remainingTime??0)
+      setTimer(remainingTime ?? 0)
       return
     }
-    if(!timer){
-      const now=Date.now()
-      const remainingTime=Math.max(0,expiresAt-now)
-      setTimer(remainingTime)
-    }
+    
 
    const id= setInterval(() => {
-     setTimer((prev)=>{
-        if(prev===0){
-          clearInterval(id)
-        }
-        return Math.max(0,prev-1000)
-      })
+    const now =Date.now();
+    const RemainingTime=Math.max(0,expiresAt-now)
+     setTimer(RemainingTime)
+     if(RemainingTime===0){
+      clearInterval(id);
+     }
     }, 1000);
     return ()=> clearInterval(id)
-  },[roomStatus])
+  },[roomStatus,expiresAt,remainingTime])
 
   const formatTime=(remainingTimeInMilliseconds:number)=>{
-    const remainingTimeInSeconds=Math.round(remainingTimeInMilliseconds/1000);
+    const remainingTimeInSeconds=Math.floor(remainingTimeInMilliseconds/1000);
     const hours=Math.floor(remainingTimeInSeconds/3600);
     const minutes=Math.floor((remainingTimeInSeconds%3600)/60);
     const second =Math.floor(remainingTimeInSeconds%60)  

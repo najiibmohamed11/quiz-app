@@ -49,3 +49,29 @@ export const getAllStudentsInRoom=query({
         return studentWithAnswers;
     }
 })
+
+
+export const getFullQuizData=query({
+    args:{studentId:v.string(),roomId:v.string()},
+    handler:async (ctx,args)=>{
+        const studentId =ctx.db.normalizeId("students",args.studentId)
+        const roomId =ctx.db.normalizeId("rooms",args.roomId)
+        if(!roomId||!studentId)return null
+
+        const studentInfo=await ctx.db.get(studentId)
+
+        const questions=await ctx.db.query("questions").withIndex("by_room",(question)=>{
+            return question.eq("roomId",roomId)
+        }).collect()
+
+        const roomInfo=await ctx.db.get(roomId)
+        if(!studentInfo||!roomInfo)return null
+        if(questions.length===0)return "no questions"
+        if(roomInfo.status==="pause")return "paused"
+        if(roomInfo.duration&&roomInfo.expiresAt){
+            const remainignTime=Math.max(0,roomInfo.expiresAt-Date.now())
+            if(remainignTime<=0)return "expired"
+        }
+        return {questions,roomInfo,studentInfo}
+    }
+})

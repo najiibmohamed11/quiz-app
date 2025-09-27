@@ -43,9 +43,9 @@ export const getRoomeQuestions=query({
         if(!roomId){
             return "invalid room id"
         }
+    
         const questions=ctx.db.query("questions").withIndex("by_room",(question)=>{
             return question.eq("roomId",roomId)
-
         }).collect()
         return questions;
     },
@@ -55,14 +55,16 @@ export const getRoomeQuestions=query({
 export const getStudentsQuestions=query({
     args:{roomId:v.string()},
     handler:async(ctx,args)=>{
-        const id=ctx.db.normalizeId('rooms',args.roomId)
-        if(!id){
+        const roomId=ctx.db.normalizeId('rooms',args.roomId)
+        if(!roomId){
             return null
         }
+        const room=await ctx.db.get(roomId)
+        if(!room) return null
+        if (room.status==="pause") return 
         const questions=ctx.db.query("questions").withIndex("by_room",(question)=>{
-            return question.eq("roomId",id)
+            return question.eq("roomId",roomId)
         }).collect()
-        console.log("get called")
         return questions;
     }
 })
