@@ -52,19 +52,3 @@ export const getRoomeQuestions=query({
 
 })
 
-export const getStudentsQuestions=query({
-    args:{roomId:v.string()},
-    handler:async(ctx,args)=>{
-        const roomId=ctx.db.normalizeId('rooms',args.roomId)
-        if(!roomId){
-            return null
-        }
-        const room=await ctx.db.get(roomId)
-        if(!room) return null
-        if (room.status==="pause") return 
-        const questions=ctx.db.query("questions").withIndex("by_room",(question)=>{
-            return question.eq("roomId",roomId)
-        }).collect()
-        return questions;
-    }
-})

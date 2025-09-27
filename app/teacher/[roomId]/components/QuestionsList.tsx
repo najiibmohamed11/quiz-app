@@ -46,7 +46,6 @@ function QuestionsList() {
       </Card>
     );
   }
-  console.log(questions);
   return (
     <div className="flex flex-col gap-4 mb-4">
       {questions.map((question, index) => {

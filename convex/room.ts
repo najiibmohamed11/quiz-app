@@ -39,7 +39,7 @@ export const getRooms = query({
   handler: async (ctx) => {
     const user = await ctx.auth.getUserIdentity();
     if (!user?.subject) {
-     return "not authanticated"
+     return "not authenticated"
     }
     const rooms = await ctx.db
       .query("rooms")

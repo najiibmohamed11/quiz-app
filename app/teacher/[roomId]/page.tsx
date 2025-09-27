@@ -6,7 +6,7 @@ import { ShieldQuestionMark, MoveLeft, User, Copy, Check } from "lucide-react";
 import StudentPerformance from "./components/StudentPerformance";
 import QuestionsList from "./components/QuestionsList";
 import AddQuestion from "./components/AddQuestion";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";

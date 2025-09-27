@@ -59,6 +59,8 @@ export const getFullQuizData=query({
         if(!roomId||!studentId)return null
 
         const studentInfo=await ctx.db.get(studentId)
+        if (!studentInfo) return null
+        if (studentInfo.roomId !== roomId) return null
 
         const questions=await ctx.db.query("questions").withIndex("by_room",(question)=>{
             return question.eq("roomId",roomId)

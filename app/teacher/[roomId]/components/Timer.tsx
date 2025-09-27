@@ -12,8 +12,7 @@ function Timer({expiresAt,roomStatus,remainingTime}:TimerProp) {
   const [timer, setTimer] = useState(()=>expiresAt?Math.max(0,expiresAt-Date.now()):remainingTime??0);
 
   useEffect(()=>{
-    console.log("in db",remainingTime)
-    console.log("in actual one drived from expire",timer)
+    
     if(!expiresAt||roomStatus==="pause"){
       setTimer(remainingTime ?? 0)
       return
