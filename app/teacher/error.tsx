@@ -26,4 +26,3 @@ function Error({ error }: { error: Error & { digest?: string } }) {
 }
 
 export default Error;
-

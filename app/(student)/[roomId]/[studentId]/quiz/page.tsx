@@ -43,11 +43,14 @@ function Quiz() {
     answer: undefined,
   });
 
-  const fullQuizData = useQuery(api.student.getFullQuizData, { studentId, roomId });
+  const fullQuizData = useQuery(api.student.getFullQuizData, {
+    studentId,
+    roomId,
+  });
   const submitAnswer = useMutation(api.answers.submitAnswer);
   const navigator = useRouter();
-  const [isTimerEnd,setIsTimerEnd]=useState(false)
-  if (fullQuizData === undefined ) {
+  const [isTimerEnd, setIsTimerEnd] = useState(false);
+  if (fullQuizData === undefined) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         loading for student info....
@@ -65,30 +68,30 @@ function Quiz() {
     );
   }
 
-  if (fullQuizData==="no questions") {
+  if (fullQuizData === "no questions") {
     return (
       <div className="flex justify-center items-center">
         there is no question in this room
       </div>
     );
   }
-  if (fullQuizData==="paused") {
+  if (fullQuizData === "paused") {
     return (
       <div className="flex justify-center items-center">
         wait until teacher starts the quiz
       </div>
     );
   }
-  if (fullQuizData==="expired"||isTimerEnd) {
+  if (fullQuizData === "expired" || isTimerEnd) {
     return (
       <div className="flex justify-center items-center">
-          time of the quiz ended
+        time of the quiz ended
       </div>
     );
   }
 
-  const questions=fullQuizData.questions
-  const roomInfo=fullQuizData.roomInfo
+  const questions = fullQuizData.questions;
+  const roomInfo = fullQuizData.roomInfo;
 
   const handleNext = async () => {
     const result = answerSchema.safeParse(answer);
@@ -127,9 +130,12 @@ function Quiz() {
           <Badge>
             question {currentQuestionIndex + 1}/{questions.length}
           </Badge>
-          {
-         ( roomInfo.duration!=0&&roomInfo.expiresAt!=undefined)&&<Timer expiresAt={roomInfo.expiresAt} setIsTimerEnd={setIsTimerEnd}/>
-          }
+          {roomInfo.duration != 0 && roomInfo.expiresAt != undefined && (
+            <Timer
+              expiresAt={roomInfo.expiresAt}
+              setIsTimerEnd={setIsTimerEnd}
+            />
+          )}
         </CardHeader>
         <CardContent className="">
           <h1 className="text-xl font-bold break-words mb-6">

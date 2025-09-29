@@ -6,7 +6,7 @@ import { ShieldQuestionMark, MoveLeft, User, Copy, Check } from "lucide-react";
 import StudentPerformance from "./components/StudentPerformance";
 import QuestionsList from "./components/QuestionsList";
 import AddQuestion from "./components/AddQuestion";
-import {  useState } from "react";
+import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -14,7 +14,7 @@ import Timer from "./components/Timer";
 type tab = "answers" | "questions" | "settings";
 export default function Room() {
   const [activeTab, setActiveTab] = useState<tab>("answers");
-  const changeRoomStatus=useMutation(api.room.changeRoomStatus)
+  const changeRoomStatus = useMutation(api.room.changeRoomStatus);
   const rout = useRouter();
   const { roomId } = useParams();
   const roomDetails = useQuery(api.room.getRoomDetails, {
@@ -22,8 +22,6 @@ export default function Room() {
   });
 
   const [isCopied, setIscopied] = useState(false);
-
-
 
   if (typeof roomDetails === "string") {
     return <div>this room is not valid please go back</div>;
@@ -47,15 +45,14 @@ export default function Room() {
     }
   };
 
-  const handleRoomStatusChange=async()=>{
-    try{
-      await changeRoomStatus({roomId: roomId as string})
-    }catch(e){
-      console.log(e)
+  const handleRoomStatusChange = async () => {
+    try {
+      await changeRoomStatus({ roomId: roomId as string });
+    } catch (e) {
+      console.log(e);
     }
-  }
+  };
 
-  
   return (
     <div className=" max-w-6xl  min-h-screen mx-auto">
       <header className="flex gap-3 mt-8  flex-col ">
@@ -100,9 +97,17 @@ export default function Room() {
               {isCopied ? <Check /> : <Copy />}
             </Button>
           </div>
-          <Timer remainingTime={roomDetails.roomInfo.remainingTime} roomStatus={roomDetails.roomInfo.status} expiresAt={roomDetails.roomInfo.expiresAt}/>
-          <Button className="w-60 mr-9" variant={`${roomDetails.roomInfo.status==="active"? 'outline':'default'}`} onClick={handleRoomStatusChange}>
-            {roomDetails.roomInfo.status==="active"? 'pause':'active'}
+          <Timer
+            remainingTime={roomDetails.roomInfo.remainingTime}
+            roomStatus={roomDetails.roomInfo.status}
+            expiresAt={roomDetails.roomInfo.expiresAt}
+          />
+          <Button
+            className="w-60 mr-9"
+            variant={`${roomDetails.roomInfo.status === "active" ? "outline" : "default"}`}
+            onClick={handleRoomStatusChange}
+          >
+            {roomDetails.roomInfo.status === "active" ? "pause" : "active"}
           </Button>
         </div>
       </Card>

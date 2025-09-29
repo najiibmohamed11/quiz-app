@@ -167,11 +167,11 @@ function StudentPerformance() {
 
   return (
     <Card>
-   <CardHeader >
+      <CardHeader>
         <div className="flex justify-between ">
-        <h1 className="font-medium">Student Performance</h1>
-        <LockRoom/>
-        {/* <Button id="restrict">restrict Particpents</Button> */}
+          <h1 className="font-medium">Student Performance</h1>
+          <LockRoom />
+          {/* <Button id="restrict">restrict Particpents</Button> */}
         </div>
       </CardHeader>
       <CardContent>
