@@ -17,6 +17,8 @@ import { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import { CheckCircle, CircleX, Eye } from "lucide-react";
 import { useParams } from "next/navigation";
+import ImportStudents from "./ImportStudents";
+import LockRoom from "./LockRoomModal";
 
 type question = {
   _id: Id<"questions">;
@@ -162,10 +164,15 @@ function StudentPerformance() {
       );
     }
   };
+
   return (
     <Card>
-      <CardHeader>
+   <CardHeader >
+        <div className="flex justify-between ">
         <h1 className="font-medium">Student Performance</h1>
+        <LockRoom/>
+        {/* <Button id="restrict">restrict Particpents</Button> */}
+        </div>
       </CardHeader>
       <CardContent>
         <Table>
