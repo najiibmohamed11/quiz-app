@@ -41,13 +41,15 @@ type answers = {
   questionId: Id<"questions">;
 };
 
-interface studentPerformanceProps{
-  restriction:{
-    otherColumn?: string | undefined;
-    uniqueColumn: string;
-} | undefined
+interface studentPerformanceProps {
+  restriction:
+    | {
+        otherColumn?: string | undefined;
+        uniqueColumn: string;
+      }
+    | undefined;
 }
-function StudentPerformance({restriction}:studentPerformanceProps) {
+function StudentPerformance({ restriction }: studentPerformanceProps) {
   const { roomId } = useParams();
   const questions = useQuery(api.question.getRoomeQuestions, {
     roomId: roomId as string,
@@ -178,9 +180,14 @@ function StudentPerformance({restriction}:studentPerformanceProps) {
       <CardHeader>
         <div className="flex justify-between ">
           <h1 className="font-medium">Student Performance</h1>
-          {
-         !restriction? <LockRoom />:<UnlockQuiz roomId={roomId as string} studentsLength={students.length}/>
-          }
+          {!restriction ? (
+            <LockRoom />
+          ) : (
+            <UnlockQuiz
+              roomId={roomId as string}
+              studentsLength={students.length}
+            />
+          )}
           {/* <Button id="restrict">restrict Particpents</Button> */}
         </div>
       </CardHeader>
@@ -188,18 +195,16 @@ function StudentPerformance({restriction}:studentPerformanceProps) {
         <Table>
           <TableHeader className="p-20">
             <TableRow>
-              {
-              !restriction?
-              <TableHead>Name</TableHead>:
-              <>
-              <TableCell>{restriction.uniqueColumn}</TableCell>
-              {restriction.otherColumn&&
-              <TableCell>{restriction.otherColumn}</TableCell>
-              }
-              </>
-
-              
-            }
+              {!restriction ? (
+                <TableHead>Name</TableHead>
+              ) : (
+                <>
+                  <TableCell>{restriction.uniqueColumn}</TableCell>
+                  {restriction.otherColumn && (
+                    <TableCell>{restriction.otherColumn}</TableCell>
+                  )}
+                </>
+              )}
               <TableHead>Score</TableHead>
               {questions.map((question) => {
                 return (
@@ -231,18 +236,18 @@ function StudentPerformance({restriction}:studentPerformanceProps) {
             {students.map((student) => {
               return (
                 <TableRow key={student._id}>
-              {
-              !restriction?
-              <TableHead>{student.name||"......."}</TableHead>:
-              <>
-              <TableCell>{student.uniqueId||".........."}</TableCell>
-              {restriction.otherColumn&&
-              <TableCell>{student.secondaryIdentifier||"------"}</TableCell>
-              }
-              </>
-
-              
-            }
+                  {!restriction ? (
+                    <TableHead>{student.name || "......."}</TableHead>
+                  ) : (
+                    <>
+                      <TableCell>{student.uniqueId || ".........."}</TableCell>
+                      {restriction.otherColumn && (
+                        <TableCell>
+                          {student.secondaryIdentifier || "------"}
+                        </TableCell>
+                      )}
+                    </>
+                  )}
                   <TableCell>
                     {calculateStudentsScore(student.answers)}
                   </TableCell>

@@ -84,18 +84,22 @@ export const getFullQuizData = query({
   },
 });
 
-
-export const findStudentInLockedQuiz=query({
-  args:{uniqueId:v.string(),uniqueColumn:v.string(),roomId:v.string()},
-  handler:async(ctx,args)=>{
-    const roomId=ctx.db.normalizeId("rooms",args.roomId)
-    if(!roomId){
-      throw new ConvexError("invalid room id")
+export const findStudentInLockedQuiz = query({
+  args: { uniqueId: v.string(), uniqueColumn: v.string(), roomId: v.string() },
+  handler: async (ctx, args) => {
+    const roomId = ctx.db.normalizeId("rooms", args.roomId);
+    if (!roomId) {
+      throw new ConvexError("invalid room id");
     }
-   const student =await ctx.db.query("students").withIndex("by_uniqueId",(student)=>student.eq("uniqueId",args.uniqueId).eq("roomId",roomId)).unique()
-  if(!student ){
-    return 'student not found'
-  }
-  return student._id
-  }
-})
+    const student = await ctx.db
+      .query("students")
+      .withIndex("by_uniqueId", (student) =>
+        student.eq("uniqueId", args.uniqueId).eq("roomId", roomId),
+      )
+      .unique();
+    if (!student) {
+      return "student not found";
+    }
+    return student._id;
+  },
+});

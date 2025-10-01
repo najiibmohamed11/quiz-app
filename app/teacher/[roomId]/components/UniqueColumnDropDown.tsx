@@ -8,7 +8,15 @@ import {
 import { ArrowDown, Columns2 } from "lucide-react";
 import React, { useState } from "react";
 
-export const UniqueColumnDropDown = ({ unique,defaultUniqueColumn,setPickedUniqueColumn }: { unique: string[],defaultUniqueColumn:string,setPickedUniqueColumn:(uniqueColumn:string)=>void }) => {
+export const UniqueColumnDropDown = ({
+  unique,
+  defaultUniqueColumn,
+  setPickedUniqueColumn,
+}: {
+  unique: string[];
+  defaultUniqueColumn: string;
+  setPickedUniqueColumn: (uniqueColumn: string) => void;
+}) => {
   if (unique.length == 0) {
     return <p>no unique column is in your table</p>;
   }
@@ -23,7 +31,7 @@ export const UniqueColumnDropDown = ({ unique,defaultUniqueColumn,setPickedUniqu
         <DropdownMenuContent align="end" className="">
           {unique.map((column, index) => (
             <DropdownMenuItem
-            key={index}
+              key={index}
               className=""
               onClick={() => setPickedUniqueColumn(unique[index])}
             >

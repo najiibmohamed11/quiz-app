@@ -51,22 +51,21 @@ export const getRooms = query({
   },
 });
 
-export const getRoom=query({
-  args:{roomId:v.string()},
-  handler:async(ctx,args)=>{
-    const roomId=ctx.db.normalizeId("rooms",args.roomId);
-    if(!roomId){
-      return 'invalid room go back'
+export const getRoom = query({
+  args: { roomId: v.string() },
+  handler: async (ctx, args) => {
+    const roomId = ctx.db.normalizeId("rooms", args.roomId);
+    if (!roomId) {
+      return "invalid room go back";
     }
-   const roomInfo= await ctx.db.get(roomId)
-   if(!roomInfo){
-    return "room doesn't exsist"
-   }
+    const roomInfo = await ctx.db.get(roomId);
+    if (!roomInfo) {
+      return "room doesn't exsist";
+    }
 
-   return roomInfo;
-
-  }
-})
+    return roomInfo;
+  },
+});
 
 export const getRoomDetails = query({
   args: { roomId: v.string() },
@@ -147,54 +146,78 @@ export const changeRoomStatus = mutation({
   },
 });
 
-
-
-export const lockRoom=mutation({
-  args:{students:v.array(v.record(v.string(),v.string())),uniqueColumnForSearch:v.string(),roomId:v.string(),columns:v.array(v.string())},
-  handler:async (ctx,{columns,roomId,students,uniqueColumnForSearch})=>{
-    const valiRoomId=ctx.db.normalizeId("rooms",roomId);
-    if(!valiRoomId){
-      return `invalid room id`
+export const lockRoom = mutation({
+  args: {
+    students: v.array(v.record(v.string(), v.string())),
+    uniqueColumnForSearch: v.string(),
+    roomId: v.string(),
+    columns: v.array(v.string()),
+  },
+  handler: async (
+    ctx,
+    { columns, roomId, students, uniqueColumnForSearch },
+  ) => {
+    const valiRoomId = ctx.db.normalizeId("rooms", roomId);
+    if (!valiRoomId) {
+      return `invalid room id`;
     }
 
-    await deleteAllStudentsInRoom(valiRoomId,ctx,)
-    const restrictingRoom= ctx.db.patch(valiRoomId,{restriction:{uniqueColumn:uniqueColumnForSearch,otherColumn:columns.length>1?columns[0]!==uniqueColumnForSearch?columns[0]:columns[1]:undefined}})
-   const studentsPromis= students.map((row)=>{
-     const isRowValid=columns.every((element)=>element in row)
-     const secondaryIdentifier=columns[0]!=uniqueColumnForSearch?columns[0]:columns[1]
-     if(!isRowValid){
-      return  Promise.reject("columns and rows are not matching")
-     }
-     return ctx.db.insert("students",{roomId:valiRoomId,completedQuestions:0 ,uniqueId:row[uniqueColumnForSearch].toLowerCase(),secondaryIdentifier:row[secondaryIdentifier]})
-
-    })
-
-   await Promise.all([...studentsPromis,restrictingRoom])
-  }
-})
-
-
-export const unlockRoom=mutation({
-  args:{roomId:v.string()},
-  handler:async(ctx,args)=>{
-    const roomId=ctx.db.normalizeId("rooms",args.roomId)
-    if(!roomId){
-      return "this room is not valid room"
-    }
-
-    await deleteAllStudentsInRoom(roomId,ctx,)
-
-    await ctx.db.patch(roomId,{restriction:undefined})
-  }
-})
-
-
-const deleteAllStudentsInRoom=async(roomId:Id<"rooms">,ctx:MutationCtx)=>{
-  const studentsInRoom=await ctx.db.query("students").withIndex("by_room",(student)=>student.eq("roomId",roomId)).collect()
-    if(studentsInRoom.length>0){
-      for(const student of studentsInRoom){
-        await ctx.db.delete(student._id)
+    await deleteAllStudentsInRoom(valiRoomId, ctx);
+    const restrictingRoom = ctx.db.patch(valiRoomId, {
+      restriction: {
+        uniqueColumn: uniqueColumnForSearch,
+        otherColumn:
+          columns.length > 1
+            ? columns[0] !== uniqueColumnForSearch
+              ? columns[0]
+              : columns[1]
+            : undefined,
+      },
+    });
+    const studentsPromis = students.map((row) => {
+      const isRowValid = columns.every((element) => element in row);
+      const secondaryIdentifier =
+        columns[0] != uniqueColumnForSearch ? columns[0] : columns[1];
+      if (!isRowValid) {
+        return Promise.reject("columns and rows are not matching");
       }
+      return ctx.db.insert("students", {
+        roomId: valiRoomId,
+        completedQuestions: 0,
+        uniqueId: row[uniqueColumnForSearch].toLowerCase(),
+        secondaryIdentifier: row[secondaryIdentifier],
+      });
+    });
+
+    await Promise.all([...studentsPromis, restrictingRoom]);
+  },
+});
+
+export const unlockRoom = mutation({
+  args: { roomId: v.string() },
+  handler: async (ctx, args) => {
+    const roomId = ctx.db.normalizeId("rooms", args.roomId);
+    if (!roomId) {
+      return "this room is not valid room";
     }
 
-}
+    await deleteAllStudentsInRoom(roomId, ctx);
+
+    await ctx.db.patch(roomId, { restriction: undefined });
+  },
+});
+
+const deleteAllStudentsInRoom = async (
+  roomId: Id<"rooms">,
+  ctx: MutationCtx,
+) => {
+  const studentsInRoom = await ctx.db
+    .query("students")
+    .withIndex("by_room", (student) => student.eq("roomId", roomId))
+    .collect();
+  if (studentsInRoom.length > 0) {
+    for (const student of studentsInRoom) {
+      await ctx.db.delete(student._id);
+    }
+  }
+};

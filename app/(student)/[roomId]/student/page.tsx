@@ -18,41 +18,45 @@ function StudentInfo() {
   const creatStudent = useMutation(api.student.creatStudent);
   const { roomId } = useParams();
   const navigator = useRouter();
-  const roomInfo=useQuery(api.room.getRoom,{roomId:roomId as string})
+  const roomInfo = useQuery(api.room.getRoom, { roomId: roomId as string });
   const convex = useConvex();
 
-
-
-  if(!roomInfo){
-   return <div>invalid room ..</div>
-  }
- 
-  if(typeof roomInfo==="string"){
-    return <div>{roomInfo}</div>
+  if (!roomInfo) {
+    return <div>invalid room ..</div>;
   }
 
-    const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  if (typeof roomInfo === "string") {
+    return <div>{roomInfo}</div>;
+  }
+
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isLoading) return;
     setIsLoading(true);
-    setError("")
-    if(roomInfo.restriction){
-      try{
-        const studenId=await convex.query(api.student.findStudentInLockedQuiz,{uniqueId:studentName,uniqueColumn:roomInfo.restriction.uniqueColumn,roomId:roomId as string})
-        if(studenId==="student not found"){
-          setError(studenId)
-          return
+    setError("");
+    if (roomInfo.restriction) {
+      try {
+        const studenId = await convex.query(
+          api.student.findStudentInLockedQuiz,
+          {
+            uniqueId: studentName,
+            uniqueColumn: roomInfo.restriction.uniqueColumn,
+            roomId: roomId as string,
+          },
+        );
+        if (studenId === "student not found") {
+          setError(studenId);
+          return;
         }
-        navigator.push(`/${roomId}/${studenId}/quiz`)
-      }
-      catch(e){
-        console.log(e)
- const errorMessage =
-        e instanceof ConvexError ? e.data : "some thing went wrong";
-        setError(errorMessage)
-      } finally{
-        setIsLoading(false)
-        return
+        navigator.push(`/${roomId}/${studenId}/quiz`);
+      } catch (e) {
+        console.log(e);
+        const errorMessage =
+          e instanceof ConvexError ? e.data : "some thing went wrong";
+        setError(errorMessage);
+      } finally {
+        setIsLoading(false);
+        return;
       }
     }
     const result = formSchema.safeParse(studentName);
@@ -91,7 +95,7 @@ function StudentInfo() {
               value={studentName}
               id="roomName"
               type="text"
-              placeholder={`Enter ${roomInfo?.restriction?roomInfo.restriction.uniqueColumn:'Name'}`}
+              placeholder={`Enter ${roomInfo?.restriction ? roomInfo.restriction.uniqueColumn : "Name"}`}
               onChange={(e) => setStudentName(e.target.value)}
             />
             <p className="text-red-700">{error && error}</p>

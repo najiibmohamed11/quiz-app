@@ -126,7 +126,9 @@ export default function Room() {
             {activeTab === "questions" && <AddQuestion />}
           </div>
           <TabsContent value="answers">
-            <StudentPerformance  restriction={roomDetails.roomInfo.restriction}/>
+            <StudentPerformance
+              restriction={roomDetails.roomInfo.restriction}
+            />
           </TabsContent>
           <TabsContent value="questions">
             <QuestionsList />
