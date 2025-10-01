@@ -5,8 +5,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ArrowDown, Columns2 } from "lucide-react";
-import React, { useState } from "react";
+import { ArrowDown } from "lucide-react";
+import React from "react";
 
 export const UniqueColumnDropDown = ({
   unique,

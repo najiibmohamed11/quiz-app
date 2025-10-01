@@ -17,7 +17,6 @@ import { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import { CheckCircle, CircleX, Eye } from "lucide-react";
 import { useParams } from "next/navigation";
-import ImportStudents from "./ImportStudents";
 import LockRoom from "./LockRoomModal";
 import UnlockQuiz from "./UnlockQuiz";
 

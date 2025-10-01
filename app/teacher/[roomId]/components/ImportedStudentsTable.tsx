@@ -2,7 +2,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -10,7 +9,7 @@ import {
 } from "@/components/ui/table";
 import React from "react";
 
-const ImportedStudentsTable = ({ rows }: { rows: Record<string, any>[] }) => {
+const ImportedStudentsTable = ({ rows }: { rows: Record<string, string>[] }) => {
   if (!rows) return null;
   const columns = Object.keys(rows[0]);
   return (

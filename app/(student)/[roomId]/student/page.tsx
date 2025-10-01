@@ -8,7 +8,6 @@ import { ConvexError } from "convex/values";
 import { useParams, useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
 import z from "zod";
-import { Id } from "@/convex/_generated/dataModel";
 const formSchema = z.string().min(1, "please enter your name");
 
 function StudentInfo() {

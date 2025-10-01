@@ -39,17 +39,17 @@ const ImportStudents = () => {
       }
 
       //holds every column and all his value as array of object and allows us to check uniqueness of column
-      const allColumnsData: Record<string, any[]> = {};
+      const allColumnsData: Record<string, string[]> = {};
       const arrangedRows = rows.map((row) => {
-        const obj: Record<string, any> = {};
+        const obj: Record<string, string> = {};
         columns.forEach((column, index) => {
-          obj[column] = row[index].toString().toLowerCase().trim();
+          obj[column] = row[index].toLowerCase().trim();
           if (!allColumnsData[column]) {
             allColumnsData[column] = [];
           }
           //  console.log(uniqueNess)
           allColumnsData[column].push(
-            row[index].toString().toLowerCase().trim(),
+            row[index].toLowerCase().trim(),
           );
         });
         return obj;
@@ -75,9 +75,9 @@ const ImportStudents = () => {
 
   const getUniqueColumns = (
     columns: string[],
-    allColumnsData: Record<string, any[]>,
+    allColumnsData: Record<string, string[]>,
   ) => {
-    let uniqueColumns: string[] = [];
+    const uniqueColumns: string[] = [];
     columns.forEach((column) => {
       const uniqueData = [...new Set(allColumnsData[column])];
       if (uniqueData.length === allColumnsData[column].length) {
@@ -88,7 +88,7 @@ const ImportStudents = () => {
     return uniqueColumns;
   };
 
-  const validateTable = (columns: string[], rows: any[]) => {
+  const validateTable = (columns: string[], rows: string[][]) => {
     if ([...new Set(columns)].length !== columns.length) {
       return "you have same column names in the table ";
     }
@@ -121,11 +121,12 @@ const ImportStudents = () => {
     const workbook = XLSX.read(data, { type: "array" });
     const sheetName = workbook.SheetNames[0];
     const sheet = workbook.Sheets[sheetName];
-    return XLSX.utils.sheet_to_json(sheet, {
+    const rows=XLSX.utils.sheet_to_json(sheet, {
       header: 1,
       defval: "",
       blankrows: false,
-    }) as any[][];
+    }) as unknown[][];
+    return rows.map(row=>row.map(cell=>String(cell??"")))
   };
   const handleFileImport = () => {
     if (!fileInputRef.current) {
