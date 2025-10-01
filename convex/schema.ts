@@ -47,7 +47,7 @@ export default defineSchema({
     secondaryIdentifier:v.optional(v.string()), 
     completedQuestions: v.number(),
   }).index("by_room", ["roomId"])
-  .index("by_uniqueId",["uniqueId"]),
+  .index("by_uniqueId",["uniqueId","roomId"]),
   answers: defineTable({
     studentId: v.id("students"),
     roomId: v.id("rooms"),

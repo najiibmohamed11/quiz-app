@@ -44,12 +44,12 @@ const ImportStudents = () => {
       const arrangedRows = rows.map((row) => {
         const obj: Record<string, any> = {};
         columns.forEach((column, index) => {
-          obj[column] = row[index].toString().toLowerCase();
+          obj[column] = row[index].toString().toLowerCase().trim();
           if (!allColumnsData[column]) {
             allColumnsData[column] = [];
           }
           //  console.log(uniqueNess)
-          allColumnsData[column].push(row[index].toLowerCase());
+          allColumnsData[column].push(row[index].toString().toLowerCase().trim());
         });
         return obj;
       });

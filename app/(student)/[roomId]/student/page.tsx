@@ -38,7 +38,7 @@ function StudentInfo() {
     setError("")
     if(roomInfo.restriction){
       try{
-        const studenId=await convex.query(api.student.findStudentInLockedQuiz,{uniqueId:studentName,uniqueColumn:roomInfo.restriction.uniqueColumn})
+        const studenId=await convex.query(api.student.findStudentInLockedQuiz,{uniqueId:studentName,uniqueColumn:roomInfo.restriction.uniqueColumn,roomId:roomId as string})
         if(studenId==="student not found"){
           setError(studenId)
           return
@@ -47,7 +47,9 @@ function StudentInfo() {
       }
       catch(e){
         console.log(e)
-        setError("some thing went wrong")
+ const errorMessage =
+        e instanceof ConvexError ? e.data : "some thing went wrong";
+        setError(errorMessage)
       } finally{
         setIsLoading(false)
         return

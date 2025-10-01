@@ -1,4 +1,4 @@
-import { mutation, query } from "./_generated/server";
+import { mutation, MutationCtx, query } from "./_generated/server";
 import { v } from "convex/values";
 import { ConvexError } from "convex/values";
 import { Id } from "./_generated/dataModel";
@@ -156,6 +156,8 @@ export const lockRoom=mutation({
     if(!valiRoomId){
       return `invalid room id`
     }
+
+    await deleteAllStudentsInRoom(valiRoomId,ctx,)
     const restrictingRoom= ctx.db.patch(valiRoomId,{restriction:{uniqueColumn:uniqueColumnForSearch,otherColumn:columns.length>1?columns[0]!==uniqueColumnForSearch?columns[0]:columns[1]:undefined}})
    const studentsPromis= students.map((row)=>{
      const isRowValid=columns.every((element)=>element in row)
@@ -170,3 +172,29 @@ export const lockRoom=mutation({
    await Promise.all([...studentsPromis,restrictingRoom])
   }
 })
+
+
+export const unlockRoom=mutation({
+  args:{roomId:v.string()},
+  handler:async(ctx,args)=>{
+    const roomId=ctx.db.normalizeId("rooms",args.roomId)
+    if(!roomId){
+      return "this room is not valid room"
+    }
+
+    await deleteAllStudentsInRoom(roomId,ctx,)
+
+    await ctx.db.patch(roomId,{restriction:undefined})
+  }
+})
+
+
+const deleteAllStudentsInRoom=async(roomId:Id<"rooms">,ctx:MutationCtx)=>{
+  const studentsInRoom=await ctx.db.query("students").withIndex("by_room",(student)=>student.eq("roomId",roomId)).collect()
+    if(studentsInRoom.length>0){
+      for(const student of studentsInRoom){
+        await ctx.db.delete(student._id)
+      }
+    }
+
+}

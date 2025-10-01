@@ -179,7 +179,7 @@ function StudentPerformance({restriction}:studentPerformanceProps) {
         <div className="flex justify-between ">
           <h1 className="font-medium">Student Performance</h1>
           {
-         !restriction? <LockRoom />:<UnlockQuiz/>
+         !restriction? <LockRoom />:<UnlockQuiz roomId={roomId as string} studentsLength={students.length}/>
           }
           {/* <Button id="restrict">restrict Particpents</Button> */}
         </div>
@@ -232,10 +232,10 @@ function StudentPerformance({restriction}:studentPerformanceProps) {
               return (
                 <TableRow key={student._id}>
               {
-              !restriction||!student.uniqueId?
-              <TableHead>{student.name}</TableHead>:
+              !restriction?
+              <TableHead>{student.name||"......."}</TableHead>:
               <>
-              <TableCell>{student.uniqueId}</TableCell>
+              <TableCell>{student.uniqueId||".........."}</TableCell>
               {restriction.otherColumn&&
               <TableCell>{student.secondaryIdentifier||"------"}</TableCell>
               }
