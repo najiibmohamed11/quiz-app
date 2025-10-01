@@ -23,6 +23,7 @@ export const UniqueColumnDropDown = ({ unique,defaultUniqueColumn,setPickedUniqu
         <DropdownMenuContent align="end" className="">
           {unique.map((column, index) => (
             <DropdownMenuItem
+            key={index}
               className=""
               onClick={() => setPickedUniqueColumn(unique[index])}
             >

@@ -83,3 +83,15 @@ export const getFullQuizData = query({
     return { questions, roomInfo, studentInfo };
   },
 });
+
+
+export const findStudentInLockedQuiz=query({
+  args:{uniqueId:v.string(),uniqueColumn:v.string()},
+  handler:async(ctx,args)=>{
+   const student =await ctx.db.query("students").withIndex("by_uniqueId",(student)=>student.eq("uniqueId",args.uniqueId)).unique()
+  if(!student ){
+    return 'student not found'
+  }
+  return student._id
+  }
+})

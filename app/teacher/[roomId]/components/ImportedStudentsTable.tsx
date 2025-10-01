@@ -19,17 +19,17 @@ const ImportedStudentsTable = ({ rows }: { rows: Record<string, any>[] }) => {
         
         <TableHeader>
           <TableRow>
-            {columns.map((column) => (
-              <TableHead>{column}</TableHead>
+            {columns.map((column,index) => (
+              <TableHead key={index}>{column}</TableHead>
             ))}
           </TableRow>
         </TableHeader>
         <TableBody>
-          {rows.map((row) => {
+          {rows.map((row,rowIndex) => {
             return (
-              <TableRow>
-                {columns.map((column) => {
-                  return <TableCell>{row[column] || ".........."}</TableCell>;
+              <TableRow key={rowIndex}>
+                {columns.map((column,columnIndex) => {
+                  return <TableCell key={columnIndex}>{row[column] || ".........."}</TableCell>;
                 })}
               </TableRow>
             );

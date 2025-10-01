@@ -20,6 +20,7 @@ export default defineSchema({
     status: v.union(v.literal("active"), v.literal("pause")),
     remainingTime: v.number(),
     expiresAt: v.optional(v.number()),
+    restriction:v.optional(v.object({uniqueColumn:v.string(),otherColumn:v.optional(v.string())})),
     teacher: v.optional(
       v.union(
         v.string(),
@@ -40,10 +41,13 @@ export default defineSchema({
     ),
   }),
   students: defineTable({
-    name: v.string(),
+    name: v.optional(v.string()),
     roomId: v.id("rooms"),
+    uniqueId:v.optional(v.string()),
+    secondaryIdentifier:v.optional(v.string()), 
     completedQuestions: v.number(),
-  }).index("by_room", ["roomId"]),
+  }).index("by_room", ["roomId"])
+  .index("by_uniqueId",["uniqueId"]),
   answers: defineTable({
     studentId: v.id("students"),
     roomId: v.id("rooms"),

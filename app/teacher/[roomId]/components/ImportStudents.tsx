@@ -5,22 +5,29 @@ import React, { ChangeEvent, useRef, useState } from "react";
 import * as XLSX from "xlsx";
 import ImportedStudentsTable from "./ImportedStudentsTable";
 import { UniqueColumnDropDown } from "./UniqueColumnDropDown";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { useParams } from "next/navigation";
 
 
 const ImportStudents = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [importedData, setImportedData] = useState<
-    Record<string, any>[] | null
+    Record<string, string>[] | null
   >(null);
   const [error, setError] = useState("");
   const [uniqueColumns, setUniqueColumns] = useState<string[]>([]);
+  const [columns, setColumns] = useState<string[]>([]);
   const [pickedUniqueColumn, setPickedUniqueColumn] = useState<string|null>(null);
+  const lockQuiz=useMutation(api.room.lockRoom)
+  const {roomId}=useParams()
 
   // const [columns,setColumns]=useState<string[]|null>(null)
   const handleFormChange = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       cleanUpState()
       const file = e.target.files[0];
+
 
  
       const rowSheetData=await parseTable(file)
@@ -37,12 +44,12 @@ const ImportStudents = () => {
       const arrangedRows = rows.map((row) => {
         const obj: Record<string, any> = {};
         columns.forEach((column, index) => {
-          obj[column] = row[index];
+          obj[column] = row[index].toString().toLowerCase();
           if (!allColumnsData[column]) {
             allColumnsData[column] = [];
           }
           //  console.log(uniqueNess)
-          allColumnsData[column].push(row[index]);
+          allColumnsData[column].push(row[index].toLowerCase());
         });
         return obj;
       });
@@ -55,9 +62,10 @@ const ImportStudents = () => {
         setImportedData(arrangedRows);
         return;
       }
-      setPickedUniqueColumn(extractedUniqueColumns[0])
-
       setImportedData(arrangedRows);
+      setColumns(columns)
+      setPickedUniqueColumn(extractedUniqueColumns[0])
+      
       setError("");
     }
   };
@@ -75,6 +83,9 @@ const ImportStudents = () => {
   }
 
   const validateTable=(columns:string[],rows:any[])=>{
+      if([...new Set(columns)].length!==columns.length){
+        return 'you have same column names in the table '
+      }
         if (columns.length > 2) {     
         return `Table:maximum 2 column allowd you provided ${columns.length} (${columns.join(",")}) please profide 2 or less columns. e.g StudentId,StudentName`;      
       }
@@ -83,6 +94,10 @@ const ImportStudents = () => {
       }
       if (!rows || rows.length == 0 || !columns || columns.length === 0) {
         return`invalid table please profide structure table `
+      }
+
+      if(columns.some((column)=>column.trim()==="")){
+        return `column name can't be blank `
       }
 
       return null
@@ -114,6 +129,20 @@ const ImportStudents = () => {
     fileInputRef.current.click();
   };
 
+
+  const handleLock=async()=>{
+    if(!importedData||importedData?.length===0||!pickedUniqueColumn||columns.length===0){
+      console.log("some thing went wrong")
+      return 
+    }
+    try{
+     await lockQuiz({students:importedData,columns:columns,roomId:roomId as string,uniqueColumnForSearch:pickedUniqueColumn})
+    }catch(e){
+      setError("some thing went wrong during locking..")
+      console.log(e)
+    }
+  }
+
   return (
     <>
       <div
@@ -139,9 +168,12 @@ const ImportStudents = () => {
         )}
       </div>
       {error && <p className="text-red-700">{error}</p>}
-      {(!error&&pickedUniqueColumn) && <p >students would use <span className="font-bold  bg-gray-200 px-2 mx-1 text-center rounded-md">{pickedUniqueColumn} </span>to enter the quiz</p>}
-      {(importedData &&!error&&importedData.length>0) && <ImportedStudentsTable rows={importedData} />}
-      {(importedData&&!error&&uniqueColumns.length>0)&&<Button><Lock/>Lock</Button>}
+      {(importedData &&!error&&importedData.length>0&&uniqueColumns.length>0&&pickedUniqueColumn) && 
+      <>
+       <p >students would use <span className="font-bold  bg-gray-200 px-2 mx-1 text-center rounded-md">{pickedUniqueColumn} </span>to enter the quiz</p>
+      <ImportedStudentsTable rows={importedData} />
+      <Button onClick={handleLock}><Lock/>Lock</Button>
+      </>}
     </>
   );
 };
