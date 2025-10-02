@@ -17,6 +17,8 @@ import { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import { CheckCircle, CircleX, Eye } from "lucide-react";
 import { useParams } from "next/navigation";
+import LockRoom from "./LockRoomModal";
+import UnlockQuiz from "./UnlockQuiz";
 
 type question = {
   _id: Id<"questions">;
@@ -37,7 +39,16 @@ type answers = {
   studentId: Id<"students">;
   questionId: Id<"questions">;
 };
-function StudentPerformance() {
+
+interface studentPerformanceProps {
+  restriction:
+    | {
+        otherColumn?: string | undefined;
+        uniqueColumn: string;
+      }
+    | undefined;
+}
+function StudentPerformance({ restriction }: studentPerformanceProps) {
   const { roomId } = useParams();
   const questions = useQuery(api.question.getRoomeQuestions, {
     roomId: roomId as string,
@@ -162,16 +173,37 @@ function StudentPerformance() {
       );
     }
   };
+
   return (
     <Card>
       <CardHeader>
-        <h1 className="font-medium">Student Performance</h1>
+        <div className="flex justify-between ">
+          <h1 className="font-medium">Student Performance</h1>
+          {!restriction ? (
+            <LockRoom />
+          ) : (
+            <UnlockQuiz
+              roomId={roomId as string}
+              studentsLength={students.length}
+            />
+          )}
+          {/* <Button id="restrict">restrict Particpents</Button> */}
+        </div>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader className="p-20">
             <TableRow>
-              <TableHead>Name</TableHead>
+              {!restriction ? (
+                <TableHead>Name</TableHead>
+              ) : (
+                <>
+                  <TableHead>{restriction.uniqueColumn}</TableHead>
+                  {restriction.otherColumn && (
+                    <TableHead>{restriction.otherColumn}</TableHead>
+                  )}
+                </>
+              )}
               <TableHead>Score</TableHead>
               {questions.map((question) => {
                 return (
@@ -203,7 +235,18 @@ function StudentPerformance() {
             {students.map((student) => {
               return (
                 <TableRow key={student._id}>
-                  <TableCell> {student.name}</TableCell>
+                  {!restriction ? (
+                    <TableCell>{student.name || "......."}</TableCell>
+                  ) : (
+                    <>
+                      <TableCell>{student.uniqueId || ".........."}</TableCell>
+                      {restriction.otherColumn && (
+                        <TableCell>
+                          {student.secondaryIdentifier || "------"}
+                        </TableCell>
+                      )}
+                    </>
+                  )}
                   <TableCell>
                     {calculateStudentsScore(student.answers)}
                   </TableCell>

@@ -21,10 +21,9 @@ function RoomsList() {
         ))}
       </div>
     );
-  } 
-  if(rooms==="not authenticated"){
-    
-    return null
+  }
+  if (rooms === "not authenticated") {
+    return null;
   }
 
   if (rooms.length == 0) {
