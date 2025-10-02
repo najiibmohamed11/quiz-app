@@ -35,8 +35,8 @@ function Timer({ expiresAt, roomStatus, remainingTime }: TimerProp) {
     );
     const hours = Math.floor(remainingTimeInSeconds / 3600);
     const minutes = Math.floor((remainingTimeInSeconds % 3600) / 60);
-    const second = Math.floor(remainingTimeInSeconds % 60);
-    return `${hours.toString().padStart(2, "0")} : ${minutes.toString().padStart(2, "0")} : ${second.toString().padStart(2, "0")}`;
+    const seconds = Math.floor(remainingTimeInSeconds % 60);
+    return `${hours.toString().padStart(2, "0")} : ${minutes.toString().padStart(2, "0")} : ${seconds.toString().padStart(2, "0")}`;
   };
 
   return (

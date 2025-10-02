@@ -31,7 +31,7 @@ export default function Room() {
     return <div>this room is not valid please go back</div>;
   }
 
-  const quizeUrl = `localhost:3000/${roomId}/student`;
+  const quizeUrl = `${window.location.origin}/${roomId}/student`;
 
   const copyToClipboard = async () => {
     try {

@@ -17,7 +17,7 @@ export const UniqueColumnDropDown = ({
   defaultUniqueColumn: string;
   setPickedUniqueColumn: (uniqueColumn: string) => void;
 }) => {
-  if (unique.length == 0) {
+  if (unique.length === 0) {
     return <p>no unique column is in your table</p>;
   }
   return (
@@ -33,7 +33,7 @@ export const UniqueColumnDropDown = ({
             <DropdownMenuItem
               key={index}
               className=""
-              onClick={() => setPickedUniqueColumn(unique[index])}
+              onClick={() => setPickedUniqueColumn(column)}
             >
               {column}
             </DropdownMenuItem>

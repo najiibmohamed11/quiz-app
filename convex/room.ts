@@ -72,9 +72,12 @@ export const getRoomDetails = query({
   handler: async (ctx, args) => {
     const roomId = ctx.db.normalizeId("rooms", args.roomId);
     if (!roomId) {
-      return "this room not valid thing";
+      throw new ConvexError("Invalid room ID");
     }
     const roomInfo = await ctx.db.get(roomId);
+    if (!roomInfo) {
+      throw new ConvexError("Room does not exist");
+    }
     const questions = await ctx.db
       .query("questions")
       .withIndex("by_room", (question) => question.eq("roomId", roomId))
@@ -119,7 +122,7 @@ export const changeRoomStatus = mutation({
     if (!room) {
       throw new ConvexError("room is invalid one");
     }
-    //activation the room when room have remaing time
+    //activation the room when room have remaining time
     if (room.status === "pause" && room.remainingTime) {
       const now = Date.now();
       const expiresAt = now + room.remainingTime;
@@ -163,21 +166,21 @@ export const lockRoom = mutation({
     }
 
     await deleteAllStudentsInRoom(valiRoomId, ctx);
+    const secondaryIdentifier =
+      columns.length > 1
+        ? columns[0] !== uniqueColumnForSearch
+          ? columns[0]
+          : columns[1]
+        : undefined;
     const restrictingRoom = ctx.db.patch(valiRoomId, {
       restriction: {
         uniqueColumn: uniqueColumnForSearch,
-        otherColumn:
-          columns.length > 1
-            ? columns[0] !== uniqueColumnForSearch
-              ? columns[0]
-              : columns[1]
-            : undefined,
+        otherColumn: secondaryIdentifier,
       },
     });
     const studentsPromis = students.map((row) => {
       const isRowValid = columns.every((element) => element in row);
-      const secondaryIdentifier =
-        columns[0] != uniqueColumnForSearch ? columns[0] : columns[1];
+
       if (!isRowValid) {
         return Promise.reject("columns and rows are not matching");
       }
@@ -185,7 +188,9 @@ export const lockRoom = mutation({
         roomId: valiRoomId,
         completedQuestions: 0,
         uniqueId: row[uniqueColumnForSearch].toLowerCase(),
-        secondaryIdentifier: row[secondaryIdentifier],
+        secondaryIdentifier: secondaryIdentifier
+          ? row[secondaryIdentifier]
+          : undefined,
       });
     });
 

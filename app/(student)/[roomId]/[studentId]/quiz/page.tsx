@@ -26,7 +26,7 @@ const answerSchema = z
     if (data.answer == undefined) {
       ctx.addIssue({
         code: "custom",
-        message: "answer is required at submission.",
+        message: "answer is required ",
         path: ["field"],
       });
     }
@@ -98,6 +98,10 @@ function Quiz() {
     if (!result.success) {
       console.log(result.error.issues[0]);
       setError(result.error.issues[0].message);
+      return;
+    }
+    if (answer.answer === undefined) {
+      setError("answer is required");
       return;
     }
 

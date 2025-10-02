@@ -1,7 +1,7 @@
 import { ConvexError, v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
-export const creatStudent = mutation({
+export const createStudent = mutation({
   args: { name: v.string(), roomId: v.string() },
   handler: async (ctx, args) => {
     const roomId = ctx.db.normalizeId("rooms", args.roomId);
@@ -21,7 +21,7 @@ export const getStudent = query({
     const id = ctx.db.normalizeId("students", args.studentId);
     if (!id) return null;
     const studentInfo = await ctx.db.get(id);
-    if (studentInfo?.roomId != args.roomId) return null;
+    if (studentInfo?.roomId !== args.roomId) return null;
     return studentInfo;
   },
 });
@@ -73,19 +73,19 @@ export const getFullQuizData = query({
       .collect();
 
     const roomInfo = await ctx.db.get(roomId);
-    if (!studentInfo || !roomInfo) return null;
+    if (!roomInfo) return null;
     if (questions.length === 0) return "no questions";
     if (roomInfo.status === "pause") return "paused";
     if (roomInfo.duration && roomInfo.expiresAt) {
-      const remainignTime = Math.max(0, roomInfo.expiresAt - Date.now());
-      if (remainignTime <= 0) return "expired";
+      const remainingTime = Math.max(0, roomInfo.expiresAt - Date.now());
+      if (remainingTime === 0) return "expired";
     }
     return { questions, roomInfo, studentInfo };
   },
 });
 
 export const findStudentInLockedQuiz = query({
-  args: { uniqueId: v.string(), uniqueColumn: v.string(), roomId: v.string() },
+  args: { uniqueId: v.string(), roomId: v.string() },
   handler: async (ctx, args) => {
     const roomId = ctx.db.normalizeId("rooms", args.roomId);
     if (!roomId) {

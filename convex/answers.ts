@@ -6,7 +6,7 @@ export const submitAnswer = mutation({
   args: {
     questionId: v.string(),
     studentId: v.string(),
-    answer: v.optional(v.union(v.string(), v.number())),
+    answer: v.union(v.string(), v.number()),
     roomId: v.string(),
   },
   handler: async (ctx, args) => {

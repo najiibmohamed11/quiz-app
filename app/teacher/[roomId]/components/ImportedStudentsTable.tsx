@@ -9,12 +9,16 @@ import {
 } from "@/components/ui/table";
 import React from "react";
 
-const ImportedStudentsTable = ({ rows }: { rows: Record<string, string>[] }) => {
-  if (!rows) return null;
+const ImportedStudentsTable = ({
+  rows,
+}: {
+  rows: Record<string, string>[];
+}) => {
+  if (!rows || rows.length === 0) return null;
   const columns = Object.keys(rows[0]);
   return (
     <ScrollArea className="h-96">
-      <Table className="h-96 overflow-auto max-h-50">
+      <Table>
         <TableHeader>
           <TableRow>
             {columns.map((column, index) => (

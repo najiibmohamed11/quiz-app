@@ -198,9 +198,9 @@ function StudentPerformance({ restriction }: studentPerformanceProps) {
                 <TableHead>Name</TableHead>
               ) : (
                 <>
-                  <TableCell>{restriction.uniqueColumn}</TableCell>
+                  <TableHead>{restriction.uniqueColumn}</TableHead>
                   {restriction.otherColumn && (
-                    <TableCell>{restriction.otherColumn}</TableCell>
+                    <TableHead>{restriction.otherColumn}</TableHead>
                   )}
                 </>
               )}
@@ -236,7 +236,7 @@ function StudentPerformance({ restriction }: studentPerformanceProps) {
               return (
                 <TableRow key={student._id}>
                   {!restriction ? (
-                    <TableHead>{student.name || "......."}</TableHead>
+                    <TableCell>{student.name || "......."}</TableCell>
                   ) : (
                     <>
                       <TableCell>{student.uniqueId || ".........."}</TableCell>

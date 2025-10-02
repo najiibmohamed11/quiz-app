@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { api } from "@/convex/_generated/api";
+import { Label } from "@radix-ui/react-label";
 import { useConvex, useMutation, useQuery } from "convex/react";
 import { ConvexError } from "convex/values";
 import { useParams, useRouter } from "next/navigation";
@@ -14,14 +15,14 @@ function StudentInfo() {
   const [studentName, setStudentName] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const creatStudent = useMutation(api.student.creatStudent);
+  const creatStudent = useMutation(api.student.createStudent);
   const { roomId } = useParams();
   const navigator = useRouter();
   const roomInfo = useQuery(api.room.getRoom, { roomId: roomId as string });
   const convex = useConvex();
 
   if (!roomInfo) {
-    return <div>invalid room ..</div>;
+    return <div>loading...</div>;
   }
 
   if (typeof roomInfo === "string") {
@@ -33,13 +34,18 @@ function StudentInfo() {
     if (isLoading) return;
     setIsLoading(true);
     setError("");
+    const result = formSchema.safeParse(studentName);
+    if (!result.success) {
+      setError(result.error.issues[0].message);
+      setIsLoading(false);
+      return;
+    }
     if (roomInfo.restriction) {
       try {
         const studenId = await convex.query(
           api.student.findStudentInLockedQuiz,
           {
             uniqueId: studentName,
-            uniqueColumn: roomInfo.restriction.uniqueColumn,
             roomId: roomId as string,
           },
         );
@@ -58,12 +64,7 @@ function StudentInfo() {
         return;
       }
     }
-    const result = formSchema.safeParse(studentName);
-    if (!result.success) {
-      setError(result.error.issues[0].message);
-      setIsLoading(false);
-      return;
-    }
+
     try {
       const studenId = await creatStudent({
         name: studentName,
@@ -89,7 +90,11 @@ function StudentInfo() {
         </CardHeader>
         <CardContent className=" m-0">
           <form action="submit" onSubmit={onSubmit}>
-            {/* <Label htmlFor="roomName">Your Name</Label> */}
+            <Label htmlFor="roomName">
+              {roomInfo.restriction
+                ? roomInfo.restriction.uniqueColumn
+                : "Your Name"}
+            </Label>
             <Input
               value={studentName}
               id="roomName"

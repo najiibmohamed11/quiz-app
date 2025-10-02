@@ -22,17 +22,17 @@ const UnlockQuiz = ({
   roomId: string;
   studentsLength: number;
 }) => {
-  const unloack = useMutation(api.room.unlockRoom);
+  const unlock = useMutation(api.room.unlockRoom);
   const handleUnLock = async () => {
     try {
-      await unloack({ roomId: roomId });
+      await unlock({ roomId: roomId });
     } catch (e) {
       console.log(e);
     }
   };
   if (studentsLength === 0) {
     return (
-      <Button>
+      <Button onClick={handleUnLock}>
         <LockKeyholeOpen /> unlockQuiz
       </Button>
     );
@@ -48,8 +48,8 @@ const UnlockQuiz = ({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            All students all ready entred quiz would be deleted and lost there
-            data.
+            All students who have already entered the quiz will be removed and
+            lose their data.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

@@ -48,9 +48,7 @@ const ImportStudents = () => {
             allColumnsData[column] = [];
           }
           //  console.log(uniqueNess)
-          allColumnsData[column].push(
-            row[index].toLowerCase().trim(),
-          );
+          allColumnsData[column].push(row[index].toLowerCase().trim());
         });
         return obj;
       });
@@ -90,16 +88,16 @@ const ImportStudents = () => {
 
   const validateTable = (columns: string[], rows: string[][]) => {
     if ([...new Set(columns)].length !== columns.length) {
-      return "you have same column names in the table ";
+      return "you have duplicate column names ";
     }
     if (columns.length > 2) {
-      return `Table:maximum 2 column allowd you provided ${columns.length} (${columns.join(",")}) please profide 2 or less columns. e.g StudentId,StudentName`;
+      return `Table:maximum 2 columns allowd you provided ${columns.length} (${columns.join(",")}) please provide 2 or less columns. e.g StudentId,StudentName`;
     }
     if (rows.length > 100) {
-      return `we can't handle student more then 100.  you table contains ${rows.length}!`;
+      return `we can't handle student more than 100.  you table contains ${rows.length}!`;
     }
     if (!rows || rows.length == 0 || !columns || columns.length === 0) {
-      return `invalid table please profide structure table `;
+      return `invalid Table. Please provide a properly structrued Table `;
     }
 
     if (columns.some((column) => column.trim() === "")) {
@@ -114,6 +112,7 @@ const ImportStudents = () => {
     setPickedUniqueColumn(null);
     setUniqueColumns([]);
     setError("");
+    setColumns([]);
   };
 
   const parseTable = async (file: globalThis.File) => {
@@ -121,12 +120,12 @@ const ImportStudents = () => {
     const workbook = XLSX.read(data, { type: "array" });
     const sheetName = workbook.SheetNames[0];
     const sheet = workbook.Sheets[sheetName];
-    const rows=XLSX.utils.sheet_to_json(sheet, {
+    const rows = XLSX.utils.sheet_to_json(sheet, {
       header: 1,
       defval: "",
       blankrows: false,
     }) as unknown[][];
-    return rows.map(row=>row.map(cell=>String(cell??"")))
+    return rows.map((row) => row.map((cell) => String(cell ?? "")));
   };
   const handleFileImport = () => {
     if (!fileInputRef.current) {
