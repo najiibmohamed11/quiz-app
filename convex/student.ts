@@ -60,11 +60,9 @@ export const getFullQuizData = query({
     const studentId = ctx.db.normalizeId("students", args.studentId);
     const roomId = ctx.db.normalizeId("rooms", args.roomId);
     if (!roomId || !studentId) return null;
-
     const studentInfo = await ctx.db.get(studentId);
     if (!studentInfo) return null;
     if (studentInfo.roomId !== roomId) return null;
-
     const questions = await ctx.db
       .query("questions")
       .withIndex("by_room", (question) => {

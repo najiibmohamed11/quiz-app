@@ -9,13 +9,14 @@ import {
 } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/convex/_generated/api";
-import { useMutation, useQuery } from "convex/react";
+import { useConvex, useMutation, useQuery } from "convex/react";
 import { ConvexError } from "convex/values";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import z from "zod";
 import Timer from "./components/Timer";
+import { Id } from "@/convex/_generated/dataModel";
 
 const answerSchema = z
   .object({
@@ -37,6 +38,9 @@ function Quiz() {
     studentId: string;
   }>();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [answeredQuestionsIds, setAnsweredQuestionsIds] = useState<
+    Id<"questions">[]
+  >([]);
   const [error, setError] = useState("");
   const [answer, setAnswer] = useState<z.infer<typeof answerSchema>>({
     questionId: "",
@@ -50,10 +54,23 @@ function Quiz() {
   const submitAnswer = useMutation(api.answers.submitAnswer);
   const navigator = useRouter();
   const [isTimerEnd, setIsTimerEnd] = useState(false);
+
+  useEffect(() => {
+    const readQuestionId = () => {
+      const questionIds = localStorage.getItem(studentId);
+      if (!questionIds) {
+        return null;
+      }
+      setAnsweredQuestionsIds(JSON.parse(questionIds));
+    };
+
+    readQuestionId();
+  }, []);
+
   if (fullQuizData === undefined) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        loading for student info....
+        loading....
       </div>
     );
   }
@@ -90,13 +107,15 @@ function Quiz() {
     );
   }
 
-  const questions = fullQuizData.questions;
+  const answeredSet = new Set(answeredQuestionsIds);
+  const questions = fullQuizData.questions.filter(
+    (question) => !answeredSet.has(question._id),
+  );
   const roomInfo = fullQuizData.roomInfo;
 
   const handleNext = async () => {
     const result = answerSchema.safeParse(answer);
     if (!result.success) {
-      console.log(result.error.issues[0]);
       setError(result.error.issues[0].message);
       return;
     }
@@ -112,12 +131,18 @@ function Quiz() {
         studentId: studentId,
         roomId: roomId,
       });
+      setAnsweredQuestionsIds([
+        ...answeredQuestionsIds,
+        answer.questionId as Id<"questions">,
+      ]);
+      const updated = [...answeredQuestionsIds, answer.questionId];
+      localStorage.setItem(studentId, JSON.stringify(updated));
       setAnswer({ questionId: "", answer: undefined });
-      if (questions.length - 1 === currentQuestionIndex) {
+
+      if (questions.length === 1) {
         navigator.push(`/${roomId}/${studentId}/result`);
         return;
       }
-      setCurrentQuestionIndex((prev) => prev + 1);
       setError("");
     } catch (e) {
       const errorMessage =
@@ -126,13 +151,21 @@ function Quiz() {
       console.log(e);
     }
   };
-
+  const currentQuestion = questions[0];
+  if (!currentQuestion) {
+    return (
+      <div className="flex justify-center items-center">
+        there is no question in this room
+      </div>
+    );
+  }
   return (
     <div className="flex justify-center items-center min-h-screen">
       <Card className="w-2xl ">
         <CardHeader className="flex justify-between">
           <Badge>
-            question {currentQuestionIndex + 1}/{questions.length}
+            question {answeredQuestionsIds.length + 1}/
+            {fullQuizData.questions.length}
           </Badge>
           {roomInfo.duration != 0 && roomInfo.expiresAt != undefined && (
             <Timer
@@ -143,19 +176,19 @@ function Quiz() {
         </CardHeader>
         <CardContent className="">
           <h1 className="text-xl font-bold break-words mb-6">
-            {questions[currentQuestionIndex].question}
+            {currentQuestion.question}
           </h1>
-          {questions[currentQuestionIndex].questionType != "Short Answer" ? (
+          {currentQuestion.questionType != "Short Answer" ? (
             <div className="flex justify-center flex-col items-center gap-4 mt-6">
-              {questions[currentQuestionIndex].options ? (
-                questions[currentQuestionIndex].options.map((option, index) => (
+              {currentQuestion.options ? (
+                currentQuestion.options.map((option, index) => (
                   <Button
                     key={index}
                     variant={`${answer.answer === index ? "default" : "outline"}`}
                     className={`w-full h-14  flex justify-start `}
                     onClick={() =>
                       setAnswer({
-                        questionId: questions[currentQuestionIndex]._id,
+                        questionId: currentQuestion._id,
                         answer: index,
                       })
                     }
@@ -170,7 +203,7 @@ function Quiz() {
                     className={`w-full h-14  flex justify-start `}
                     onClick={() => {
                       setAnswer({
-                        questionId: questions[currentQuestionIndex]._id,
+                        questionId: currentQuestion._id,
                         answer: 0,
                       });
                     }}
@@ -182,7 +215,7 @@ function Quiz() {
                     className={`w-full h-14  flex justify-start `}
                     onClick={() => {
                       setAnswer({
-                        questionId: questions[currentQuestionIndex]._id,
+                        questionId: currentQuestion._id,
                         answer: 1,
                       });
                     }}
@@ -199,7 +232,7 @@ function Quiz() {
                 placeholder="write the answer her"
                 onChange={(e) =>
                   setAnswer({
-                    questionId: questions[currentQuestionIndex]._id,
+                    questionId: currentQuestion._id,
                     answer: e.target.value,
                   })
                 }
