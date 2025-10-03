@@ -61,6 +61,6 @@ export default defineSchema({
     answer: v.union(v.string(), v.number()),
   })
     .index("by_room", ["roomId"])
-    .index("by_student", ["studentId"])
+    .index("by_student_and_room", ["studentId", "roomId"])
     .index("by_question", ["questionId"]),
 });
