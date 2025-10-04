@@ -53,6 +53,7 @@ function Quiz() {
   const submitAnswer = useMutation(api.answers.submitAnswer);
   const navigator = useRouter();
   const [isTimerEnd, setIsTimerEnd] = useState(false);
+  const [randomeNumber, setRandomNumber] = useState(Math.random());
 
   useEffect(() => {
     const readQuestionId = () => {
@@ -150,7 +151,10 @@ function Quiz() {
       console.log(e);
     }
   };
-  const currentQuestion = questions[0];
+  const index = roomInfo.settings.randomizingQuestions
+    ? Math.floor(randomeNumber * questions.length)
+    : 0;
+  const currentQuestion = questions[index];
   if (!currentQuestion) {
     return (
       <div className="flex justify-center items-center">
