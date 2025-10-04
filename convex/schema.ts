@@ -26,6 +26,10 @@ export default defineSchema({
         otherColumn: v.optional(v.string()),
       }),
     ),
+    settings: v.object({
+      aiPrevention: v.boolean(),
+      randomizingQuestions: v.boolean(),
+    }),
     teacher: v.optional(
       v.union(
         v.string(),

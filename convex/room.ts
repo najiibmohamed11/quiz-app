@@ -29,6 +29,7 @@ export const creatRoom = mutation({
       status: "pause",
       remainingTime: args.duration,
       expiresAt: undefined,
+      settings: { aiPrevention: true, randomizingQuestions: true },
     });
 
     return roomId;
@@ -226,3 +227,83 @@ const deleteAllStudentsInRoom = async (
     }
   }
 };
+
+export const SwitchRandomizingQuestions = mutation({
+  args: { roomId: v.string() },
+  handler: async (ctx, args) => {
+    const roomId = ctx.db.normalizeId("rooms", args.roomId);
+    if (!roomId) {
+      return null;
+    }
+    const room = await ctx.db.get(roomId);
+    if (!room) {
+      return null;
+    }
+
+    await ctx.db.patch(roomId, {
+      settings: {
+        aiPrevention: room.settings.aiPrevention,
+        randomizingQuestions: !room.settings.randomizingQuestions,
+      },
+    });
+  },
+});
+export const SwitchAiPrevention = mutation({
+  args: { roomId: v.string() },
+  handler: async (ctx, args) => {
+    const roomId = ctx.db.normalizeId("rooms", args.roomId);
+    if (!roomId) {
+      return null;
+    }
+    const room = await ctx.db.get(roomId);
+    if (!room) {
+      return null;
+    }
+
+    await ctx.db.patch(roomId, {
+      settings: {
+        aiPrevention: !room.settings.aiPrevention,
+        randomizingQuestions: room.settings.randomizingQuestions,
+      },
+    });
+  },
+});
+
+export const deleteRoom = mutation({
+  args: { roomId: v.string() },
+  handler: async (ctx, args) => {
+    const roomId = ctx.db.normalizeId("rooms", args.roomId);
+    if (!roomId) {
+      throw new ConvexError("invalid errors");
+    }
+
+    const studentsInRoom = await ctx.db
+      .query("students")
+      .withIndex("by_room", (student) => student.eq("roomId", roomId))
+      .collect();
+    if (studentsInRoom.length > 0) {
+      for (const student of studentsInRoom) {
+        await ctx.db.delete(student._id);
+      }
+    }
+    const questionsInRoom = await ctx.db
+      .query("questions")
+      .withIndex("by_room", (student) => student.eq("roomId", roomId))
+      .collect();
+    if (questionsInRoom.length > 0) {
+      for (const question of questionsInRoom) {
+        await ctx.db.delete(question._id);
+      }
+    }
+    const answersInRoom = await ctx.db
+      .query("answers")
+      .withIndex("by_room", (student) => student.eq("roomId", roomId))
+      .collect();
+    if (answersInRoom.length > 0) {
+      for (const question of answersInRoom) {
+        await ctx.db.delete(question._id);
+      }
+    }
+    await ctx.db.delete(roomId);
+  },
+});

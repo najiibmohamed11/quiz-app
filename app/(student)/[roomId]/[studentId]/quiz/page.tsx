@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/convex/_generated/api";
-import { useConvex, useMutation, useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { ConvexError } from "convex/values";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
@@ -37,7 +37,6 @@ function Quiz() {
     roomId: string;
     studentId: string;
   }>();
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answeredQuestionsIds, setAnsweredQuestionsIds] = useState<
     Id<"questions">[]
   >([]);
