@@ -17,6 +17,7 @@ import React, { useEffect, useState } from "react";
 import z from "zod";
 import Timer from "./components/Timer";
 import { Id } from "@/convex/_generated/dataModel";
+import { toast, Toaster } from "sonner";
 
 const answerSchema = z
   .object({
@@ -32,6 +33,7 @@ const answerSchema = z
       });
     }
   });
+type eventType = "copy" | "paste" | "cut";
 function Quiz() {
   const { roomId, studentId } = useParams<{
     roomId: string;
@@ -66,6 +68,35 @@ function Quiz() {
 
     readQuestionId();
   }, []);
+
+  //perventing copy text
+
+  useEffect(() => {
+    if (
+      typeof fullQuizData === "string" ||
+      !fullQuizData?.roomInfo.settings.aiPrevention
+    ) {
+      console.log(fullQuizData);
+      return;
+    }
+    const handleEvent = (e: ClipboardEvent) => {
+      e.preventDefault();
+      const eventType = e.type as eventType;
+      toast.error(`not allowed to ${eventType} `, {
+        description:
+          "this acctions would be reported to the teacher be carefull",
+        duration: 5000,
+      });
+    };
+    document.addEventListener("copy", handleEvent);
+    document.addEventListener("cut", handleEvent);
+    document.addEventListener("paste", handleEvent);
+    return () => {
+      document.removeEventListener("copy", handleEvent);
+      document.removeEventListener("cut", handleEvent);
+      document.removeEventListener("paste", handleEvent);
+    };
+  }, [fullQuizData]);
 
   if (fullQuizData === undefined) {
     return (
@@ -131,18 +162,20 @@ function Quiz() {
         studentId: studentId,
         roomId: roomId,
       });
-      setAnsweredQuestionsIds([
-        ...answeredQuestionsIds,
-        answer.questionId as Id<"questions">,
-      ]);
-      const updated = [...answeredQuestionsIds, answer.questionId];
-      localStorage.setItem(studentId, JSON.stringify(updated));
-      setAnswer({ questionId: "", answer: undefined });
 
-      if (questions.length === 1) {
-        navigator.push(`/${roomId}/${studentId}/result`);
-        return;
-      }
+      setAnsweredQuestionsIds((prev) => {
+        const updated = [...prev, answer.questionId as Id<"questions">];
+        if (updated.length === fullQuizData.questions.length) {
+          localStorage.removeItem(studentId);
+          navigator.push(`/${roomId}/${studentId}/result`);
+          return updated;
+        }
+        localStorage.setItem(studentId, JSON.stringify(updated));
+        return updated;
+      });
+
+      setRandomNumber(Math.random());
+      setAnswer({ questionId: "", answer: undefined });
       setError("");
     } catch (e) {
       const errorMessage =
@@ -154,6 +187,9 @@ function Quiz() {
   const index = roomInfo.settings.randomizingQuestions
     ? Math.floor(randomeNumber * questions.length)
     : 0;
+  console.log(roomInfo.settings.randomizingQuestions);
+  console.log(index);
+  console.log(randomeNumber);
   const currentQuestion = questions[index];
   if (!currentQuestion) {
     return (
@@ -164,6 +200,7 @@ function Quiz() {
   }
   return (
     <div className="flex justify-center items-center min-h-screen">
+      <Toaster position="top-center" />
       <Card className="w-2xl ">
         <CardHeader className="flex justify-between">
           <Badge>
