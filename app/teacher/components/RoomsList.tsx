@@ -59,7 +59,7 @@ function RoomsList() {
                 </div>
               </div>
 
-              <CardFooter className="w-full h-full rounded-b-xl bg-pink-400 flex justify-between">
+              <CardFooter className="w-full h-full rounded-b-xl bg-[#A5D6A7] flex justify-between">
                 {new Date().toDateString()}
                 <Pause className="h-4 w-4 " />
               </CardFooter>

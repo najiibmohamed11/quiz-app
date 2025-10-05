@@ -64,7 +64,9 @@ export default function CreateRoom() {
     <Dialog>
       <form>
         <DialogTrigger asChild>
-          <Button className="cursor-pointer">Creat Room</Button>
+          <Button className="cursor-pointer bg-[#255026] hover:bg-[#255026]">
+            Creat Room
+          </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
