@@ -1,17 +1,17 @@
-"use client";
-
 import React from "react";
-import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import CreateRoom from "./CreatRoom";
 import { Card, CardFooter } from "@/components/ui/card";
-import { CircleHelp, Pause, Users } from "lucide-react";
+import { CircleHelp, Clock10, Pause, Users } from "lucide-react";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { fetchQuery } from "convex/nextjs";
+import { getToken } from "@/app/hooks/getToken";
 
-function RoomsList() {
-  const rooms = useQuery(api.room.getRooms);
+async function RoomsList() {
+  const token = await getToken();
+  const rooms = await fetchQuery(api.room.getRooms, {}, { token });
 
   if (!rooms) {
     return (
@@ -24,9 +24,6 @@ function RoomsList() {
         ))}
       </div>
     );
-  }
-  if (rooms === "not authenticated") {
-    return null;
   }
 
   if (rooms.length == 0) {
@@ -51,19 +48,23 @@ function RoomsList() {
                 </div>
                 <div className="space-y-3 mt-5">
                   <div className="flex items-center ">
-                    <Users className="h-4 w-4 mr-2" />
-                    <span>0 participants</span>
+                    <Clock10 className="h-4 w-4 mr-2" />
+                    <span>
+                      {room.duration
+                        ? `${room.duration / 60000} minutes`
+                        : "not have limit"}{" "}
+                    </span>
                   </div>
 
                   <div className="flex items-center ">
                     <CircleHelp className="h-4 w-4 mr-2" />
-                    <span> 0 questions</span>
+                    <span> {room.numberOfQuestions} questions</span>
                   </div>
                 </div>
               </div>
 
               <CardFooter className="w-full h-full rounded-b-xl bg-[#A5D6A7] dark:text-black flex justify-between">
-                {new Date().toDateString()}
+                {new Date(room._creationTime).toDateString()}
                 <Pause className="h-4 w-4 " />
               </CardFooter>
             </Card>

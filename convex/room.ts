@@ -30,6 +30,7 @@ export const creatRoom = mutation({
       remainingTime: args.duration,
       expiresAt: undefined,
       settings: { aiPrevention: true, randomizingQuestions: true },
+      numberOfQuestions: 0,
     });
 
     return roomId;
@@ -40,14 +41,14 @@ export const getRooms = query({
   args: {},
   handler: async (ctx) => {
     const user = await ctx.auth.getUserIdentity();
+    console.log(user);
     if (!user?.subject) {
-      return "not authenticated";
+      throw new ConvexError("not authenticated");
     }
     const rooms = await ctx.db
       .query("rooms")
       .filter((room) => room.eq(room.field("teacher"), user.subject))
       .collect();
-
     return rooms;
   },
 });

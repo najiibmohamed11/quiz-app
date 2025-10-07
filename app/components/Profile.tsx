@@ -107,7 +107,7 @@ function Profile() {
 
           <CardFooter
             onClick={handleSignOut}
-            className="flex  items-center justify-center text-center   gap-2   dark:text-red-500 text-red-500  cursor-pointer"
+            className="flex text-base font-normal items-center justify-center text-center   gap-2   dark:text-red-500 text-red-500  cursor-pointer"
           >
             <LogOut size={18} />
             <p>Log out</p>

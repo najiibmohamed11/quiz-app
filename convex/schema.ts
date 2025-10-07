@@ -30,6 +30,7 @@ export default defineSchema({
       aiPrevention: v.boolean(),
       randomizingQuestions: v.boolean(),
     }),
+    numberOfQuestions: v.number(),
     teacher: v.optional(
       v.union(
         v.string(),
