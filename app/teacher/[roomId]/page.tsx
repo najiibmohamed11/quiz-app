@@ -20,7 +20,7 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import Timer from "./components/Timer";
 import Settings from "./components/Settings";
-import ModeToggle from "@/app/components/ModeToggle";
+import { ModeToggle } from "@/app/components/ModeToggle";
 type tab = "answers" | "questions" | "settings";
 export default function Room() {
   const [activeTab, setActiveTab] = useState<tab>("answers");
