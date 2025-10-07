@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { api } from "@/convex/_generated/api";
 import CreateRoom from "./CreatRoom";
@@ -6,12 +7,12 @@ import { CircleHelp, Clock10, Pause, Users } from "lucide-react";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import { fetchQuery } from "convex/nextjs";
-import { getToken } from "@/app/hooks/getToken";
+import { Preloaded, usePreloadedQuery } from "convex/react";
 
-async function RoomsList() {
-  const token = await getToken();
-  const rooms = await fetchQuery(api.room.getRooms, {}, { token });
+function RoomsList(propert: {
+  preloadedTasks: Preloaded<typeof api.room.getRooms>;
+}) {
+  const rooms = usePreloadedQuery(propert.preloadedTasks);
 
   if (!rooms) {
     return (

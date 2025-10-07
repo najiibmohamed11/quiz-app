@@ -41,7 +41,6 @@ export const getRooms = query({
   args: {},
   handler: async (ctx) => {
     const user = await ctx.auth.getUserIdentity();
-    console.log(user);
     if (!user?.subject) {
       throw new ConvexError("not authenticated");
     }

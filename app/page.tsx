@@ -8,13 +8,13 @@ export default function Home() {
       <div className="flex gap-10 ">
         <Link
           href="/sign-in"
-          className="w-44 h-34 bg-[#255026] dark:bg-[#A5D6A7] dark:text-black font-medium  text-center items-center flex justify-center  border rounded-lg"
+          className="w-44 h-34 bg-primary text-white dark:text-black font-medium  text-center items-center flex justify-center  border rounded-lg"
         >
           teacher
         </Link>
         <Link
           href="/findroom"
-          className="w-44 h-34 border-[#A5D6A7] dark:text-white  font-medium  text-center items-center flex justify-center text-l text-black border rounded-lg"
+          className="w-44 h-34 border-[#A5D6A7] dark:text-white  font-medium  text-center items-center flex justify-center text-l border rounded-lg"
         >
           student
         </Link>

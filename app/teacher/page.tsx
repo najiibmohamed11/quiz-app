@@ -1,7 +1,6 @@
 import CreateRoom from "./components/CreatRoom";
 import Profile from "../components/Profile";
 import RoomsList from "./components/RoomsList";
-import Image from "next/image";
 import { ModeToggle } from "../components/ModeToggle";
 import { Rubik } from "next/font/google";
 import { preloadQuery } from "convex/nextjs";
@@ -33,9 +32,7 @@ export default async function Teacher() {
           <Profile />
         </div>
       </header>
-      {/* <ErrorBoundary fallback={<div>this shit is crashed</div>} > */}
-      <RoomsList />
-      {/* </ErrorBoundary> */}
+      <RoomsList preloadedTasks={preloadedTasks} />
     </div>
   );
 }
