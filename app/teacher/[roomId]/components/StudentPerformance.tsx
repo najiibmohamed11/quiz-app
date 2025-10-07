@@ -144,7 +144,7 @@ function StudentPerformance({ restriction }: studentPerformanceProps) {
     if (question.options && question.correctAnswerIndex != undefined) {
       return (
         <>
-          <div className="text-muted-foreground text-xs flex gap-2">
+          <div className="text-muted-foreground text-xs flex gap-2 ">
             <CheckCircle className="h-4 w-4 text-green-600 " />
             <h1 className="font-bold">
               {String.fromCharCode(question.correctAnswerIndex + 65)})
@@ -157,7 +157,7 @@ function StudentPerformance({ restriction }: studentPerformanceProps) {
 
     if (question.correctAnswerIndex != undefined) {
       return (
-        <div className="text-muted-foreground text-xs flex gap-4">
+        <div className="text-muted-foreground text-xs flex gap-4 ">
           <CheckCircle className="h-4 w-4 text-green-600 " />
           {question.correctAnswerIndex === 0 ? "True" : "False"}
         </div>
@@ -192,8 +192,8 @@ function StudentPerformance({ restriction }: studentPerformanceProps) {
       </CardHeader>
       <CardContent>
         <Table>
-          <TableHeader className="p-20">
-            <TableRow>
+          <TableHeader className="p-20 ">
+            <TableRow className="hover:bg-transparent">
               {!restriction ? (
                 <TableHead>Name</TableHead>
               ) : (
@@ -211,7 +211,16 @@ function StudentPerformance({ restriction }: studentPerformanceProps) {
                     <HoverCardTrigger asChild>
                       <TableHead key={question._id}>
                         <div
-                          className={`${question.questionType == "MCQ" ? "bg-blue-100" : question.questionType === "Short Answer" ? "bg-orange-100 " : "bg-red-100 "} cursor-pointer  w-24 h-10  flex items-center justify-center rounded-sm flex-col mb-2`}
+                          className={`
+  ${
+    question.questionType === "MCQ"
+      ? "bg-[#E6F0FF] text-[#0A3D91] hover:bg-[#D6E5FF] dark:bg-[#0B1E3A] dark:text-[#AFCBFF] dark:hover:bg-[#102B55]"
+      : question.questionType === "Short Answer"
+        ? "bg-[#FFF3E0] text-[#9A4A00] hover:bg-[#FFE6BF] dark:bg-[#2B1A00] dark:text-[#FFD7A3] dark:hover:bg-[#3B2608]"
+        : "bg-[#FDE8E8] text-[#8B1E1E] hover:bg-[#F9D6D6] dark:bg-[#2A0E0E] dark:text-[#FFB3B3] dark:hover:bg-[#3C1616]"
+  }
+  cursor-pointer w-24 h-10 flex items-center justify-center rounded-sm flex-col mb-2 transition-colors
+`}
                         >
                           <div className="w-full truncate px-2 text-center ">
                             {question.question}
@@ -220,7 +229,15 @@ function StudentPerformance({ restriction }: studentPerformanceProps) {
                         </div>
                       </TableHead>
                     </HoverCardTrigger>
-                    <HoverCardContent className="w-86 break-words">
+                    <HoverCardContent
+                      className={`w-86 break-words ${
+                        question.questionType === "MCQ"
+                          ? "bg-[#E6F0FF] text-[#0A3D91] hover:bg-[#D6E5FF] dark:bg-[#0B1E3A] dark:text-[#AFCBFF] dark:hover:bg-[#102B55]"
+                          : question.questionType === "Short Answer"
+                            ? "bg-[#FFF3E0] text-[#9A4A00] hover:bg-[#FFE6BF] dark:bg-[#2B1A00] dark:text-[#FFD7A3] dark:hover:bg-[#3B2608]"
+                            : "bg-[#FDE8E8] text-[#8B1E1E] hover:bg-[#F9D6D6] dark:bg-[#2A0E0E] dark:text-[#FFB3B3] dark:hover:bg-[#3C1616]"
+                      }`}
+                    >
                       <div className="space-y-1">
                         <p className="text-sm">{question.question}</p>
                         {formatCorrectAnswer(question)}
@@ -258,7 +275,7 @@ function StudentPerformance({ restriction }: studentPerformanceProps) {
                     return (
                       <TableCell className="text-center" key={question._id}>
                         {question.questionType != "Short Answer" ? (
-                          <div className="w-24 h-10  bg-gray-200 rounded-md flex justify-center items-center">
+                          <div className="w-24 h-10  bg-gray-200 dark:bg-border rounded-md flex justify-center items-center">
                             {formatStudentAnswers(
                               question,
                               answerOfThisQuestion?.answer,
@@ -267,7 +284,7 @@ function StudentPerformance({ restriction }: studentPerformanceProps) {
                         ) : (
                           <HoverCard>
                             <HoverCardTrigger asChild>
-                              <div className="w-24 h-10   bg-gray-200 rounded-md flex justify-center items-center">
+                              <div className="w-24 h-10   bg-gray-200 dark:bg-border rounded-md flex justify-center items-center">
                                 <p className="w-full truncate px-2 text-center">
                                   {formatStudentAnswers(
                                     question,
