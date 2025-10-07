@@ -2,26 +2,31 @@ import CreateRoom from "./components/CreatRoom";
 import Profile from "../components/Profile";
 import RoomsList from "./components/RoomsList";
 import Image from "next/image";
-import { useTheme } from "next-themes";
 import { ModeToggle } from "../components/ModeToggle";
-export default function Teacher() {
+import { Rubik } from "next/font/google";
+import { preloadQuery } from "convex/nextjs";
+import { api } from "@/convex/_generated/api";
+import { getToken } from "../hooks/getToken";
+
+const rubik = Rubik({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+});
+
+export default async function Teacher() {
+  const token = await getToken();
+
+  const preloadedTasks = await preloadQuery(
+    api.room.getRooms,
+    {},
+    { token: token },
+  );
+
   return (
     <div className="max-w-6xl px-8 min-h-screen mx-auto ">
-      <header className=" -700 flex  justify-between mt-4  ">
-        <div className="relative w-[150px] h-[50px]">
-          <Image
-            src="/logo-dark.svg"
-            alt="logo for light theme"
-            fill
-            className="block dark:hidden"
-          />
-          <Image
-            src="/logo-light.svg"
-            alt="logo for dark theme"
-            fill
-            className="hidden dark:block"
-          />
-        </div>
+      <header className=" h-fit  flex  justify-between mt-4 text-2xl font-bold ">
+        <h1 className={`${rubik.className}`}>knowy</h1>
+
         <div className="flex gap-4 justify-center">
           <ModeToggle />
           <CreateRoom />
