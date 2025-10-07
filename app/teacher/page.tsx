@@ -4,12 +4,28 @@ import CreateRoom from "./components/CreatRoom";
 import Profile from "../components/Profile";
 import RoomsList from "./components/RoomsList";
 import Image from "next/image";
+import ModeToggle from "../components/ModeToggle";
+import { useTheme } from "next-themes";
 export default function Teacher() {
   return (
     <div className="max-w-6xl px-8 min-h-screen mx-auto ">
       <header className=" -700 flex  justify-between mt-4  ">
-        <Image src="logo.svg" alt="log-image" width={150} height={50} />
+        <div className="relative w-[150px] h-[50px]">
+          <Image
+            src="/logo-dark.svg"
+            alt="logo for light theme"
+            fill
+            className="block dark:hidden"
+          />
+          <Image
+            src="/logo-light.svg"
+            alt="logo for dark theme"
+            fill
+            className="hidden dark:block"
+          />
+        </div>
         <div className="flex gap-4 justify-center">
+          <ModeToggle />
           <CreateRoom />
           <Profile />
         </div>

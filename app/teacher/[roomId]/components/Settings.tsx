@@ -108,7 +108,7 @@ function Settings({ settings, roomId }: settingProps) {
           </div>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button>
+              <Button className="bg-red-600 text-white hover:bg-red-700">
                 <Trash /> Delet Quiz
               </Button>
             </AlertDialogTrigger>
@@ -122,7 +122,10 @@ function Settings({ settings, roomId }: settingProps) {
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction className="bg-red-600" onClick={handleDelte}>
+                <AlertDialogAction
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                  onClick={handleDelte}
+                >
                   Continue
                 </AlertDialogAction>
               </AlertDialogFooter>

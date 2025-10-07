@@ -64,13 +64,15 @@ export default function CreateRoom() {
     <Dialog>
       <form>
         <DialogTrigger asChild>
-          <Button className="cursor-pointer bg-[#255026] hover:bg-[#255026]">
+          <Button className="cursor-pointer bg-[#255026] hover:bg-[#255026] dark:bg-[#A5D6A7] dark:text-black">
             Creat Room
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Creare Room</DialogTitle>
+            <DialogTitle className="cursor-pointer  dark:text-[#A5D6A7] ">
+              Creare Room
+            </DialogTitle>
           </DialogHeader>
           <div className="grid gap-4">
             <div className="grid gap-3">
@@ -125,7 +127,7 @@ export default function CreateRoom() {
               disabled={isloading}
               type="submit"
               onClick={handleCreat}
-              className="cursor-pointer"
+              className="cursor-pointer bg-[#255026] hover:bg-[#255026] dark:bg-[#A5D6A7] dark:text-black"
             >
               {isloading ? "creating...." : "Create"}
             </Button>

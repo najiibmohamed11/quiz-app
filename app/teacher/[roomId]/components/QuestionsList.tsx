@@ -18,10 +18,7 @@ function QuestionsList() {
     return (
       <div className="grid gap-4">
         {Array.from({ length: 6 }, (_, i) => i + 1).map((numb) => (
-          <Skeleton
-            key={numb}
-            className="h-40 rounded-2xl  bg-gray-200"
-          ></Skeleton>
+          <Skeleton key={numb} className="h-40 rounded-2xl  "></Skeleton>
         ))}
       </div>
     );
@@ -65,23 +62,23 @@ function QuestionsList() {
                     <Pen />
                   </Button>
                   <Button variant="ghost">
-                    <Trash />
+                    <Trash className="text-red-700" />
                   </Button>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
               {question.questionType != "Short Answer" ? (
-                <div className="list-none ml-8  text-gray-700 flex flex-col ">
+                <div className="list-none ml-8   flex flex-col ">
                   {question.options ? (
                     question.options.map((option, optionIndex) => {
                       return question.correctAnswerIndex === optionIndex ? (
                         <span
-                          className="text-green-800 flex items-center gap-1 "
+                          className="text-primary flex items-center gap-1 "
                           key={optionIndex}
                         >
                           {" "}
-                          <CheckCircle className="h-4 w-4 text-green-600 " />
+                          <CheckCircle className="h-4 w-4 text-primary " />
                           {option}
                         </span>
                       ) : (
@@ -92,31 +89,28 @@ function QuestionsList() {
                     })
                   ) : (
                     <div className="flex gap-2">
-                      {question.correctAnswerIndex === 0 ? (
-                        <>
-                          <Button className="bg-green-600 flex items-center gap-1 hover:bg-green-600">
-                            {" "}
+                      <>
+                        <Button
+                          className=" flex items-center gap-1 "
+                          variant={`${question.correctAnswerIndex === 0 ? "default" : "outline"}`}
+                        >
+                          {" "}
+                          {question.correctAnswerIndex === 0 && (
                             <CheckCircle className="h-4 w-4  " />
-                            True
-                          </Button>
-                          <Button variant="outline" className=" px-5">
-                            {" "}
-                            False
-                          </Button>
-                        </>
-                      ) : (
-                        <>
-                          <Button variant="outline" className=" px-8">
-                            {" "}
-                            True
-                          </Button>
-                          <Button className="bg-green-600 flex items-center gap-1 hover:bg-green-600">
-                            {" "}
+                          )}
+                          True
+                        </Button>
+                        <Button
+                          variant={`${question.correctAnswerIndex === 1 ? "default" : "outline"}`}
+                          className=""
+                        >
+                          {" "}
+                          {question.correctAnswerIndex === 1 && (
                             <CheckCircle className="h-4 w-4  " />
-                            False
-                          </Button>
-                        </>
-                      )}
+                          )}
+                          False
+                        </Button>
+                      </>
                     </div>
                   )}
                 </div>

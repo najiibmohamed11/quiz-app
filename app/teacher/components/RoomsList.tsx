@@ -6,6 +6,7 @@ import { Card, CardFooter } from "@/components/ui/card";
 import { CircleHelp, Pause, Users } from "lucide-react";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
 
 function RoomsList() {
   const rooms = useQuery(api.room.getRooms);
@@ -42,24 +43,24 @@ function RoomsList() {
               <div className="  p-5">
                 <div className="flex justify-between">
                   <h1 className="font-bold">{room?.name}</h1>
-                  <div className="bg-green-200 w-fit  rounded-4xl px-2 text-green-900">
+                  <Badge className="bg-green-200 w-fit  rounded-4xl px-2 text-green-900">
                     active
-                  </div>
+                  </Badge>
                 </div>
                 <div className="space-y-3 mt-5">
-                  <div className="flex items-center text-purple-800">
+                  <div className="flex items-center ">
                     <Users className="h-4 w-4 mr-2" />
                     <span>0 participants</span>
                   </div>
 
-                  <div className="flex items-center text-purple-800 ">
+                  <div className="flex items-center ">
                     <CircleHelp className="h-4 w-4 mr-2" />
                     <span> 0 questions</span>
                   </div>
                 </div>
               </div>
 
-              <CardFooter className="w-full h-full rounded-b-xl bg-[#A5D6A7] flex justify-between">
+              <CardFooter className="w-full h-full rounded-b-xl bg-[#A5D6A7] dark:text-black flex justify-between">
                 {new Date().toDateString()}
                 <Pause className="h-4 w-4 " />
               </CardFooter>

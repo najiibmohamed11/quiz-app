@@ -2,7 +2,15 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ShieldQuestionMark, MoveLeft, User, Copy, Check } from "lucide-react";
+import {
+  ShieldQuestionMark,
+  MoveLeft,
+  User,
+  Copy,
+  Check,
+  Pause,
+  Play,
+} from "lucide-react";
 import StudentPerformance from "./components/StudentPerformance";
 import QuestionsList from "./components/QuestionsList";
 import AddQuestion from "./components/AddQuestion";
@@ -12,6 +20,7 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import Timer from "./components/Timer";
 import Settings from "./components/Settings";
+import ModeToggle from "@/app/components/ModeToggle";
 type tab = "answers" | "questions" | "settings";
 export default function Room() {
   const [activeTab, setActiveTab] = useState<tab>("answers");
@@ -63,21 +72,22 @@ export default function Room() {
         >
           <MoveLeft /> Back
         </button>
-        <h1 className="font-bold text-2xl mx-5 ">
+        <ModeToggle />
+        <h1 className="font-bold text-2xl mx-5  ">
           {roomDetails?.roomInfo.name}
         </h1>
       </header>
       <Card className="p-5 mt-4 grid grid-cols-2 h-50">
         <div className="gap-y-2 ">
           <div>
-            <h1 className="font-semibold text-l">Queations</h1>
+            <h1 className="font-semibold ">Queations</h1>
             <div className="mt-2 flex items-center gap-2   ">
               <ShieldQuestionMark size={18} />
               <h1 className="font-semibold">{roomDetails.questionLength}</h1>
             </div>
           </div>
           <div className="mt-2">
-            <h1 className="font-semibold text-l">Participants</h1>
+            <h1 className="font-semibold ">Participants</h1>
             <div className="mt-2 flex items-center gap-2   ">
               <User size={18} />
               <h1 className="font-semibold">{roomDetails.participants}</h1>
@@ -87,7 +97,7 @@ export default function Room() {
 
         <div className="flex flex-col justify-between h-full items-end">
           <div className="flex ">
-            <div className="w-full bg-purple-100 p-2 rounded-md text-l font-semibold text-purple-700">
+            <div className="w-full bg-accent-foreground p-2 rounded-md  font-semibold text-white dark:text-black">
               http://quiz-app/room/we.........
             </div>
             <Button
@@ -104,11 +114,21 @@ export default function Room() {
             expiresAt={roomDetails.roomInfo.expiresAt}
           />
           <Button
-            className="w-60 mr-9"
+            className="w-60 mr-9  hover:"
             variant={`${roomDetails.roomInfo.status === "active" ? "outline" : "default"}`}
             onClick={handleRoomStatusChange}
           >
-            {roomDetails.roomInfo.status === "active" ? "pause" : "active"}
+            {roomDetails.roomInfo.status === "active" ? (
+              <>
+                <Pause className="" />
+                pause
+              </>
+            ) : (
+              <>
+                <Play />
+                active
+              </>
+            )}
           </Button>
         </div>
       </Card>

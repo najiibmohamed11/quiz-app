@@ -6,6 +6,8 @@ import { useClerk, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 function Profile() {
   const { user, isLoaded } = useUser();
   const { signOut } = useClerk();
@@ -84,8 +86,8 @@ function Profile() {
         />
       </button>
       {isOpen && (
-        <div className="w-65 h-33  absolute right-1 top-11 rounded-xl bg-white border-1 border-gray-300 p-4 transition-all ease-in-out duration-200  slide-in-from-top-5 animate-in">
-          <div className="flex items-center gap-2  font-medium truncate ">
+        <Card className="  absolute right-1 top-11 rounded-xl  p-4 transition-all ease-in-out duration-200  slide-in-from-top-5 animate-in">
+          <CardContent className="flex items-center gap-2  font-medium truncate ">
             <Avatar>
               <AvatarImage src={user.imageUrl} alt="profile" />
               <AvatarFallback>
@@ -98,16 +100,17 @@ function Profile() {
                 {user.primaryEmailAddress?.emailAddress}
               </span>
             </div>
-          </div>
-          <hr className="mt-4 h-2" />
-          <button
+          </CardContent>
+          <Separator />
+
+          <CardFooter
             onClick={handleSignOut}
-            className="flex  items-center justify-center text-center w-full   gap-2 hover:bg-gray-50 h-10 hover:rounded-xl text-red-500 text-l cursor-pointer"
+            className="flex  items-center justify-center text-center   gap-2   dark:text-red-500 text-red-500  cursor-pointer"
           >
             <LogOut size={18} />
             <p>Log out</p>
-          </button>
-        </div>
+          </CardFooter>
+        </Card>
       )}
     </div>
   );
