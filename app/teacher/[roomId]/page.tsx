@@ -11,6 +11,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import Timer from "./components/Timer";
+import Settings from "./components/Settings";
 type tab = "answers" | "questions" | "settings";
 export default function Room() {
   const [activeTab, setActiveTab] = useState<tab>("answers");
@@ -132,6 +133,12 @@ export default function Room() {
           </TabsContent>
           <TabsContent value="questions">
             <QuestionsList />
+          </TabsContent>
+          <TabsContent value="settings">
+            <Settings
+              settings={roomDetails.roomInfo.settings}
+              roomId={roomId as string}
+            />
           </TabsContent>
         </Tabs>
       </div>

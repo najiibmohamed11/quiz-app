@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/convex/_generated/api";
-import { useConvex, useMutation, useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { ConvexError } from "convex/values";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
@@ -17,6 +17,7 @@ import React, { useEffect, useState } from "react";
 import z from "zod";
 import Timer from "./components/Timer";
 import { Id } from "@/convex/_generated/dataModel";
+import { toast, Toaster } from "sonner";
 
 const answerSchema = z
   .object({
@@ -32,12 +33,12 @@ const answerSchema = z
       });
     }
   });
+type eventType = "copy" | "paste" | "cut";
 function Quiz() {
   const { roomId, studentId } = useParams<{
     roomId: string;
     studentId: string;
   }>();
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answeredQuestionsIds, setAnsweredQuestionsIds] = useState<
     Id<"questions">[]
   >([]);
@@ -54,6 +55,7 @@ function Quiz() {
   const submitAnswer = useMutation(api.answers.submitAnswer);
   const navigator = useRouter();
   const [isTimerEnd, setIsTimerEnd] = useState(false);
+  const [randomeNumber, setRandomNumber] = useState(Math.random());
 
   useEffect(() => {
     const readQuestionId = () => {
@@ -66,6 +68,35 @@ function Quiz() {
 
     readQuestionId();
   }, []);
+
+  //perventing copy text
+
+  useEffect(() => {
+    if (
+      typeof fullQuizData === "string" ||
+      !fullQuizData?.roomInfo.settings.aiPrevention
+    ) {
+      console.log(fullQuizData);
+      return;
+    }
+    const handleEvent = (e: ClipboardEvent) => {
+      e.preventDefault();
+      const eventType = e.type as eventType;
+      toast.error(`not allowed to ${eventType} `, {
+        description:
+          "this acctions would be reported to the teacher be carefull",
+        duration: 5000,
+      });
+    };
+    document.addEventListener("copy", handleEvent);
+    document.addEventListener("cut", handleEvent);
+    document.addEventListener("paste", handleEvent);
+    return () => {
+      document.removeEventListener("copy", handleEvent);
+      document.removeEventListener("cut", handleEvent);
+      document.removeEventListener("paste", handleEvent);
+    };
+  }, [fullQuizData]);
 
   if (fullQuizData === undefined) {
     return (
@@ -131,18 +162,20 @@ function Quiz() {
         studentId: studentId,
         roomId: roomId,
       });
-      setAnsweredQuestionsIds([
-        ...answeredQuestionsIds,
-        answer.questionId as Id<"questions">,
-      ]);
-      const updated = [...answeredQuestionsIds, answer.questionId];
-      localStorage.setItem(studentId, JSON.stringify(updated));
-      setAnswer({ questionId: "", answer: undefined });
 
-      if (questions.length === 1) {
-        navigator.push(`/${roomId}/${studentId}/result`);
-        return;
-      }
+      setAnsweredQuestionsIds((prev) => {
+        const updated = [...prev, answer.questionId as Id<"questions">];
+        if (updated.length === fullQuizData.questions.length) {
+          localStorage.removeItem(studentId);
+          navigator.push(`/${roomId}/${studentId}/result`);
+          return updated;
+        }
+        localStorage.setItem(studentId, JSON.stringify(updated));
+        return updated;
+      });
+
+      setRandomNumber(Math.random());
+      setAnswer({ questionId: "", answer: undefined });
       setError("");
     } catch (e) {
       const errorMessage =
@@ -151,7 +184,13 @@ function Quiz() {
       console.log(e);
     }
   };
-  const currentQuestion = questions[0];
+  const index = roomInfo.settings.randomizingQuestions
+    ? Math.floor(randomeNumber * questions.length)
+    : 0;
+  console.log(roomInfo.settings.randomizingQuestions);
+  console.log(index);
+  console.log(randomeNumber);
+  const currentQuestion = questions[index];
   if (!currentQuestion) {
     return (
       <div className="flex justify-center items-center">
@@ -161,6 +200,7 @@ function Quiz() {
   }
   return (
     <div className="flex justify-center items-center min-h-screen">
+      <Toaster position="top-center" />
       <Card className="w-2xl ">
         <CardHeader className="flex justify-between">
           <Badge>
