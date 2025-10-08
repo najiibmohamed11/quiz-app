@@ -47,6 +47,7 @@ export const getRooms = query({
     const rooms = await ctx.db
       .query("rooms")
       .filter((room) => room.eq(room.field("teacher"), user.subject))
+      .order("desc") // 👈 newest first
       .collect();
     return rooms;
   },

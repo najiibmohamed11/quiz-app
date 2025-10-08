@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import CreateRoom from "./CreatRoom";
 import { Card, CardFooter } from "@/components/ui/card";
@@ -7,12 +8,9 @@ import { CircleHelp, Clock10, Pause, Users } from "lucide-react";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import { Preloaded, usePreloadedQuery } from "convex/react";
 
-function RoomsList(propert: {
-  preloadedTasks: Preloaded<typeof api.room.getRooms>;
-}) {
-  const rooms = usePreloadedQuery(propert.preloadedTasks);
+function RoomsList() {
+  const rooms = useQuery(api.room.getRooms);
 
   if (!rooms) {
     return (

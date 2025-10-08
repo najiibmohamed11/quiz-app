@@ -32,7 +32,7 @@ export default async function Teacher() {
           <Profile />
         </div>
       </header>
-      <RoomsList preloadedTasks={preloadedTasks} />
+      <RoomsList />
     </div>
   );
 }
