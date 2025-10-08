@@ -8,18 +8,18 @@ import { CircleHelp, Clock10, Pause, Users } from "lucide-react";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { useUser } from "@clerk/nextjs";
+import QuizCardSkeliton from "./QuizCardSkeliton";
 
 function RoomsList() {
-  const rooms = useQuery(api.room.getRooms);
+  const { isSignedIn, user } = useUser();
+  const rooms = useQuery(api.room.getRooms, isSignedIn ? {} : "skip");
 
   if (!rooms) {
     return (
       <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-6">
-        {Array.from({ length: 6 }, (_, i) => i + 1).map((numb) => (
-          <Skeleton
-            key={numb}
-            className="h-55 rounded-2xl  bg-gray-200"
-          ></Skeleton>
+        {Array.from({ length: 10 }, (_, i) => i + 1).map((numb) => (
+          <QuizCardSkeliton key={numb} />
         ))}
       </div>
     );
@@ -40,8 +40,8 @@ function RoomsList() {
             <Card className=" h-55 p-0">
               <div className="  p-5">
                 <div className="flex justify-between">
-                  <h1 className="font-bold">{room?.name}</h1>
-                  <Badge className="bg-green-200 w-fit  rounded-4xl px-2 text-green-900">
+                  <h1 className="font-bold truncate">{room?.name}</h1>
+                  <Badge className="bg-green-200 w-fit  rounded-4xl px-2 text-green-900 h-6">
                     active
                   </Badge>
                 </div>

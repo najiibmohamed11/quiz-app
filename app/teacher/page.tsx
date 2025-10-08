@@ -3,6 +3,7 @@ import Profile from "../components/Profile";
 import RoomsList from "./components/RoomsList";
 import { ModeToggle } from "../components/ModeToggle";
 import { Rubik } from "next/font/google";
+import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 
 const rubik = Rubik({
   subsets: ["latin"],

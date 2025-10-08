@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import ProfileSkeletonIcon from "../teacher/components/ProfileSkeletonIcon";
 function Profile() {
   const { user, isLoaded } = useUser();
   const { signOut } = useClerk();
@@ -39,17 +40,7 @@ function Profile() {
   }, [isOpen]);
 
   if (!isLoaded) {
-    return (
-      <div className="relative">
-        <Button
-          variant="ghost"
-          className="flex items-center gap-2 px-2 py-1 rounded-full "
-        >
-          <Skeleton className="h-8 w-8 rounded-full bg-gray-400" />
-          <Skeleton className="h-4 w-4 bg-gray-400" />
-        </Button>
-      </div>
-    );
+    return <ProfileSkeletonIcon />;
   }
 
   if (!user) {

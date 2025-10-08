@@ -52,7 +52,7 @@ function QuestionsList() {
               <Badge className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums">
                 {index + 1}
               </Badge>
-              <h1 className="font-semibold mx-5 flex-1 break-words min-w-96">
+              <h1 className="font-semibold mx-5 flex-1   min-w-96">
                 {question.question}
               </h1>
               <div className="flex flex-col justify-center items-center">
