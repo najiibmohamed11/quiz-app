@@ -9,7 +9,7 @@ function Back() {
   return (
     <Button
       variant="ghost"
-      className="cursor-pointer  w-20 flex justify-around "
+      className="flex w-20 cursor-pointer justify-around"
       onClick={() => rout.back()}
     >
       <MoveLeft /> Back

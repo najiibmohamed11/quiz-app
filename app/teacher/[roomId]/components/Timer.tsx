@@ -42,7 +42,7 @@ function Timer({ expiresAt, roomStatus, remainingTime }: TimerProp) {
   };
 
   return (
-    <Button variant="outline" className="w-60 mr-9">
+    <Button variant="outline" className="mr-9 w-60">
       {formatTime(timer)}
     </Button>
   );

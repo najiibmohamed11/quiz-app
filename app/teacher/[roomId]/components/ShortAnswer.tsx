@@ -71,7 +71,7 @@ function ShortAnswer() {
         placeholder="enter her question that you want "
         onChange={questionOnchange}
       />
-      <div className="flex justify-center items-center gap-4">
+      <div className="flex items-center justify-center gap-4">
         <Label htmlFor="answer">Answer</Label>
         <Input
           value={form.answer}
@@ -81,7 +81,7 @@ function ShortAnswer() {
         />
       </div>
 
-      <Alert className="border-yellow-500 text-yellow-700 bg-yellow-50">
+      <Alert className="border-yellow-500 bg-yellow-50 text-yellow-700">
         <AlertCircle className="h-4 w-4" />
         <AlertTitle>Warning</AlertTitle>
         <AlertDescription>

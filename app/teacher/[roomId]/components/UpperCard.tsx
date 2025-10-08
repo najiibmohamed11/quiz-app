@@ -16,27 +16,27 @@ function UpperCard({
   studnetsLength: number;
 }) {
   return (
-    <Card className="p-5 mt-4 grid grid-cols-2 h-50">
-      <div className="gap-y-2 ">
+    <Card className="mt-4 grid h-50 grid-cols-2 p-5">
+      <div className="gap-y-2">
         <div>
-          <h1 className="font-semibold ">Queations</h1>
+          <h1 className="font-semibold">Queations</h1>
           <div className="mt-2 flex items-center gap-2">
             <ShieldQuestionMark size={18} />
             <h1 className="font-semibold">{questionLength}</h1>
           </div>
         </div>
         <div className="mt-2">
-          <h1 className="font-semibold ">Participants</h1>
-          <div className="mt-2 flex items-center gap-2   ">
+          <h1 className="font-semibold">Participants</h1>
+          <div className="mt-2 flex items-center gap-2">
             <User size={18} />
             <h1 className="font-semibold">{studnetsLength}</h1>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col justify-between h-full items-end">
-        <div className="flex ">
-          <div className="w-full bg-accent-foreground p-2 rounded-md  font-semibold text-white dark:text-black">
+      <div className="flex h-full flex-col items-end justify-between">
+        <div className="flex">
+          <div className="bg-accent-foreground w-full rounded-md p-2 font-semibold text-white dark:text-black">
             http://quiz-app/room/we.........
           </div>
           <CopyToClipboard />

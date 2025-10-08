@@ -24,10 +24,10 @@ export default function Room() {
   }
 
   return (
-    <div className=" max-w-6xl  min-h-screen mx-auto">
-      <header className="flex gap-3 mt-8  flex-col ">
+    <div className="mx-auto min-h-screen max-w-6xl">
+      <header className="mt-8 flex flex-col gap-3">
         <Back />
-        <h1 className="font-bold text-2xl mx-5  ">
+        <h1 className="mx-5 text-2xl font-bold">
           {roomDetails?.roomInfo.name}
         </h1>
       </header>
@@ -38,7 +38,7 @@ export default function Room() {
         questionLength={roomDetails.questions.length}
       />
 
-      <div className=" mt-10">
+      <div className="mt-10">
         {/* middle part or tabs */}
         <Tabs defaultValue="answers">
           <div className="flex justify-between">

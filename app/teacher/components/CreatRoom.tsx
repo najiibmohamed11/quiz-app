@@ -72,7 +72,7 @@ export default function CreateRoom() {
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle className="cursor-pointer  dark:text-[#A5D6A7] ">
+            <DialogTitle className="cursor-pointer dark:text-[#A5D6A7]">
               Creare Room
             </DialogTitle>
           </DialogHeader>
@@ -91,7 +91,7 @@ export default function CreateRoom() {
             <div className="grid gap-3">
               <Label htmlFor="username-1">Duration</Label>
               <DialogDescription>Duration is optional</DialogDescription>
-              <div className="flex  gap-2">
+              <div className="flex gap-2">
                 <Input
                   type="number"
                   id="time-picker"
@@ -134,7 +134,7 @@ export default function CreateRoom() {
               {isloading ? "creating...." : "Create"}
             </Button>
           </DialogFooter>
-          <div className="text-red-500 text-center">{error}</div>
+          <div className="text-center text-red-500">{error}</div>
         </DialogContent>
       </form>
     </Dialog>

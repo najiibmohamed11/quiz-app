@@ -13,7 +13,7 @@ function QuestionsList({ questions }: { questions: Doc<"questions">[] }) {
     return (
       <div className="grid gap-4">
         {Array.from({ length: 6 }, (_, i) => i + 1).map((numb) => (
-          <Skeleton key={numb} className="h-40 rounded-2xl  "></Skeleton>
+          <Skeleton key={numb} className="h-40 rounded-2xl"></Skeleton>
         ))}
       </div>
     );
@@ -21,7 +21,7 @@ function QuestionsList({ questions }: { questions: Doc<"questions">[] }) {
   if (questions.length === 0) {
     return (
       <Card>
-        <CardContent className="flex flex-col justify-center items-center gap-5">
+        <CardContent className="flex flex-col items-center justify-center gap-5">
           <h1>no questions in this quiz</h1>
           <AddQuestion />
         </CardContent>
@@ -31,7 +31,7 @@ function QuestionsList({ questions }: { questions: Doc<"questions">[] }) {
   if (typeof questions === "string") {
     return (
       <Card>
-        <CardContent className="flex flex-col justify-center items-center gap-5">
+        <CardContent className="flex flex-col items-center justify-center gap-5">
           <h1>room id is not valid id</h1>
           <AddQuestion />
         </CardContent>
@@ -40,9 +40,9 @@ function QuestionsList({ questions }: { questions: Doc<"questions">[] }) {
   }
   return (
     <Card>
-      <CardContent className="flex flex-col gap-4 mb-4">
+      <CardContent className="mb-4 flex flex-col gap-4">
         <CardHeader>
-          <div className="flex justify-between ">
+          <div className="flex justify-between">
             <h1 className="font-medium">Student Performance</h1>
             <AddQuestion />
           </div>
@@ -50,16 +50,16 @@ function QuestionsList({ questions }: { questions: Doc<"questions">[] }) {
         {questions.map((question, index) => {
           return (
             <Card key={question._id}>
-              <CardHeader className="flex  ">
+              <CardHeader className="flex">
                 <Badge className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums">
                   {index + 1}
                 </Badge>
-                <h1 className="font-semibold mx-5 flex-1   min-w-96">
+                <h1 className="mx-5 min-w-96 flex-1 font-semibold">
                   {question.question}
                 </h1>
-                <div className="flex flex-col justify-center items-center">
+                <div className="flex flex-col items-center justify-center">
                   <Badge variant="secondary">{question.questionType}</Badge>
-                  <div className="flex ">
+                  <div className="flex">
                     <Button variant="ghost">
                       <Pen />
                     </Button>
@@ -71,16 +71,16 @@ function QuestionsList({ questions }: { questions: Doc<"questions">[] }) {
               </CardHeader>
               <CardContent>
                 {question.questionType != "Short Answer" ? (
-                  <div className="list-none ml-8   flex flex-col ">
+                  <div className="ml-8 flex list-none flex-col">
                     {question.options ? (
                       question.options.map((option, optionIndex) => {
                         return question.correctAnswerIndex === optionIndex ? (
                           <span
-                            className="text-primary flex items-center gap-1 "
+                            className="text-primary flex items-center gap-1"
                             key={optionIndex}
                           >
                             {" "}
-                            <CheckCircle className="h-4 w-4 text-primary " />
+                            <CheckCircle className="text-primary h-4 w-4" />
                             {option}
                           </span>
                         ) : (
@@ -93,18 +93,18 @@ function QuestionsList({ questions }: { questions: Doc<"questions">[] }) {
                       <div className="flex gap-2">
                         <>
                           <div
-                            className={`${question.correctAnswerIndex === 0 ? "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90" : "border shadow-xs hover:bg-accent hover:text-accent-foreground "} flex rounded-sm items-center justify-center gap-1 w-18 font-medium`}
+                            className={`${question.correctAnswerIndex === 0 ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs" : "hover:bg-accent hover:text-accent-foreground border shadow-xs"} flex w-18 items-center justify-center gap-1 rounded-sm font-medium`}
                           >
                             {question.correctAnswerIndex === 0 && (
-                              <CheckCircle className="h-4 w-4  " />
+                              <CheckCircle className="h-4 w-4" />
                             )}
                             <p>True</p>
                           </div>
                           <div
-                            className={`${question.correctAnswerIndex === 1 ? "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90" : "border shadow-xs hover:bg-accent hover:text-accent-foreground "} flex rounded-sm items-center justify-center gap-1 w-18 font-medium h-10`}
+                            className={`${question.correctAnswerIndex === 1 ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs" : "hover:bg-accent hover:text-accent-foreground border shadow-xs"} flex h-10 w-18 items-center justify-center gap-1 rounded-sm font-medium`}
                           >
                             {question.correctAnswerIndex === 1 && (
-                              <CheckCircle className="h-4 w-4  " />
+                              <CheckCircle className="h-4 w-4" />
                             )}
                             <p>false</p>
                           </div>

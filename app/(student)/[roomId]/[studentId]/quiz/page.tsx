@@ -100,14 +100,14 @@ function Quiz() {
 
   if (fullQuizData === undefined) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div className="flex min-h-screen items-center justify-center">
         loading....
       </div>
     );
   }
   if (fullQuizData === null) {
     return (
-      <div className="flex flex-col justify-center items-center min-h-screen gap-5">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-5">
         <h1>opps something went wrong in url please </h1>
         <Link href={`/findroom`}>
           <Button>go back</Button>
@@ -118,21 +118,21 @@ function Quiz() {
 
   if (fullQuizData === "no questions") {
     return (
-      <div className="flex justify-center items-center">
+      <div className="flex items-center justify-center">
         there is no question in this room
       </div>
     );
   }
   if (fullQuizData === "paused") {
     return (
-      <div className="flex justify-center items-center">
+      <div className="flex items-center justify-center">
         wait until teacher starts the quiz
       </div>
     );
   }
   if (fullQuizData === "expired" || isTimerEnd) {
     return (
-      <div className="flex justify-center items-center">
+      <div className="flex items-center justify-center">
         time of the quiz ended
       </div>
     );
@@ -193,15 +193,15 @@ function Quiz() {
   const currentQuestion = questions[index];
   if (!currentQuestion) {
     return (
-      <div className="flex justify-center items-center">
+      <div className="flex items-center justify-center">
         there is no question in this room
       </div>
     );
   }
   return (
-    <div className="flex justify-center items-center min-h-screen">
+    <div className="flex min-h-screen items-center justify-center">
       <Toaster position="top-center" />
-      <Card className="w-2xl ">
+      <Card className="w-2xl">
         <CardHeader className="flex justify-between">
           <Badge>
             question {answeredQuestionsIds.length + 1}/
@@ -215,17 +215,17 @@ function Quiz() {
           )}
         </CardHeader>
         <CardContent className="">
-          <h1 className="text-xl font-bold break-words mb-6">
+          <h1 className="mb-6 text-xl font-bold break-words">
             {currentQuestion.question}
           </h1>
           {currentQuestion.questionType != "Short Answer" ? (
-            <div className="flex justify-center flex-col items-center gap-4 mt-6">
+            <div className="mt-6 flex flex-col items-center justify-center gap-4">
               {currentQuestion.options ? (
                 currentQuestion.options.map((option, index) => (
                   <Button
                     key={index}
                     variant={`${answer.answer === index ? "default" : "outline"}`}
-                    className={`w-full h-14  flex justify-start `}
+                    className={`flex h-14 w-full justify-start`}
                     onClick={() =>
                       setAnswer({
                         questionId: currentQuestion._id,
@@ -240,7 +240,7 @@ function Quiz() {
                 <>
                   <Button
                     variant={`${answer.answer === 0 ? "default" : "outline"}`}
-                    className={`w-full h-14  flex justify-start `}
+                    className={`flex h-14 w-full justify-start`}
                     onClick={() => {
                       setAnswer({
                         questionId: currentQuestion._id,
@@ -252,7 +252,7 @@ function Quiz() {
                   </Button>
                   <Button
                     variant={`${answer.answer === 1 ? "default" : "outline"}`}
-                    className={`w-full h-14  flex justify-start `}
+                    className={`flex h-14 w-full justify-start`}
                     onClick={() => {
                       setAnswer({
                         questionId: currentQuestion._id,
@@ -279,9 +279,9 @@ function Quiz() {
               />
             </div>
           )}
-          <p className="text-red-500 text-center mt-3">{error && error}</p>
+          <p className="mt-3 text-center text-red-500">{error && error}</p>
         </CardContent>
-        <CardFooter className="flex justify-end cursor-pointer">
+        <CardFooter className="flex cursor-pointer justify-end">
           <Button onClick={handleNext}>Submit</Button>
         </CardFooter>
       </Card>

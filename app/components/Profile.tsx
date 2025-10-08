@@ -64,10 +64,10 @@ function Profile() {
   };
 
   return (
-    <div className=" relative" ref={profileRef}>
+    <div className="relative" ref={profileRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex justify-center items-center gap-1 cursor-pointer"
+        className="flex cursor-pointer items-center justify-center gap-1"
       >
         <Avatar>
           <AvatarImage src={user.imageUrl} alt="profile" />
@@ -79,8 +79,8 @@ function Profile() {
         />
       </button>
       {isOpen && (
-        <Card className=" z-1 absolute right-1 top-11 rounded-xl  p-4 transition-all ease-in-out duration-200  slide-in-from-top-5 animate-in">
-          <CardContent className="flex items-center gap-2  font-medium truncate ">
+        <Card className="slide-in-from-top-5 animate-in absolute top-11 right-1 z-1 rounded-xl p-4 transition-all duration-200 ease-in-out">
+          <CardContent className="flex items-center gap-2 truncate font-medium">
             <Avatar>
               <AvatarImage src={user.imageUrl} alt="profile" />
               <AvatarFallback>
@@ -89,7 +89,7 @@ function Profile() {
             </Avatar>
             <div className="">
               <span>{user.fullName}</span>
-              <span className="font-light block text-xs ">
+              <span className="block text-xs font-light">
                 {user.primaryEmailAddress?.emailAddress}
               </span>
             </div>
@@ -98,7 +98,7 @@ function Profile() {
 
           <CardFooter
             onClick={handleSignOut}
-            className="flex text-base font-normal items-center justify-center text-center   gap-2   dark:text-red-500 text-red-500  cursor-pointer"
+            className="flex cursor-pointer items-center justify-center gap-2 text-center text-base font-normal text-red-500 dark:text-red-500"
           >
             <LogOut size={18} />
             <p>Log out</p>

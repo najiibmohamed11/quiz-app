@@ -12,10 +12,10 @@ const rubik = Rubik({
 
 export default async function Teacher() {
   return (
-    <div className="max-w-6xl px-8 min-h-screen mx-auto ">
-      <header className=" h-fit  flex  justify-between mt-4 text-2xl font-bold ">
+    <div className="mx-auto min-h-screen max-w-6xl px-8">
+      <header className="mt-4 flex h-fit justify-between text-2xl font-bold">
         <h1 className={`${rubik.className}`}>knowy</h1>
-        <div className="flex gap-4 justify-center">
+        <div className="flex justify-center gap-4">
           <ModeToggle />
           <CreateRoom />
           <Profile />

@@ -62,19 +62,19 @@ function StudentPerformance({
     roomId: roomId as string,
   });
   if (!questions || !students) {
-    return <h1 className="flex justify-center items-center">loading....</h1>;
+    return <h1 className="flex items-center justify-center">loading....</h1>;
   }
 
   if (questions.length == 0) {
     return (
-      <h1 className="flex justify-center items-center">
+      <h1 className="flex items-center justify-center">
         {"room doesn't have any question please add questions first"}
       </h1>
     );
   }
   if (typeof questions === "string" || typeof students === "string") {
     return (
-      <h1 className="flex justify-center items-center">
+      <h1 className="flex items-center justify-center">
         this room is not valid room
       </h1>
     );
@@ -91,11 +91,11 @@ function StudentPerformance({
     //if answer there options in question and answers are number it is mcq
     if (question.options && typeof answer === "number") {
       return (
-        <div className="flex justify-center items-center gap-2">
+        <div className="flex items-center justify-center gap-2">
           {question.correctAnswerIndex === answer ? (
-            <CheckCircle className="h-4 w-4 text-green-600 " />
+            <CheckCircle className="h-4 w-4 text-green-600" />
           ) : (
-            <CircleX className="h-4 w-4 text-red-600 " />
+            <CircleX className="h-4 w-4 text-red-600" />
           )}
           {String.fromCharCode(answer + 65)}
         </div>
@@ -104,12 +104,12 @@ function StudentPerformance({
     //if answer is number only and there is no options in this question it is true/false
     if (typeof answer === "number") {
       return (
-        <div className="flex justify-center items-center gap-2">
+        <div className="flex items-center justify-center gap-2">
           {/* check if it is correct answe or not */}
           {question.correctAnswerIndex === answer ? (
-            <CheckCircle className="h-4 w-4 text-green-600 " />
+            <CheckCircle className="h-4 w-4 text-green-600" />
           ) : (
-            <CircleX className="h-4 w-4 text-red-600 " />
+            <CircleX className="h-4 w-4 text-red-600" />
           )}
           {answer === 0 ? "True" : "False"}
         </div>
@@ -152,8 +152,8 @@ function StudentPerformance({
     if (question.options && question.correctAnswerIndex != undefined) {
       return (
         <>
-          <div className="text-muted-foreground text-xs flex gap-2 ">
-            <CheckCircle className="h-4 w-4 text-green-600 " />
+          <div className="text-muted-foreground flex gap-2 text-xs">
+            <CheckCircle className="h-4 w-4 text-green-600" />
             <h1 className="font-bold">
               {String.fromCharCode(question.correctAnswerIndex + 65)})
             </h1>
@@ -165,8 +165,8 @@ function StudentPerformance({
 
     if (question.correctAnswerIndex != undefined) {
       return (
-        <div className="text-muted-foreground text-xs flex gap-4 ">
-          <CheckCircle className="h-4 w-4 text-green-600 " />
+        <div className="text-muted-foreground flex gap-4 text-xs">
+          <CheckCircle className="h-4 w-4 text-green-600" />
           {question.correctAnswerIndex === 0 ? "True" : "False"}
         </div>
       );
@@ -174,8 +174,8 @@ function StudentPerformance({
 
     if (question.answer) {
       return (
-        <div className="text-muted-foreground text-xs flex gap-4">
-          <CheckCircle className="h-4 w-4 text-green-600 " />
+        <div className="text-muted-foreground flex gap-4 text-xs">
+          <CheckCircle className="h-4 w-4 text-green-600" />
           {question.answer}
         </div>
       );
@@ -185,7 +185,7 @@ function StudentPerformance({
   return (
     <Card>
       <CardHeader>
-        <div className="flex justify-between ">
+        <div className="flex justify-between">
           <h1 className="font-medium">Student Performance</h1>
           {!restriction ? (
             <LockRoom />
@@ -199,7 +199,7 @@ function StudentPerformance({
       </CardHeader>
       <CardContent>
         <Table>
-          <TableHeader className="p-20 ">
+          <TableHeader className="p-20">
             <TableRow className="hover:bg-transparent">
               {!restriction ? (
                 <TableHead>Name</TableHead>
@@ -224,11 +224,9 @@ function StudentPerformance({
                               : question.questionType === "Short Answer"
                                 ? "bg-[#FFF3E0] text-[#9A4A00] hover:bg-[#FFE6BF] dark:bg-[#2B1A00] dark:text-[#FFD7A3] dark:hover:bg-[#3B2608]"
                                 : "bg-[#FDE8E8] text-[#8B1E1E] hover:bg-[#F9D6D6] dark:bg-[#2A0E0E] dark:text-[#FFB3B3] dark:hover:bg-[#3C1616]"
-                          }
-                        cursor-pointer w-24 h-10 flex items-center justify-center rounded-sm flex-col mb-2 transition-colors
-                              `}
+                          } mb-2 flex h-10 w-24 cursor-pointer flex-col items-center justify-center rounded-sm transition-colors`}
                         >
-                          <div className="w-full truncate px-2 text-center ">
+                          <div className="w-full truncate px-2 text-center">
                             {question.question}
                           </div>
                           <Eye size={12} />
@@ -281,7 +279,7 @@ function StudentPerformance({
                     return (
                       <TableCell className="text-center" key={question._id}>
                         {question.questionType != "Short Answer" ? (
-                          <div className="w-24 h-10  bg-gray-200 dark:bg-border rounded-md flex justify-center items-center">
+                          <div className="dark:bg-border flex h-10 w-24 items-center justify-center rounded-md bg-gray-200">
                             {formatStudentAnswers(
                               question,
                               answerOfThisQuestion?.answer,
@@ -290,7 +288,7 @@ function StudentPerformance({
                         ) : (
                           <HoverCard>
                             <HoverCardTrigger asChild>
-                              <div className="w-24 h-10   bg-gray-200 dark:bg-border rounded-md flex justify-center items-center">
+                              <div className="dark:bg-border flex h-10 w-24 items-center justify-center rounded-md bg-gray-200">
                                 <p className="w-full truncate px-2 text-center">
                                   {formatStudentAnswers(
                                     question,

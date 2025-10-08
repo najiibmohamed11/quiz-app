@@ -22,7 +22,7 @@ function QuizStatusBtn({ roomStatus }: { roomStatus: string }) {
   };
   return (
     <Button
-      className="w-60 mr-9  cursor-pointer"
+      className="mr-9 w-60 cursor-pointer"
       variant={`${roomStatus === "active" ? "outline" : "default"}`}
       onClick={handleRoomStatusChange}
     >

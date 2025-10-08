@@ -24,7 +24,7 @@ function CopyToClipboard() {
   return (
     <Button
       variant="ghost"
-      className="hover:bg-transparent cursor-pointer"
+      className="cursor-pointer hover:bg-transparent"
       onClick={copyToClipboard}
     >
       {isCopied ? <Check /> : <Copy />}

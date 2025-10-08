@@ -83,12 +83,12 @@ function StudentInfo() {
     }
   };
   return (
-    <div className="flex justify-center items-center min-h-screen">
+    <div className="flex min-h-screen items-center justify-center">
       <Card className="w-96">
         <CardHeader>
-          <h1 className="font-bold text-center">Student info</h1>
+          <h1 className="text-center font-bold">Student info</h1>
         </CardHeader>
-        <CardContent className=" m-0">
+        <CardContent className="m-0">
           <form action="submit" onSubmit={onSubmit}>
             <Label htmlFor="roomName">
               {roomInfo.restriction

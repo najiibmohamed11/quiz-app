@@ -68,7 +68,7 @@ function Settings({ settings, roomId }: settingProps) {
             <Label id="randomizing-questions" className="">
               randomize questions
             </Label>
-            <p className="text-gray- text-sm text-muted-foreground">
+            <p className="text-gray- text-muted-foreground text-sm">
               Show questions in random order for each participant
             </p>
           </div>
@@ -76,7 +76,7 @@ function Settings({ settings, roomId }: settingProps) {
             checked={settings.randomizingQuestions}
             onCheckedChange={handleRandomizeQuestionToggle}
             id="randomizing-questions"
-            className="text-green-400 cursor-pointer"
+            className="cursor-pointer text-green-400"
           />
         </div>
         <Separator className="my-4" />
@@ -85,7 +85,7 @@ function Settings({ settings, roomId }: settingProps) {
             <Label id="randomizing-questions " className="">
               Prevent AI usage
             </Label>
-            <ul className="text-sm text-muted-foreground list-disc ml-6">
+            <ul className="text-muted-foreground ml-6 list-disc text-sm">
               <li>{"student can't copy past text "}</li>
               <li>tracking tap switches </li>
             </ul>
@@ -94,7 +94,7 @@ function Settings({ settings, roomId }: settingProps) {
             checked={settings.aiPrevention}
             onCheckedChange={handleAiPreventionToggle}
             id="randomizing-questions"
-            className="text-green-400 cursor-pointer"
+            className="cursor-pointer text-green-400"
           />
         </div>
         <Separator className="my-4" />
@@ -103,7 +103,7 @@ function Settings({ settings, roomId }: settingProps) {
             <Label id="randomizing-questions" className="">
               Delet Quiz
             </Label>
-            <p className="text-gray- text-sm text-muted-foreground">
+            <p className="text-gray- text-muted-foreground text-sm">
               once you delete the quiz all data would be lost there is no
               getting back
             </p>
@@ -125,7 +125,7 @@ function Settings({ settings, roomId }: settingProps) {
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction
-                  className="bg-red-600 hover:bg-red-700 text-white"
+                  className="bg-red-600 text-white hover:bg-red-700"
                   onClick={handleDelte}
                 >
                   Continue

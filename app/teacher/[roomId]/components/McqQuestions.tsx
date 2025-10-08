@@ -138,7 +138,7 @@ function McqQuestions() {
       >
         Add option
       </Button>
-      <em className="text-red-500 text-center">{error && error}</em>
+      <em className="text-center text-red-500">{error && error}</em>
       <Button disabled={isLoading} type="submit">
         {isLoading ? "Adding....." : "Add Question"}
       </Button>
