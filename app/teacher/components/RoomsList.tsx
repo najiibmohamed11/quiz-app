@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useQuery } from "convex/react";
+import { Preloaded, usePreloadedQuery, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import CreateRoom from "./CreatRoom";
 import { Card, CardFooter } from "@/components/ui/card";
@@ -12,10 +12,12 @@ import { useUser } from "@clerk/nextjs";
 import QuizCardSkeliton from "./QuizCardSkeliton";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 
-function RoomsList() {
-  const { isSignedIn, user } = useUser();
-  const rooms = useQuery(api.room.getRooms, isSignedIn ? {} : "skip");
-  const [parent, enableAnimations] = useAutoAnimate();
+function RoomsList(propert: {
+  preloadedTasks: Preloaded<typeof api.room.getRooms>;
+}) {
+  const rooms = usePreloadedQuery(propert.preloadedTasks);
+
+  const [parent] = useAutoAnimate();
 
   if (!rooms) {
     return (

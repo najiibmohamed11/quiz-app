@@ -20,16 +20,17 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Trash } from "lucide-react";
+import { useParams } from "next/navigation";
 
 interface settingProps {
   settings: {
     aiPrevention: boolean;
     randomizingQuestions: boolean;
   };
-  roomId: string;
 }
 
-function Settings({ settings, roomId }: settingProps) {
+function Settings({ settings }: settingProps) {
+  const { roomId }: { roomId: string } = useParams();
   const switchAiPrevention = useMutation(api.room.SwitchAiPrevention);
   const switchRandomizingQuestion = useMutation(
     api.room.SwitchRandomizingQuestions,
