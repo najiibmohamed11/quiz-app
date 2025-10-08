@@ -10,10 +10,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { useUser } from "@clerk/nextjs";
 import QuizCardSkeliton from "./QuizCardSkeliton";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 function RoomsList() {
   const { isSignedIn, user } = useUser();
   const rooms = useQuery(api.room.getRooms, isSignedIn ? {} : "skip");
+  const [parent, enableAnimations] = useAutoAnimate();
 
   if (!rooms) {
     return (
@@ -33,7 +35,10 @@ function RoomsList() {
     );
   }
   return (
-    <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-6">
+    <div
+      className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-6"
+      ref={parent}
+    >
       {rooms.map((room) => {
         return (
           <Link key={room._id} href={`./teacher/${room._id}`}>

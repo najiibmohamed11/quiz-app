@@ -79,7 +79,7 @@ function Profile() {
         />
       </button>
       {isOpen && (
-        <Card className="  absolute right-1 top-11 rounded-xl  p-4 transition-all ease-in-out duration-200  slide-in-from-top-5 animate-in">
+        <Card className=" z-1 absolute right-1 top-11 rounded-xl  p-4 transition-all ease-in-out duration-200  slide-in-from-top-5 animate-in">
           <CardContent className="flex items-center gap-2  font-medium truncate ">
             <Avatar>
               <AvatarImage src={user.imageUrl} alt="profile" />
