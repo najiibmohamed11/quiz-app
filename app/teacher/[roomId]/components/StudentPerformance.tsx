@@ -1,3 +1,5 @@
+"use client";
+
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   HoverCard,
@@ -13,7 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+import { Id, Doc } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import { CheckCircle, CircleX, Eye } from "lucide-react";
 import { useParams } from "next/navigation";
@@ -47,16 +49,18 @@ interface studentPerformanceProps {
         uniqueColumn: string;
       }
     | undefined;
+
+  questions: Doc<"questions">[];
 }
-function StudentPerformance({ restriction }: studentPerformanceProps) {
+function StudentPerformance({
+  restriction,
+  questions,
+}: studentPerformanceProps) {
   const { roomId } = useParams();
-  const questions = useQuery(api.question.getRoomeQuestions, {
-    roomId: roomId as string,
-  });
+
   const students = useQuery(api.student.getAllStudentsInRoom, {
     roomId: roomId as string,
   });
-  console.log(students);
   if (!questions || !students) {
     return <h1 className="flex justify-center items-center">loading....</h1>;
   }
@@ -80,9 +84,11 @@ function StudentPerformance({ restriction }: studentPerformanceProps) {
     question: question,
     answer: string | number | undefined,
   ) => {
+    //if there is no answer for this question return --
     if (answer === undefined) {
       return "---";
     }
+    //if answer there options in question and answers are number it is mcq
     if (question.options && typeof answer === "number") {
       return (
         <div className="flex justify-center items-center gap-2">
@@ -95,9 +101,11 @@ function StudentPerformance({ restriction }: studentPerformanceProps) {
         </div>
       );
     }
+    //if answer is number only and there is no options in this question it is true/false
     if (typeof answer === "number") {
       return (
         <div className="flex justify-center items-center gap-2">
+          {/* check if it is correct answe or not */}
           {question.correctAnswerIndex === answer ? (
             <CheckCircle className="h-4 w-4 text-green-600 " />
           ) : (
@@ -107,7 +115,7 @@ function StudentPerformance({ restriction }: studentPerformanceProps) {
         </div>
       );
     }
-
+    //if answer is not one of the above it is short answer so return answer we cant notice if it is correct or incorrect
     return answer;
   };
 
@@ -187,7 +195,6 @@ function StudentPerformance({ restriction }: studentPerformanceProps) {
               studentsLength={students.length}
             />
           )}
-          {/* <Button id="restrict">restrict Particpents</Button> */}
         </div>
       </CardHeader>
       <CardContent>
@@ -211,16 +218,15 @@ function StudentPerformance({ restriction }: studentPerformanceProps) {
                     <HoverCardTrigger asChild>
                       <TableHead key={question._id}>
                         <div
-                          className={`
-  ${
-    question.questionType === "MCQ"
-      ? "bg-[#E6F0FF] text-[#0A3D91] hover:bg-[#D6E5FF] dark:bg-[#0B1E3A] dark:text-[#AFCBFF] dark:hover:bg-[#102B55]"
-      : question.questionType === "Short Answer"
-        ? "bg-[#FFF3E0] text-[#9A4A00] hover:bg-[#FFE6BF] dark:bg-[#2B1A00] dark:text-[#FFD7A3] dark:hover:bg-[#3B2608]"
-        : "bg-[#FDE8E8] text-[#8B1E1E] hover:bg-[#F9D6D6] dark:bg-[#2A0E0E] dark:text-[#FFB3B3] dark:hover:bg-[#3C1616]"
-  }
-  cursor-pointer w-24 h-10 flex items-center justify-center rounded-sm flex-col mb-2 transition-colors
-`}
+                          className={`${
+                            question.questionType === "MCQ"
+                              ? "bg-[#E6F0FF] text-[#0A3D91] hover:bg-[#D6E5FF] dark:bg-[#0B1E3A] dark:text-[#AFCBFF] dark:hover:bg-[#102B55]"
+                              : question.questionType === "Short Answer"
+                                ? "bg-[#FFF3E0] text-[#9A4A00] hover:bg-[#FFE6BF] dark:bg-[#2B1A00] dark:text-[#FFD7A3] dark:hover:bg-[#3B2608]"
+                                : "bg-[#FDE8E8] text-[#8B1E1E] hover:bg-[#F9D6D6] dark:bg-[#2A0E0E] dark:text-[#FFB3B3] dark:hover:bg-[#3C1616]"
+                          }
+                        cursor-pointer w-24 h-10 flex items-center justify-center rounded-sm flex-col mb-2 transition-colors
+                              `}
                         >
                           <div className="w-full truncate px-2 text-center ">
                             {question.question}

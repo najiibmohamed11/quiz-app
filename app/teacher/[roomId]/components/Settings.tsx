@@ -1,3 +1,5 @@
+"use client";
+
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import React from "react";
 import { Label } from "@/components/ui/label";

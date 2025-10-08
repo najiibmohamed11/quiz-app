@@ -169,12 +169,9 @@ const ImportStudents = () => {
           type="file"
           placeholder="najiib"
           accept=".xlsx,.xls"
-          className="bg-green-600 hover:bg-green-700 w-90 hidden"
+          className="w-90 hidden"
         />
-        <Button
-          className="bg-green-700 hover:bg-green-700"
-          onClick={handleFileImport}
-        >
+        <Button className="" onClick={handleFileImport}>
           <Sheet /> import students list
         </Button>
         {uniqueColumns.length > 1 && importedData && pickedUniqueColumn && (
@@ -194,7 +191,7 @@ const ImportStudents = () => {
           <>
             <p>
               students would use{" "}
-              <span className="font-bold  bg-gray-200 px-2 mx-1 text-center rounded-md">
+              <span className="font-bold  bg-primary px-2 mx-1 text-background text-center rounded-md">
                 {pickedUniqueColumn}{" "}
               </span>
               to enter the quiz

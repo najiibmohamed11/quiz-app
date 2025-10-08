@@ -15,7 +15,6 @@ export default async function Teacher() {
     <div className="max-w-6xl px-8 min-h-screen mx-auto ">
       <header className=" h-fit  flex  justify-between mt-4 text-2xl font-bold ">
         <h1 className={`${rubik.className}`}>knowy</h1>
-
         <div className="flex gap-4 justify-center">
           <ModeToggle />
           <CreateRoom />

@@ -72,6 +72,10 @@ export const getRoom = query({
 export const getRoomDetails = query({
   args: { roomId: v.string() },
   handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (!user?.subject) {
+      throw new ConvexError("not authenticated");
+    }
     const roomId = ctx.db.normalizeId("rooms", args.roomId);
     if (!roomId) {
       throw new ConvexError("Invalid room ID");
@@ -90,8 +94,8 @@ export const getRoomDetails = query({
       .collect();
     return {
       roomInfo,
-      questionLength: questions.length,
-      participants: students.length,
+      questions: questions,
+      students: students.length,
     };
   },
 });
