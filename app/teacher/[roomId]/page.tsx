@@ -19,13 +19,23 @@ export default async function Room({ params }: RoomPageProps) {
     },
     { token },
   );
+  const preloadStudents = await preloadQuery(
+    api.student.getAllStudentsInRoom,
+    {
+      roomId: roomId as string,
+    },
+    { token },
+  );
 
   return (
     <div className="mx-auto min-h-screen max-w-6xl">
       <header className="mt-8 flex flex-col gap-3">
         <Back />
       </header>
-      <ReactivePart preloadRoomDetails={preloadRoomDetails} />
+      <ReactivePart
+        preloadRoomDetails={preloadRoomDetails}
+        students={preloadStudents}
+      />
     </div>
   );
 }

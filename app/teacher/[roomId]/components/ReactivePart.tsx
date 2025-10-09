@@ -7,10 +7,14 @@ import StudentPerformance from "./StudentPerformance";
 import QuestionsList from "./QuestionsList";
 import Settings from "./Settings";
 import { Preloaded, usePreloadedQuery } from "convex/react";
-function ReactivePart(propert: {
+import { Doc } from "@/convex/_generated/dataModel";
+interface reactivePartProp {
   preloadRoomDetails: Preloaded<typeof api.room.getRoomDetails>;
-}) {
+  students: Preloaded<typeof api.student.getAllStudentsInRoom>;
+}
+function ReactivePart(propert: reactivePartProp) {
   const roomDetails = usePreloadedQuery(propert.preloadRoomDetails);
+  const students = usePreloadedQuery(propert.students);
 
   return (
     <>
@@ -38,6 +42,7 @@ function ReactivePart(propert: {
             <StudentPerformance
               restriction={roomDetails.roomInfo.restriction}
               questions={roomDetails.questions}
+              students={students}
             />
           </TabsContent>
           {/* second tab is question lis and where you can add new questions  */}

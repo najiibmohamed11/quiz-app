@@ -21,6 +21,7 @@ import { CheckCircle, CircleX, Eye } from "lucide-react";
 import { useParams } from "next/navigation";
 import LockRoom from "./LockRoomModal";
 import UnlockQuiz from "./UnlockQuiz";
+import { FunctionReturnType } from "convex/server";
 
 type question = {
   _id: Id<"questions">;
@@ -51,16 +52,15 @@ interface studentPerformanceProps {
     | undefined;
 
   questions: Doc<"questions">[];
+  students: FunctionReturnType<typeof api.student.getAllStudentsInRoom>;
 }
 function StudentPerformance({
   restriction,
   questions,
+  students,
 }: studentPerformanceProps) {
   const { roomId } = useParams();
 
-  const students = useQuery(api.student.getAllStudentsInRoom, {
-    roomId: roomId as string,
-  });
   if (!questions || !students) {
     return <h1 className="flex items-center justify-center">loading....</h1>;
   }
