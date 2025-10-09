@@ -4,11 +4,9 @@ import { Preloaded, usePreloadedQuery, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import CreateRoom from "./CreatRoom";
 import { Card, CardFooter } from "@/components/ui/card";
-import { CircleHelp, Clock10, Pause, Users } from "lucide-react";
+import { CircleHelp, Clock10, Pause } from "lucide-react";
 import Link from "next/link";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import { useUser } from "@clerk/nextjs";
 import QuizCardSkeliton from "./QuizCardSkeliton";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 

@@ -120,6 +120,10 @@ export const FindRoom = query({
 export const changeRoomStatus = mutation({
   args: { roomId: v.string() },
   handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (!user?.subject) {
+      throw new ConvexError("not authenticated");
+    }
     const roomId = ctx.db.normalizeId("rooms", args.roomId);
     if (!roomId) {
       throw new ConvexError("room is invalid one");
@@ -310,5 +314,31 @@ export const deleteRoom = mutation({
       }
     }
     await ctx.db.delete(roomId);
+  },
+});
+
+export const restartEndedQuiz = mutation({
+  args: { roomId: v.id("rooms"), duration: v.number() },
+  handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (!user?.subject) {
+      throw new ConvexError("not authenticated");
+    }
+    if (args.duration === 0) {
+      await ctx.db.patch(args.roomId, {
+        status: "active",
+        duration: 0,
+        remainingTime: 0,
+        expiresAt: undefined,
+      });
+      return;
+    }
+    const expiresAt = Date.now() + args.duration;
+    await ctx.db.patch(args.roomId, {
+      status: "active",
+      duration: args.duration,
+      remainingTime: args.duration,
+      expiresAt: expiresAt,
+    });
   },
 });

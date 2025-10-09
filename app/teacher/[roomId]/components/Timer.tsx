@@ -7,9 +7,15 @@ type TimerProp = {
   expiresAt: number | undefined;
   roomStatus: "active" | "pause";
   remainingTime: number | undefined;
+  setIsTimerEnded: (isTimerEnd: boolean) => void;
 };
 
-function Timer({ expiresAt, roomStatus, remainingTime }: TimerProp) {
+function Timer({
+  expiresAt,
+  roomStatus,
+  remainingTime,
+  setIsTimerEnded,
+}: TimerProp) {
   const [timer, setTimer] = useState(() =>
     expiresAt ? Math.max(0, expiresAt - Date.now()) : (remainingTime ?? 0),
   );
@@ -25,6 +31,7 @@ function Timer({ expiresAt, roomStatus, remainingTime }: TimerProp) {
       const RemainingTime = Math.max(0, expiresAt - now);
       setTimer(RemainingTime);
       if (RemainingTime === 0) {
+        setIsTimerEnded(true);
         clearInterval(id);
       }
     }, 1000);

@@ -10,6 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { DurationPicker } from "@/components/ui/duration-picker";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { api } from "@/convex/_generated/api";
@@ -18,16 +19,10 @@ import { ConvexError } from "convex/values";
 import { useRouter } from "next/navigation";
 
 import { useState } from "react";
-type durstion = {
-  hour: number;
-  minute: number;
-};
+import z from "zod";
 export default function CreateRoom() {
   const [name, setName] = useState<string>("");
-  const [duration, setDuration] = useState<durstion>({
-    hour: 0,
-    minute: 0,
-  });
+  const [duration, setDuration] = useState<number>(0);
   const [isloading, setIsloading] = useState(false);
   const [error, setErorr] = useState("");
   const mutateSomething = useMutation(api.room.creatRoom);
@@ -35,20 +30,15 @@ export default function CreateRoom() {
 
   async function handleCreat() {
     if (!name) {
-      return;
-    }
-    if (!duration) {
+      setErorr("please enter your name");
       return;
     }
     try {
+      console.log(duration);
       setIsloading(true);
-      const hoursInMilliSecong = duration.hour * 60 * 60 * 1000; //1h is equal to 3,600,000 milliseconds
-      const minutsInMilliSecong = duration.minute * 60 * 1000;
-
-      const durationInMillisecong = hoursInMilliSecong + minutsInMilliSecong;
       const id = await mutateSomething({
         name: name,
-        duration: durationInMillisecong,
+        duration: duration,
       });
       if (!id) {
         return;
@@ -91,37 +81,7 @@ export default function CreateRoom() {
             <div className="grid gap-3">
               <Label htmlFor="username-1">Duration</Label>
               <DialogDescription>Duration is optional</DialogDescription>
-              <div className="flex gap-2">
-                <Input
-                  type="number"
-                  id="time-picker"
-                  defaultValue="00"
-                  className="w-16"
-                  min="0"
-                  max="12"
-                  onChange={(e) =>
-                    setDuration({
-                      minute: duration?.minute ?? 0,
-                      hour: Number(e.target.value),
-                    })
-                  }
-                />
-                <div className="text-2xl">:</div>
-                <Input
-                  type="number"
-                  id="time-picker"
-                  min="0"
-                  max="60"
-                  defaultValue="00"
-                  className="w-16"
-                  onChange={(e) =>
-                    setDuration({
-                      hour: duration?.hour ?? 0,
-                      minute: Number(e.target.value),
-                    })
-                  }
-                />
-              </div>
+              <DurationPicker value={duration} onChange={setDuration} />
             </div>
           </div>
           <DialogFooter>

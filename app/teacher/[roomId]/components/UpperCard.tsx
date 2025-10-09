@@ -1,10 +1,11 @@
 import { Card } from "@/components/ui/card";
 import { ShieldQuestionMark, User } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import CopyToClipboard from "./CopyToClipboard";
 import Timer from "./Timer";
 import QuizStatusBtn from "./QuizStatusBtn";
 import { Id, Doc } from "@/convex/_generated/dataModel";
+import { useForceUpdate } from "@/app/hooks/useForceUpdate";
 
 function UpperCard({
   roomDetails,
@@ -15,6 +16,7 @@ function UpperCard({
   questionLength: number;
   studnetsLength: number;
 }) {
+  const forceRerender = useForceUpdate();
   return (
     <Card className="mt-4 grid h-50 grid-cols-2 p-5">
       <div className="gap-y-2">
@@ -45,8 +47,14 @@ function UpperCard({
           remainingTime={roomDetails.remainingTime}
           roomStatus={roomDetails.status}
           expiresAt={roomDetails.expiresAt}
+          setIsTimerEnded={forceRerender}
         />
-        <QuizStatusBtn roomStatus={roomDetails.status} />
+        <QuizStatusBtn
+          roomStatus={roomDetails.status}
+          remainingTime={roomDetails.remainingTime}
+          duration={roomDetails.duration}
+          expiresAt={roomDetails.expiresAt ?? 0}
+        />
       </div>
     </Card>
   );
