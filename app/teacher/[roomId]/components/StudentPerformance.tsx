@@ -17,11 +17,14 @@ import {
 import { api } from "@/convex/_generated/api";
 import { Id, Doc } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
-import { CheckCircle, CircleX, Eye } from "lucide-react";
+import { CheckCircle, CircleX, Eye, TriangleAlert } from "lucide-react";
 import { useParams } from "next/navigation";
 import LockRoom from "./LockRoomModal";
 import UnlockQuiz from "./UnlockQuiz";
 import { FunctionReturnType } from "convex/server";
+import StudentPerformanceLoading from "./StudentPerformanceLoading";
+import InValidQuiz from "./InValidQuiz";
+import AddQuestion from "./AddQuestion";
 
 type question = {
   _id: Id<"questions">;
@@ -62,22 +65,24 @@ function StudentPerformance({
   const { roomId } = useParams();
 
   if (!questions || !students) {
-    return <h1 className="flex items-center justify-center">loading....</h1>;
+    return <StudentPerformanceLoading />;
   }
 
-  if (questions.length == 0) {
+  if (questions.length === 0) {
     return (
-      <h1 className="flex items-center justify-center">
-        {"room doesn't have any question please add questions first"}
-      </h1>
+      <Card className="flex flex-col items-center justify-center space-y-2 p-10 text-center">
+        <TriangleAlert className="h-10 w-10 text-yellow-500" />
+        <h2 className="text-lg font-semibold">No Questions Available</h2>
+        <p className="text-muted-foreground text-sm">
+          This room doesn’t have any questions yet. Add questions to view
+          student performance.
+        </p>
+        <AddQuestion />
+      </Card>
     );
   }
   if (typeof questions === "string" || typeof students === "string") {
-    return (
-      <h1 className="flex items-center justify-center">
-        this room is not valid room
-      </h1>
-    );
+    return <InValidQuiz />;
   }
 
   const formatStudentAnswers = (
