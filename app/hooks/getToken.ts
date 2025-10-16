@@ -2,6 +2,11 @@ import { auth, Token } from "@clerk/nextjs/server";
 
 export const getToken = async () => {
   const { getToken } = await auth();
-  const token = await getToken({ template: "convex" });
-  return token ?? undefined;
+  try {
+    const token = await getToken({ template: "convex" });
+    return token;
+  } catch (e) {
+    console.log(e);
+    return undefined;
+  }
 };

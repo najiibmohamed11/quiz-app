@@ -10,7 +10,8 @@ interface RoomPageProps {
 }
 export default async function Room({ params }: RoomPageProps) {
   const token = await getToken();
-  const { roomId } = params;
+  const { roomId } = await params;
+  if (!token) return null;
 
   const preloadRoomDetails = await preloadQuery(
     api.room.getRoomDetails,

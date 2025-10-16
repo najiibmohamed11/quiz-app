@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { Preloaded, usePreloadedQuery, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import CreateRoom from "./CreatRoom";
@@ -15,7 +15,7 @@ function RoomsList(propert: {
 }) {
   const rooms = usePreloadedQuery(propert.preloadedTasks);
 
-  const [parent] = useAutoAnimate();
+  const [parent, enableAnimations] = useAutoAnimate();
 
   if (!rooms) {
     return (
@@ -46,8 +46,10 @@ function RoomsList(propert: {
               <div className="p-5">
                 <div className="flex justify-between">
                   <h1 className="truncate font-bold">{room?.name}</h1>
-                  <Badge className="h-6 w-fit rounded-4xl bg-green-200 px-2 text-green-900">
-                    active
+                  <Badge
+                    className={`h-6 w-fit rounded-4xl bg-[#A5D6A7] px-2 text-black`}
+                  >
+                    {room.status}
                   </Badge>
                 </div>
                 <div className="mt-5 space-y-3">

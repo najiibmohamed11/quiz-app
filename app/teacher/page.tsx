@@ -15,6 +15,8 @@ const rubik = Rubik({
 export default async function Teacher() {
   const token = await getToken();
 
+  if (!token) return null;
+
   const preloadedTasks = await preloadQuery(
     api.room.getRooms,
     {},
