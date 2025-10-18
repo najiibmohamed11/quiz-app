@@ -30,6 +30,7 @@ export const creatRoom = mutation({
       remainingTime: args.duration,
       expiresAt: undefined,
       settings: { aiPrevention: true, randomizingQuestions: true },
+      numberOfQuestions: 0,
     });
 
     return roomId;
@@ -41,13 +42,13 @@ export const getRooms = query({
   handler: async (ctx) => {
     const user = await ctx.auth.getUserIdentity();
     if (!user?.subject) {
-      return "not authenticated";
+      throw new ConvexError("not authenticated");
     }
     const rooms = await ctx.db
       .query("rooms")
       .filter((room) => room.eq(room.field("teacher"), user.subject))
+      .order("desc") // 👈 newest first
       .collect();
-
     return rooms;
   },
 });
@@ -71,6 +72,10 @@ export const getRoom = query({
 export const getRoomDetails = query({
   args: { roomId: v.string() },
   handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (!user?.subject) {
+      throw new ConvexError("not authenticated");
+    }
     const roomId = ctx.db.normalizeId("rooms", args.roomId);
     if (!roomId) {
       throw new ConvexError("Invalid room ID");
@@ -89,8 +94,8 @@ export const getRoomDetails = query({
       .collect();
     return {
       roomInfo,
-      questionLength: questions.length,
-      participants: students.length,
+      questions: questions,
+      students: students.length,
     };
   },
 });
@@ -115,6 +120,10 @@ export const FindRoom = query({
 export const changeRoomStatus = mutation({
   args: { roomId: v.string() },
   handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (!user?.subject) {
+      throw new ConvexError("not authenticated");
+    }
     const roomId = ctx.db.normalizeId("rooms", args.roomId);
     if (!roomId) {
       throw new ConvexError("room is invalid one");
@@ -305,5 +314,31 @@ export const deleteRoom = mutation({
       }
     }
     await ctx.db.delete(roomId);
+  },
+});
+
+export const restartEndedQuiz = mutation({
+  args: { roomId: v.id("rooms"), duration: v.number() },
+  handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (!user?.subject) {
+      throw new ConvexError("not authenticated");
+    }
+    if (args.duration === 0) {
+      await ctx.db.patch(args.roomId, {
+        status: "active",
+        duration: 0,
+        remainingTime: 0,
+        expiresAt: undefined,
+      });
+      return;
+    }
+    const expiresAt = Date.now() + args.duration;
+    await ctx.db.patch(args.roomId, {
+      status: "active",
+      duration: args.duration,
+      remainingTime: args.duration,
+      expiresAt: expiresAt,
+    });
   },
 });

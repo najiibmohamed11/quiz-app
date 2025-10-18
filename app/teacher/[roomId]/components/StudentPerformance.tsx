@@ -1,3 +1,5 @@
+"use client";
+
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   HoverCard,
@@ -13,12 +15,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+import { Id, Doc } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
-import { CheckCircle, CircleX, Eye } from "lucide-react";
+import { CheckCircle, CircleX, Eye, TriangleAlert } from "lucide-react";
 import { useParams } from "next/navigation";
 import LockRoom from "./LockRoomModal";
 import UnlockQuiz from "./UnlockQuiz";
+import { FunctionReturnType } from "convex/server";
+import StudentPerformanceLoading from "./StudentPerformanceLoading";
+import InValidQuiz from "./InValidQuiz";
+import AddQuestion from "./AddQuestion";
 
 type question = {
   _id: Id<"questions">;
@@ -47,67 +53,74 @@ interface studentPerformanceProps {
         uniqueColumn: string;
       }
     | undefined;
+
+  questions: Doc<"questions">[];
+  students: FunctionReturnType<typeof api.student.getAllStudentsInRoom>;
 }
-function StudentPerformance({ restriction }: studentPerformanceProps) {
+function StudentPerformance({
+  restriction,
+  questions,
+  students,
+}: studentPerformanceProps) {
   const { roomId } = useParams();
-  const questions = useQuery(api.question.getRoomeQuestions, {
-    roomId: roomId as string,
-  });
-  const students = useQuery(api.student.getAllStudentsInRoom, {
-    roomId: roomId as string,
-  });
-  console.log(students);
+
   if (!questions || !students) {
-    return <h1 className="flex justify-center items-center">loading....</h1>;
+    return <StudentPerformanceLoading />;
   }
 
-  if (questions.length == 0) {
+  if (questions.length === 0) {
     return (
-      <h1 className="flex justify-center items-center">
-        {"room doesn't have any question please add questions first"}
-      </h1>
+      <Card className="flex flex-col items-center justify-center space-y-2 p-10 text-center">
+        <TriangleAlert className="h-10 w-10 text-yellow-500" />
+        <h2 className="text-lg font-semibold">No Questions Available</h2>
+        <p className="text-muted-foreground text-sm">
+          This room doesn’t have any questions yet. Add questions to view
+          student performance.
+        </p>
+        <AddQuestion />
+      </Card>
     );
   }
   if (typeof questions === "string" || typeof students === "string") {
-    return (
-      <h1 className="flex justify-center items-center">
-        this room is not valid room
-      </h1>
-    );
+    return <InValidQuiz />;
   }
 
   const formatStudentAnswers = (
     question: question,
     answer: string | number | undefined,
   ) => {
+    //if there is no answer for this question return --
     if (answer === undefined) {
       return "---";
     }
+    //if answer there options in question and answers are number it is mcq
     if (question.options && typeof answer === "number") {
       return (
-        <div className="flex justify-center items-center gap-2">
+        <div className="flex items-center justify-center gap-2">
           {question.correctAnswerIndex === answer ? (
-            <CheckCircle className="h-4 w-4 text-green-600 " />
+            <CheckCircle className="h-4 w-4 text-green-600" />
           ) : (
-            <CircleX className="h-4 w-4 text-red-600 " />
+            <CircleX className="h-4 w-4 text-red-600" />
           )}
           {String.fromCharCode(answer + 65)}
         </div>
       );
     }
+    //if answer is number only and there is no options in this question it is true/false
     if (typeof answer === "number") {
       return (
-        <div className="flex justify-center items-center gap-2">
+        <div className="flex items-center justify-center gap-2">
+          {/* check if it is correct answe or not */}
           {question.correctAnswerIndex === answer ? (
-            <CheckCircle className="h-4 w-4 text-green-600 " />
+            <CheckCircle className="h-4 w-4 text-green-600" />
           ) : (
-            <CircleX className="h-4 w-4 text-red-600 " />
+            <CircleX className="h-4 w-4 text-red-600" />
           )}
           {answer === 0 ? "True" : "False"}
         </div>
       );
     }
-
+    //if answer is not one of the above it is short answer so return answer we cant notice if it is correct or incorrect
     return answer;
   };
 
@@ -144,8 +157,8 @@ function StudentPerformance({ restriction }: studentPerformanceProps) {
     if (question.options && question.correctAnswerIndex != undefined) {
       return (
         <>
-          <div className="text-muted-foreground text-xs flex gap-2">
-            <CheckCircle className="h-4 w-4 text-green-600 " />
+          <div className="text-muted-foreground flex gap-2 text-xs">
+            <CheckCircle className="h-4 w-4 text-green-600" />
             <h1 className="font-bold">
               {String.fromCharCode(question.correctAnswerIndex + 65)})
             </h1>
@@ -157,8 +170,8 @@ function StudentPerformance({ restriction }: studentPerformanceProps) {
 
     if (question.correctAnswerIndex != undefined) {
       return (
-        <div className="text-muted-foreground text-xs flex gap-4">
-          <CheckCircle className="h-4 w-4 text-green-600 " />
+        <div className="text-muted-foreground flex gap-4 text-xs">
+          <CheckCircle className="h-4 w-4 text-green-600" />
           {question.correctAnswerIndex === 0 ? "True" : "False"}
         </div>
       );
@@ -166,8 +179,8 @@ function StudentPerformance({ restriction }: studentPerformanceProps) {
 
     if (question.answer) {
       return (
-        <div className="text-muted-foreground text-xs flex gap-4">
-          <CheckCircle className="h-4 w-4 text-green-600 " />
+        <div className="text-muted-foreground flex gap-4 text-xs">
+          <CheckCircle className="h-4 w-4 text-green-600" />
           {question.answer}
         </div>
       );
@@ -177,7 +190,7 @@ function StudentPerformance({ restriction }: studentPerformanceProps) {
   return (
     <Card>
       <CardHeader>
-        <div className="flex justify-between ">
+        <div className="flex justify-between">
           <h1 className="font-medium">Student Performance</h1>
           {!restriction ? (
             <LockRoom />
@@ -187,13 +200,12 @@ function StudentPerformance({ restriction }: studentPerformanceProps) {
               studentsLength={students.length}
             />
           )}
-          {/* <Button id="restrict">restrict Particpents</Button> */}
         </div>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader className="p-20">
-            <TableRow>
+            <TableRow className="hover:bg-transparent">
               {!restriction ? (
                 <TableHead>Name</TableHead>
               ) : (
@@ -211,16 +223,30 @@ function StudentPerformance({ restriction }: studentPerformanceProps) {
                     <HoverCardTrigger asChild>
                       <TableHead key={question._id}>
                         <div
-                          className={`${question.questionType == "MCQ" ? "bg-blue-100" : question.questionType === "Short Answer" ? "bg-orange-100 " : "bg-red-100 "} cursor-pointer  w-24 h-10  flex items-center justify-center rounded-sm flex-col mb-2`}
+                          className={`${
+                            question.questionType === "MCQ"
+                              ? "bg-[#E6F0FF] text-[#0A3D91] hover:bg-[#D6E5FF] dark:bg-[#0B1E3A] dark:text-[#AFCBFF] dark:hover:bg-[#102B55]"
+                              : question.questionType === "Short Answer"
+                                ? "bg-[#FFF3E0] text-[#9A4A00] hover:bg-[#FFE6BF] dark:bg-[#2B1A00] dark:text-[#FFD7A3] dark:hover:bg-[#3B2608]"
+                                : "bg-[#FDE8E8] text-[#8B1E1E] hover:bg-[#F9D6D6] dark:bg-[#2A0E0E] dark:text-[#FFB3B3] dark:hover:bg-[#3C1616]"
+                          } mb-2 flex h-10 w-24 cursor-pointer flex-col items-center justify-center rounded-sm transition-colors`}
                         >
-                          <div className="w-full truncate px-2 text-center ">
+                          <div className="w-full truncate px-2 text-center">
                             {question.question}
                           </div>
                           <Eye size={12} />
                         </div>
                       </TableHead>
                     </HoverCardTrigger>
-                    <HoverCardContent className="w-86 break-words">
+                    <HoverCardContent
+                      className={`w-86 break-words ${
+                        question.questionType === "MCQ"
+                          ? "bg-[#E6F0FF] text-[#0A3D91] hover:bg-[#D6E5FF] dark:bg-[#0B1E3A] dark:text-[#AFCBFF] dark:hover:bg-[#102B55]"
+                          : question.questionType === "Short Answer"
+                            ? "bg-[#FFF3E0] text-[#9A4A00] hover:bg-[#FFE6BF] dark:bg-[#2B1A00] dark:text-[#FFD7A3] dark:hover:bg-[#3B2608]"
+                            : "bg-[#FDE8E8] text-[#8B1E1E] hover:bg-[#F9D6D6] dark:bg-[#2A0E0E] dark:text-[#FFB3B3] dark:hover:bg-[#3C1616]"
+                      }`}
+                    >
                       <div className="space-y-1">
                         <p className="text-sm">{question.question}</p>
                         {formatCorrectAnswer(question)}
@@ -258,7 +284,7 @@ function StudentPerformance({ restriction }: studentPerformanceProps) {
                     return (
                       <TableCell className="text-center" key={question._id}>
                         {question.questionType != "Short Answer" ? (
-                          <div className="w-24 h-10  bg-gray-200 rounded-md flex justify-center items-center">
+                          <div className="dark:bg-border flex h-10 w-24 items-center justify-center rounded-md bg-gray-200">
                             {formatStudentAnswers(
                               question,
                               answerOfThisQuestion?.answer,
@@ -267,7 +293,7 @@ function StudentPerformance({ restriction }: studentPerformanceProps) {
                         ) : (
                           <HoverCard>
                             <HoverCardTrigger asChild>
-                              <div className="w-24 h-10   bg-gray-200 rounded-md flex justify-center items-center">
+                              <div className="dark:bg-border flex h-10 w-24 items-center justify-center rounded-md bg-gray-200">
                                 <p className="w-full truncate px-2 text-center">
                                   {formatStudentAnswers(
                                     question,

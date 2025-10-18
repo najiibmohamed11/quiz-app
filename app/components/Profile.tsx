@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useRef, useState } from "react";
 import { Avatar } from "@/components/ui/avatar";
 import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
@@ -6,6 +8,9 @@ import { useClerk, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import ProfileSkeletonIcon from "../teacher/components/ProfileSkeletonIcon";
 function Profile() {
   const { user, isLoaded } = useUser();
   const { signOut } = useClerk();
@@ -35,17 +40,7 @@ function Profile() {
   }, [isOpen]);
 
   if (!isLoaded) {
-    return (
-      <div className="relative">
-        <Button
-          variant="ghost"
-          className="flex items-center gap-2 px-2 py-1 rounded-full "
-        >
-          <Skeleton className="h-8 w-8 rounded-full bg-gray-400" />
-          <Skeleton className="h-4 w-4 bg-gray-400" />
-        </Button>
-      </div>
-    );
+    return <ProfileSkeletonIcon />;
   }
 
   if (!user) {
@@ -69,10 +64,10 @@ function Profile() {
   };
 
   return (
-    <div className=" relative" ref={profileRef}>
+    <div className="relative" ref={profileRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex justify-center items-center gap-1 cursor-pointer"
+        className="flex cursor-pointer items-center justify-center gap-1"
       >
         <Avatar>
           <AvatarImage src={user.imageUrl} alt="profile" />
@@ -84,8 +79,8 @@ function Profile() {
         />
       </button>
       {isOpen && (
-        <div className="w-65 h-33  absolute right-1 top-11 rounded-xl bg-white border-1 border-gray-300 p-4 transition-all ease-in-out duration-200  slide-in-from-top-5 animate-in">
-          <div className="flex items-center gap-2  font-medium truncate ">
+        <Card className="slide-in-from-top-5 animate-in absolute top-11 right-1 z-1 rounded-xl p-4 transition-all duration-200 ease-in-out">
+          <CardContent className="flex items-center gap-2 truncate font-medium">
             <Avatar>
               <AvatarImage src={user.imageUrl} alt="profile" />
               <AvatarFallback>
@@ -94,20 +89,21 @@ function Profile() {
             </Avatar>
             <div className="">
               <span>{user.fullName}</span>
-              <span className="font-light block text-xs ">
+              <span className="block text-xs font-light">
                 {user.primaryEmailAddress?.emailAddress}
               </span>
             </div>
-          </div>
-          <hr className="mt-4 h-2" />
-          <button
+          </CardContent>
+          <Separator />
+
+          <CardFooter
             onClick={handleSignOut}
-            className="flex  items-center justify-center text-center w-full   gap-2 hover:bg-gray-50 h-10 hover:rounded-xl text-red-500 text-l cursor-pointer"
+            className="flex cursor-pointer items-center justify-center gap-2 text-center text-base font-normal text-red-500 dark:text-red-500"
           >
             <LogOut size={18} />
             <p>Log out</p>
-          </button>
-        </div>
+          </CardFooter>
+        </Card>
       )}
     </div>
   );

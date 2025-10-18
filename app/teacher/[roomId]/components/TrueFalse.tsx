@@ -65,13 +65,13 @@ function TrueFalse() {
     });
   };
   return (
-    <form onSubmit={handleSubmit} className=" grid gap-4">
+    <form onSubmit={handleSubmit} className="grid gap-4">
       <Textarea
         value={form.question}
         placeholder="enter her question that you want "
         onChange={questionOnchange}
       />
-      <div className="grid  gap-3">
+      <div className="grid gap-3">
         <RadioGroup
           value={form.correctAnswerIndex?.toString() ?? ""}
           onValueChange={(value) =>
@@ -84,21 +84,21 @@ function TrueFalse() {
           }
         >
           <div className="flex items-center gap-3">
-            <RadioGroupItem value="0" className=" border-black" />
+            <RadioGroupItem value="0" className="border-black" />
             <Button type="button" variant="outline">
               True
             </Button>
           </div>
 
-          <div className="flex   items-center  gap-3">
-            <RadioGroupItem value="1" className=" border-black" />
+          <div className="flex items-center gap-3">
+            <RadioGroupItem value="1" className="border-black" />
             <Button type="button" variant="outline">
               False
             </Button>
           </div>
         </RadioGroup>
       </div>
-      <em className="text-red-500 text-center">{error && error}</em>
+      <em className="text-center text-red-500">{error && error}</em>
 
       <Button disabled={isLoading} type="submit">
         {isLoading ? "Adding....." : "Add Question"}

@@ -39,7 +39,10 @@ export const createQuestion = mutation({
       questionType: args.questionType,
       roomId: args.roomId,
     });
-
+    const room = await ctx.db.get(args.roomId);
+    await ctx.db.patch(args.roomId, {
+      numberOfQuestions: room?.numberOfQuestions,
+    });
     return id;
   },
 });

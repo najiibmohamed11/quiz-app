@@ -10,7 +10,7 @@ function Error({ error }: { error: Error & { digest?: string } }) {
 
   if (error instanceof ConvexError) {
     return (
-      <div className="flex justify-center items-center min-h-screen flex-col gap-4 text-2xl">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 text-2xl">
         <h1>⚠️ {error.data}</h1>
         <Button onClick={() => navigator.push("/sign-in")}>sign in</Button>
       </div>
@@ -18,7 +18,7 @@ function Error({ error }: { error: Error & { digest?: string } }) {
   }
 
   return (
-    <div className="flex justify-center items-center min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col items-center justify-center">
       <h1>⚠️ an unexpected error happened</h1>
       <Button onClick={() => navigator.push("/")}>refresh</Button>
     </div>

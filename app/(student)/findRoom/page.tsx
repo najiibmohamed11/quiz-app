@@ -52,12 +52,12 @@ function FindRoom() {
     }
   };
   return (
-    <div className="flex justify-center items-center min-h-screen">
+    <div className="flex min-h-screen items-center justify-center">
       <Card className="w-80">
         <CardHeader>
-          <h1 className="font-bold text-center">Quiz Details</h1>
+          <h1 className="text-center font-bold">Quiz Details</h1>
         </CardHeader>
-        <CardContent className=" m-0">
+        <CardContent className="m-0">
           <form action="submit" onSubmit={onSubmit}>
             <Label htmlFor="roomName">Room Name</Label>
             <Input

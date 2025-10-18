@@ -9,7 +9,7 @@ export default function SignInPagw() {
     <SignIn.Root>
       <SignIn.Step name="start">
         <Clerk.Connection name="google">
-          <div className="flex  min-w-screen justify-center  items-center min-h-screen">
+          <div className="flex min-h-screen min-w-screen items-center justify-center">
             <Clerk.Loading scope="provider:google">
               {(isLoading) => {
                 return isLoading ? (
