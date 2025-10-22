@@ -9,14 +9,20 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import QuizCardSkeliton from "./QuizCardSkeliton";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { useUser } from "@clerk/nextjs";
 
 function QuizList(propert: {
   preloadedTasks: Preloaded<typeof api.quiz.getQuizzes>;
 }) {
-  const quizzes = usePreloadedQuery(propert.preloadedTasks);
-
+  const data = usePreloadedQuery(propert.preloadedTasks);
+  const [quizzes, setquizzes] = useState(data);
+  const { isLoaded } = useUser();
   const [parent] = useAutoAnimate();
-
+  useEffect(() => {
+    if (isLoaded) {
+      setquizzes(data);
+    }
+  }, [isLoaded, data]);
   if (!quizzes) {
     return (
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">

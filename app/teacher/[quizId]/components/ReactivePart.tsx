@@ -1,20 +1,30 @@
 "use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
+import { useEffect, useState } from "react";
 import { api } from "@/convex/_generated/api";
 import UpperCard from "./UpperCard";
 import StudentPerformance from "./StudentPerformance";
 import QuestionsList from "./QuestionsList";
 import Settings from "./Settings";
 import { Preloaded, usePreloadedQuery } from "convex/react";
+import { useUser } from "@clerk/nextjs";
 interface reactivePartProp {
-  preloadQuizDetails: Preloaded<typeof api.quiz.getRoomDetails>;
+  preloadQuizDetails: Preloaded<typeof api.quiz.getQuizDetails>;
   students: Preloaded<typeof api.student.getAllStudentsInRoom>;
   quizId: string;
 }
 function ReactivePart(propert: reactivePartProp) {
-  const quizDetails = usePreloadedQuery(propert.preloadQuizDetails);
-  const students = usePreloadedQuery(propert.students);
+  const quizData = usePreloadedQuery(propert.preloadQuizDetails);
+  const studentData = usePreloadedQuery(propert.students);
+  const [quizDetails, setQuizDetails] = useState(quizData);
+  const [students, setStudents] = useState(studentData);
+  const { isLoaded } = useUser();
+  useEffect(() => {
+    if (isLoaded) {
+      setQuizDetails(quizData);
+      setStudents(studentData);
+    }
+  }, [isLoaded, quizData, studentData]);
 
   return (
     <>
