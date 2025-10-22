@@ -32,7 +32,7 @@ type question = {
   options?: string[] | undefined;
   correctAnswerIndex?: number | undefined;
   answer?: string | undefined;
-  roomId: Id<"rooms">;
+  quizId: Id<"quizs">;
   question: string;
   questionType: "MCQ" | "True/False" | "Short Answer";
 };
@@ -40,7 +40,7 @@ type question = {
 type answers = {
   _id: Id<"answers">;
   _creationTime: number;
-  roomId: Id<"rooms">;
+  quizId: Id<"quizs">;
   answer: string | number;
   studentId: Id<"students">;
   questionId: Id<"questions">;
@@ -62,7 +62,7 @@ function StudentPerformance({
   questions,
   students,
 }: studentPerformanceProps) {
-  const { roomId } = useParams();
+  const { quizId } = useParams();
 
   if (!questions || !students) {
     return <StudentPerformanceLoading />;
@@ -74,7 +74,7 @@ function StudentPerformance({
         <TriangleAlert className="h-10 w-10 text-yellow-500" />
         <h2 className="text-lg font-semibold">No Questions Available</h2>
         <p className="text-muted-foreground text-sm">
-          This room doesn’t have any questions yet. Add questions to view
+          This quiz doesn’t have any questions yet. Add questions to view
           student performance.
         </p>
         <AddQuestion />
@@ -196,7 +196,7 @@ function StudentPerformance({
             <LockRoom />
           ) : (
             <UnlockQuiz
-              roomId={roomId as string}
+              quizId={quizId as string}
               studentsLength={students.length}
             />
           )}

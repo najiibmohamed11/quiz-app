@@ -8,19 +8,9 @@ import { useConvex } from "convex/react";
 import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
 import z from "zod";
-const formSchema = z.string().min(1, "please enter room name");
-// const roomSchema=z.object({
-//   _creationTime: z.number(),
-//   _id: z.string(),
-//   duration: z.object({
-//     hour: z.number(),
-//     minute: z.number()
-//   }),
-//   name: z.string(),
-//   teacher: z.string()
-// })
-function FindRoom() {
-  const [roomName, setRoomName] = useState("");
+const formSchema = z.string().min(1, "please enter quiz name");
+function FindQuiz() {
+  const [quizName, setRoomName] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const convex = useConvex();
@@ -30,7 +20,7 @@ function FindRoom() {
     e.preventDefault();
     if (isLoading) return;
     setIsLoading(true);
-    const result = formSchema.safeParse(roomName);
+    const result = formSchema.safeParse(quizName);
     if (!result.success) {
       setError(result.error.issues[0].message);
       setIsLoading(false);
@@ -38,7 +28,7 @@ function FindRoom() {
     }
 
     try {
-      const isRoomExsist = await convex.query(api.room.FindRoom, { roomName });
+      const isRoomExsist = await convex.query(api.quiz.FindQuiz, { quizName });
       if (typeof isRoomExsist === "string") {
         setError(isRoomExsist);
         return;
@@ -59,17 +49,17 @@ function FindRoom() {
         </CardHeader>
         <CardContent className="m-0">
           <form action="submit" onSubmit={onSubmit}>
-            <Label htmlFor="roomName">Room Name</Label>
+            <Label htmlFor="quizName">Room Name</Label>
             <Input
-              value={roomName}
-              id="roomName"
+              value={quizName}
+              id="quizName"
               type="text"
               placeholder="Enter Room Name"
               onChange={(e) => setRoomName(e.target.value)}
             />
             <p className="text-red-700">{error && error}</p>
             <Button
-              disabled={isLoading || !roomName}
+              disabled={isLoading || !quizName}
               type="submit"
               className="mt-8 w-full"
             >
@@ -83,4 +73,4 @@ function FindRoom() {
   );
 }
 
-export default FindRoom;
+export default FindQuiz;

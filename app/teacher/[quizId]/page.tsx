@@ -5,25 +5,25 @@ import { preloadQuery } from "convex/nextjs";
 import ReactivePart from "./components/ReactivePart";
 interface RoomPageProps {
   params: {
-    roomId: string; // The dynamic segment is always a string.
+    quizId: string;
   };
 }
 export default async function Room({ params }: RoomPageProps) {
   const token = await getToken();
-  const { roomId } = await params;
+  const { quizId } = await params;
   if (!token) return null;
 
-  const preloadRoomDetails = await preloadQuery(
-    api.room.getRoomDetails,
+  const preloadQuizDetails = await preloadQuery(
+    api.quiz.getQuizDetails,
     {
-      roomId: roomId as string,
+      quizId: quizId as string,
     },
     { token },
   );
   const preloadStudents = await preloadQuery(
     api.student.getAllStudentsInRoom,
     {
-      roomId: roomId as string,
+      quizId: quizId as string,
     },
     { token },
   );
@@ -34,8 +34,9 @@ export default async function Room({ params }: RoomPageProps) {
         <Back />
       </header>
       <ReactivePart
-        preloadRoomDetails={preloadRoomDetails}
+        preloadQuizDetails={preloadQuizDetails}
         students={preloadStudents}
+        quizId={quizId}
       />
     </div>
   );

@@ -5,14 +5,14 @@ import React, { useEffect, useState } from "react";
 
 type TimerProp = {
   expiresAt: number | undefined;
-  roomStatus: "active" | "pause";
+  quizStatus: "active" | "pause";
   remainingTime: number | undefined;
   setIsTimerEnded: (isTimerEnd: boolean) => void;
 };
 
 function Timer({
   expiresAt,
-  roomStatus,
+  quizStatus,
   remainingTime,
   setIsTimerEnded,
 }: TimerProp) {
@@ -21,7 +21,7 @@ function Timer({
   );
 
   useEffect(() => {
-    if (!expiresAt || roomStatus === "pause") {
+    if (!expiresAt || quizStatus === "pause") {
       setTimer(remainingTime ?? 0);
       return;
     }
@@ -36,7 +36,7 @@ function Timer({
       }
     }, 1000);
     return () => clearInterval(id);
-  }, [roomStatus, expiresAt, remainingTime]);
+  }, [quizStatus, expiresAt, remainingTime]);
 
   const formatTime = (remainingTimeInMilliseconds: number) => {
     const remainingTimeInSeconds = Math.floor(

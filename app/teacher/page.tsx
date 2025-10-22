@@ -1,11 +1,11 @@
 import CreateRoom from "./components/CreatRoom";
 import Profile from "../components/Profile";
-import RoomsList from "./components/RoomsList";
 import { ModeToggle } from "../components/ModeToggle";
 import { Rubik } from "next/font/google";
 import { preloadQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
 import { getToken } from "../hooks/getToken";
+import QuizList from "./components/QuizList";
 
 const rubik = Rubik({
   subsets: ["latin"],
@@ -18,7 +18,7 @@ export default async function Teacher() {
   if (!token) return null;
 
   const preloadedTasks = await preloadQuery(
-    api.room.getRooms,
+    api.quiz.getQuizzes,
     {},
     { token: token },
   );
@@ -34,7 +34,7 @@ export default async function Teacher() {
           <Profile />
         </div>
       </header>
-      <RoomsList preloadedTasks={preloadedTasks} />
+      <QuizList preloadedTasks={preloadedTasks} />
     </div>
   );
 }

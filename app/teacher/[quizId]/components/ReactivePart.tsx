@@ -7,23 +7,24 @@ import StudentPerformance from "./StudentPerformance";
 import QuestionsList from "./QuestionsList";
 import Settings from "./Settings";
 import { Preloaded, usePreloadedQuery } from "convex/react";
-import { Doc } from "@/convex/_generated/dataModel";
 interface reactivePartProp {
-  preloadRoomDetails: Preloaded<typeof api.room.getRoomDetails>;
+  preloadQuizDetails: Preloaded<typeof api.quiz.getRoomDetails>;
   students: Preloaded<typeof api.student.getAllStudentsInRoom>;
+  quizId: string;
 }
 function ReactivePart(propert: reactivePartProp) {
-  const roomDetails = usePreloadedQuery(propert.preloadRoomDetails);
+  const quizDetails = usePreloadedQuery(propert.preloadQuizDetails);
   const students = usePreloadedQuery(propert.students);
 
   return (
     <>
-      <h1 className="mx-5 text-2xl font-bold">{roomDetails?.roomInfo.name}</h1>
+      <h1 className="mx-5 text-2xl font-bold">{quizDetails?.quizInfo.name}</h1>
       {/* upper part of the quiz */}
       <UpperCard
-        roomDetails={roomDetails?.roomInfo}
-        studnetsLength={roomDetails.students}
-        questionLength={roomDetails.questions.length}
+        quizDetails={quizDetails?.quizInfo}
+        studnetsLength={quizDetails.students}
+        questionLength={quizDetails.questions.length}
+        quizId={propert.quizId}
       />
 
       {/* middle part or tabs */}
@@ -40,19 +41,19 @@ function ReactivePart(propert: reactivePartProp) {
           <TabsContent value="answers">
             {/* first tab is ansers or contains answer of all student in quiz */}
             <StudentPerformance
-              restriction={roomDetails.roomInfo.restriction}
-              questions={roomDetails.questions}
+              restriction={quizDetails.quizInfo.restriction}
+              questions={quizDetails.questions}
               students={students}
             />
           </TabsContent>
           {/* second tab is question lis and where you can add new questions  */}
           <TabsContent value="questions">
-            <QuestionsList questions={roomDetails.questions} />
+            <QuestionsList questions={quizDetails.questions} />
           </TabsContent>
 
           {/* lastly we have settings  */}
           <TabsContent value="settings">
-            <Settings settings={roomDetails.roomInfo.settings} />
+            <Settings settings={quizDetails.quizInfo.settings} />
           </TabsContent>
         </Tabs>
       </div>

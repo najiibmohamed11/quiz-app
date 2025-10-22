@@ -35,8 +35,8 @@ const answerSchema = z
   });
 type eventType = "copy" | "paste" | "cut";
 function Quiz() {
-  const { roomId, studentId } = useParams<{
-    roomId: string;
+  const { quizId, studentId } = useParams<{
+    quizId: string;
     studentId: string;
   }>();
   const [answeredQuestionsIds, setAnsweredQuestionsIds] = useState<
@@ -50,7 +50,7 @@ function Quiz() {
 
   const fullQuizData = useQuery(api.student.getFullQuizData, {
     studentId,
-    roomId,
+    quizId,
   });
   const submitAnswer = useMutation(api.answers.submitAnswer);
   const navigator = useRouter();
@@ -74,7 +74,7 @@ function Quiz() {
   useEffect(() => {
     if (
       typeof fullQuizData === "string" ||
-      !fullQuizData?.roomInfo.settings.aiPrevention
+      !fullQuizData?.quizInfo.settings.aiPrevention
     ) {
       console.log(fullQuizData);
       return;
@@ -109,7 +109,7 @@ function Quiz() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-5">
         <h1>opps something went wrong in url please </h1>
-        <Link href={`/findroom`}>
+        <Link href={`/findquiz`}>
           <Button>go back</Button>
         </Link>
       </div>
@@ -119,7 +119,7 @@ function Quiz() {
   if (fullQuizData === "no questions") {
     return (
       <div className="flex items-center justify-center">
-        there is no question in this room
+        there is no question in this quiz
       </div>
     );
   }
@@ -142,7 +142,7 @@ function Quiz() {
   const questions = fullQuizData.questions.filter(
     (question) => !answeredSet.has(question._id),
   );
-  const roomInfo = fullQuizData.roomInfo;
+  const quizInfo = fullQuizData.quizInfo;
 
   const handleNext = async () => {
     const result = answerSchema.safeParse(answer);
@@ -160,14 +160,14 @@ function Quiz() {
         questionId: answer.questionId,
         answer: answer.answer,
         studentId: studentId,
-        roomId: roomId,
+        quizId: quizId,
       });
 
       setAnsweredQuestionsIds((prev) => {
         const updated = [...prev, answer.questionId as Id<"questions">];
         if (updated.length === fullQuizData.questions.length) {
           localStorage.removeItem(studentId);
-          navigator.push(`/${roomId}/${studentId}/result`);
+          navigator.push(`/${quizId}/${studentId}/result`);
           return updated;
         }
         localStorage.setItem(studentId, JSON.stringify(updated));
@@ -184,17 +184,17 @@ function Quiz() {
       console.log(e);
     }
   };
-  const index = roomInfo.settings.randomizingQuestions
+  const index = quizInfo.settings.randomizingQuestions
     ? Math.floor(randomeNumber * questions.length)
     : 0;
-  console.log(roomInfo.settings.randomizingQuestions);
+  console.log(quizInfo.settings.randomizingQuestions);
   console.log(index);
   console.log(randomeNumber);
   const currentQuestion = questions[index];
   if (!currentQuestion) {
     return (
       <div className="flex items-center justify-center">
-        there is no question in this room
+        there is no question in this quiz
       </div>
     );
   }
@@ -207,9 +207,9 @@ function Quiz() {
             question {answeredQuestionsIds.length + 1}/
             {fullQuizData.questions.length}
           </Badge>
-          {roomInfo.duration != 0 && roomInfo.expiresAt != undefined && (
+          {quizInfo.duration != 0 && quizInfo.expiresAt != undefined && (
             <Timer
-              expiresAt={roomInfo.expiresAt}
+              expiresAt={quizInfo.expiresAt}
               setIsTimerEnd={setIsTimerEnd}
             />
           )}

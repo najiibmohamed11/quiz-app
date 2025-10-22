@@ -16,17 +16,17 @@ function StudentInfo() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const creatStudent = useMutation(api.student.createStudent);
-  const { roomId } = useParams();
+  const { quizId } = useParams();
   const navigator = useRouter();
-  const roomInfo = useQuery(api.room.getRoom, { roomId: roomId as string });
+  const quizInfo = useQuery(api.quiz.getRoom, { quizId: quizId as string });
   const convex = useConvex();
 
-  if (!roomInfo) {
+  if (!quizInfo) {
     return <div>loading...</div>;
   }
 
-  if (typeof roomInfo === "string") {
-    return <div>{roomInfo}</div>;
+  if (typeof quizInfo === "string") {
+    return <div>{quizInfo}</div>;
   }
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -40,20 +40,20 @@ function StudentInfo() {
       setIsLoading(false);
       return;
     }
-    if (roomInfo.restriction) {
+    if (quizInfo.restriction) {
       try {
         const studenId = await convex.query(
           api.student.findStudentInLockedQuiz,
           {
             uniqueId: studentName,
-            roomId: roomId as string,
+            quizId: quizId as string,
           },
         );
         if (studenId === "student not found") {
           setError(studenId);
           return;
         }
-        navigator.push(`/${roomId}/${studenId}/quiz`);
+        navigator.push(`/${quizId}/${studenId}/quiz`);
       } catch (e) {
         console.log(e);
         const errorMessage =
@@ -68,10 +68,10 @@ function StudentInfo() {
     try {
       const studenId = await creatStudent({
         name: studentName,
-        roomId: roomId as string,
+        quizId: quizId as string,
       });
       if (studenId) {
-        navigator.push(`/${roomId}/${studenId}/quiz`);
+        navigator.push(`/${quizId}/${studenId}/quiz`);
       }
     } catch (e) {
       const errorMessage =
@@ -90,16 +90,16 @@ function StudentInfo() {
         </CardHeader>
         <CardContent className="m-0">
           <form action="submit" onSubmit={onSubmit}>
-            <Label htmlFor="roomName">
-              {roomInfo.restriction
-                ? roomInfo.restriction.uniqueColumn
+            <Label htmlFor="quizName">
+              {quizInfo.restriction
+                ? quizInfo.restriction.uniqueColumn
                 : "Your Name"}
             </Label>
             <Input
               value={studentName}
-              id="roomName"
+              id="quizName"
               type="text"
-              placeholder={`Enter ${roomInfo?.restriction ? roomInfo.restriction.uniqueColumn : "Name"}`}
+              placeholder={`Enter ${quizInfo?.restriction ? quizInfo.restriction.uniqueColumn : "Name"}`}
               onChange={(e) => setStudentName(e.target.value)}
             />
             <p className="text-red-700">{error && error}</p>

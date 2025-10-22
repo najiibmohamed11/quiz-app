@@ -16,12 +16,12 @@ const LockRoom = () => {
     <Dialog>
       <DialogTrigger asChild>
         <Button>
-          <Lock /> lock room
+          <Lock /> lock quiz
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">Lock the room</DialogTitle>
+          <DialogTitle className="text-xl font-bold">Lock the quiz</DialogTitle>
           <DialogDescription>
             Restrict who can join the quiz by providing a unique column (maximum
             2 columns: name and unique column).

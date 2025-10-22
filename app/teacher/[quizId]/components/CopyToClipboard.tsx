@@ -1,17 +1,15 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Check, Copy } from "lucide-react";
-import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-function CopyToClipboard() {
+function CopyToClipboard({ quizId }: { quizId: string }) {
   const [isCopied, setIscopied] = useState(false);
   const [quizeUrl, setQuizeUrl] = useState<string | null>(null);
-  const { roomId } = useParams();
 
   useEffect(() => {
-    setQuizeUrl(`${window.location.origin}/${roomId}/student`);
-  }, [roomId]);
+    setQuizeUrl(`${window.location.origin}/${quizId}/student`);
+  }, [quizId]);
 
   const copyToClipboard = async () => {
     try {

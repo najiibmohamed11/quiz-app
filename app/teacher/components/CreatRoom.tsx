@@ -19,13 +19,12 @@ import { ConvexError } from "convex/values";
 import { useRouter } from "next/navigation";
 
 import { useState } from "react";
-import z from "zod";
-export default function CreateRoom() {
+export default function CreateQuiz() {
   const [name, setName] = useState<string>("");
   const [duration, setDuration] = useState<number>(0);
   const [isloading, setIsloading] = useState(false);
   const [error, setErorr] = useState("");
-  const mutateSomething = useMutation(api.room.creatRoom);
+  const mutateSomething = useMutation(api.quiz.creatQuiz);
   const navigater = useRouter();
 
   async function handleCreat() {
@@ -57,18 +56,18 @@ export default function CreateRoom() {
       <form>
         <DialogTrigger asChild>
           <Button className="cursor-pointer bg-[#255026] hover:bg-[#255026] dark:bg-[#A5D6A7] dark:text-black">
-            Creat Room
+            Creat Quiz
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle className="cursor-pointer dark:text-[#A5D6A7]">
-              Creare Room
+              Creare Quiz
             </DialogTitle>
           </DialogHeader>
           <div className="grid gap-4">
             <div className="grid gap-3">
-              <Label htmlFor="name-1">Room Name</Label>
+              <Label htmlFor="name-1">Quiz Name</Label>
               <Input
                 id="name-1"
                 name="name"

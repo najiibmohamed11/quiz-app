@@ -20,7 +20,7 @@ function TrueFalse() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const createTrueFalseQuestion = useMutation(api.question.createQuestion);
-  const { roomId } = useParams();
+  const { quizId } = useParams();
 
   const questionOnchange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setForm((prev) => {
@@ -41,7 +41,7 @@ function TrueFalse() {
 
     const creatingPromise = createTrueFalseQuestion({
       ...form,
-      roomId: roomId as Id<"rooms">,
+      quizId: quizId as Id<"quizs">,
     });
 
     toast.promise(creatingPromise, {

@@ -14,30 +14,30 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useMutation } from "convex/react";
 import { Pause, Play, RotateCcw } from "lucide-react";
-import { useParams } from "next/navigation";
 import React, { useState } from "react";
-
-function QuizStatusBtn({
-  roomStatus,
-  remainingTime,
-  duration,
-  expiresAt,
-}: {
-  roomStatus: "active" | "pause";
+interface QuizStatusBtnProp {
+  quizStatus: "active" | "pause";
   remainingTime: number;
   duration: number;
   expiresAt: number;
-}) {
-  const changeRoomStatus = useMutation(api.room.changeRoomStatus);
-  const restartQuiz = useMutation(api.room.restartEndedQuiz);
-  const { roomId } = useParams();
+  quizId: string;
+}
+function QuizStatusBtn({
+  quizStatus,
+  remainingTime,
+  duration,
+  expiresAt,
+  quizId,
+}: QuizStatusBtnProp) {
+  const changeRoomStatus = useMutation(api.quiz.changeRoomStatus);
+  const restartQuiz = useMutation(api.quiz.restartEndedQuiz);
   const [durationState, setDuration] = useState<number>(0);
   const [isloading, setIsloading] = useState(false);
   const [error, setErorr] = useState("");
 
   const handleRoomStatusChange = async () => {
     try {
-      await changeRoomStatus({ roomId: roomId as string });
+      await changeRoomStatus({ quizId: quizId as string });
     } catch (e) {
       console.log(e);
     }
@@ -46,7 +46,7 @@ function QuizStatusBtn({
     try {
       await restartQuiz({
         duration: durationState,
-        roomId: roomId as Id<"rooms">,
+        quizId: quizId as Id<"quizs">,
       });
     } catch (e) {
       console.log(e);
@@ -56,8 +56,8 @@ function QuizStatusBtn({
   const isExpired = expiresAt && Date.now() > expiresAt; // 1s buffer
 
   if (
-    (isExpired && duration && roomStatus === "active") ||
-    (roomStatus === "pause" && !remainingTime && duration)
+    (isExpired && duration && quizStatus === "active") ||
+    (quizStatus === "pause" && !remainingTime && duration)
   ) {
     return (
       <Dialog>
@@ -92,10 +92,10 @@ function QuizStatusBtn({
   return (
     <Button
       className="mr-9 w-60 cursor-pointer"
-      variant={`${roomStatus === "active" ? "outline" : "default"}`}
+      variant={`${quizStatus === "active" ? "outline" : "default"}`}
       onClick={handleRoomStatusChange}
     >
-      {roomStatus === "active" ? (
+      {quizStatus === "active" ? (
         <>
           <Pause className="" />
           pause

@@ -1,21 +1,22 @@
 import { Card } from "@/components/ui/card";
 import { ShieldQuestionMark, User } from "lucide-react";
-import React, { useState } from "react";
 import CopyToClipboard from "./CopyToClipboard";
 import Timer from "./Timer";
 import QuizStatusBtn from "./QuizStatusBtn";
-import { Id, Doc } from "@/convex/_generated/dataModel";
+import { Doc } from "@/convex/_generated/dataModel";
 import { useForceUpdate } from "@/app/hooks/useForceUpdate";
-
-function UpperCard({
-  roomDetails,
-  questionLength,
-  studnetsLength,
-}: {
-  roomDetails: Doc<"rooms">;
+interface upperCardProp {
+  quizDetails: Doc<"quizs">;
   questionLength: number;
   studnetsLength: number;
-}) {
+  quizId: string;
+}
+function UpperCard({
+  quizDetails,
+  questionLength,
+  studnetsLength,
+  quizId,
+}: upperCardProp) {
   const forceRerender = useForceUpdate();
   return (
     <Card className="mt-4 grid h-50 grid-cols-2 p-5">
@@ -39,21 +40,22 @@ function UpperCard({
       <div className="flex h-full flex-col items-end justify-between">
         <div className="flex">
           <div className="bg-accent-foreground w-full rounded-md p-2 font-semibold text-white dark:text-black">
-            http://quiz-app/room/we.........
+            http://quiz-app/quiz/we.........
           </div>
-          <CopyToClipboard />
+          <CopyToClipboard quizId={quizId} />
         </div>
         <Timer
-          remainingTime={roomDetails.remainingTime}
-          roomStatus={roomDetails.status}
-          expiresAt={roomDetails.expiresAt}
+          remainingTime={quizDetails.remainingTime}
+          quizStatus={quizDetails.status}
+          expiresAt={quizDetails.expiresAt}
           setIsTimerEnded={forceRerender}
         />
         <QuizStatusBtn
-          roomStatus={roomDetails.status}
-          remainingTime={roomDetails.remainingTime}
-          duration={roomDetails.duration}
-          expiresAt={roomDetails.expiresAt ?? 0}
+          quizStatus={quizDetails.status}
+          remainingTime={quizDetails.remainingTime}
+          duration={quizDetails.duration}
+          expiresAt={quizDetails.expiresAt ?? 0}
+          quizId={quizId}
         />
       </div>
     </Card>

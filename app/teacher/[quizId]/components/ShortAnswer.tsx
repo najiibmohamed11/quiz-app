@@ -22,7 +22,7 @@ function ShortAnswer() {
   });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { roomId } = useParams();
+  const { quizId } = useParams();
 
   const createShortAnswerQuestion = useMutation(api.question.createQuestion);
 
@@ -45,7 +45,7 @@ function ShortAnswer() {
 
     const creatingPromise = createShortAnswerQuestion({
       ...form,
-      roomId: roomId as Id<"rooms">,
+      quizId: quizId as Id<"quizs">,
     });
 
     toast.promise(creatingPromise, {

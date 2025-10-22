@@ -16,16 +16,16 @@ import {
 } from "@/components/ui/alert-dialog";
 
 const UnlockQuiz = ({
-  roomId,
+  quizId,
   studentsLength,
 }: {
-  roomId: string;
+  quizId: string;
   studentsLength: number;
 }) => {
-  const unlock = useMutation(api.room.unlockRoom);
+  const unlock = useMutation(api.quiz.unlockRoom);
   const handleUnLock = async () => {
     try {
-      await unlock({ roomId: roomId });
+      await unlock({ quizId: quizId });
     } catch (e) {
       console.log(e);
     }

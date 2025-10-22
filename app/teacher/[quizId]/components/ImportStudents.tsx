@@ -20,8 +20,8 @@ const ImportStudents = () => {
   const [pickedUniqueColumn, setPickedUniqueColumn] = useState<string | null>(
     null,
   );
-  const lockQuiz = useMutation(api.room.lockRoom);
-  const { roomId } = useParams();
+  const lockQuiz = useMutation(api.quiz.lockRoom);
+  const { quizId } = useParams();
 
   // const [columns,setColumns]=useState<string[]|null>(null)
   const handleFormChange = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -148,7 +148,7 @@ const ImportStudents = () => {
       await lockQuiz({
         students: importedData,
         columns: columns,
-        roomId: roomId as string,
+        quizId: quizId as string,
         uniqueColumnForSearch: pickedUniqueColumn,
       });
     } catch (e) {

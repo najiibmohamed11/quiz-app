@@ -13,7 +13,7 @@ export default function Home() {
           teacher
         </Link>
         <Link
-          href="/find-room"
+          href="/find-quiz"
           className="text-l flex h-34 w-44 items-center justify-center rounded-lg border border-[#A5D6A7] text-center font-medium dark:text-white"
         >
           student

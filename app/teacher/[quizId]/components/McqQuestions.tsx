@@ -25,7 +25,7 @@ function McqQuestions() {
   const createMcq = useMutation(api.question.createQuestion);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { roomId } = useParams();
+  const { quizId } = useParams();
 
   // Update question
   const handleQuestionChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -73,7 +73,7 @@ function McqQuestions() {
     }
     setError("");
     setIsLoading(true);
-    const questionId = createMcq({ ...form, roomId: roomId as Id<"rooms"> });
+    const questionId = createMcq({ ...form, quizId: quizId as Id<"quizs"> });
 
     toast.promise(questionId, {
       loading: "Loading....",

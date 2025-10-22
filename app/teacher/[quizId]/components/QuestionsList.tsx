@@ -32,7 +32,7 @@ function QuestionsList({ questions }: { questions: Doc<"questions">[] }) {
     return (
       <Card>
         <CardContent className="flex flex-col items-center justify-center gap-5">
-          <h1>room id is not valid id</h1>
+          <h1>quiz id is not valid id</h1>
           <AddQuestion />
         </CardContent>
       </Card>

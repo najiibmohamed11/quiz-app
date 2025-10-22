@@ -30,30 +30,30 @@ interface settingProps {
 }
 
 function Settings({ settings }: settingProps) {
-  const { roomId }: { roomId: string } = useParams();
-  const switchAiPrevention = useMutation(api.room.SwitchAiPrevention);
+  const { quizId }: { quizId: string } = useParams();
+  const switchAiPrevention = useMutation(api.quiz.SwitchAiPrevention);
   const switchRandomizingQuestion = useMutation(
-    api.room.SwitchRandomizingQuestions,
+    api.quiz.SwitchRandomizingQuestions,
   );
-  const deletQuiz = useMutation(api.room.deleteRoom);
+  const deletQuiz = useMutation(api.quiz.deleteRoom);
 
   const handleRandomizeQuestionToggle = async () => {
     try {
-      await switchRandomizingQuestion({ roomId });
+      await switchRandomizingQuestion({ quizId });
     } catch (e) {
       console.log(e);
     }
   };
   const handleAiPreventionToggle = async () => {
     try {
-      await switchAiPrevention({ roomId });
+      await switchAiPrevention({ quizId });
     } catch (e) {
       console.log(e);
     }
   };
   const handleDelte = async () => {
     try {
-      await deletQuiz({ roomId });
+      await deletQuiz({ quizId });
     } catch (e) {
       console.log(e);
     }

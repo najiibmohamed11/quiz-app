@@ -8,13 +8,13 @@ export default defineSchema({
       v.literal("True/False"),
       v.literal("Short Answer"),
     ),
-    roomId: v.id("rooms"),
+    quizId: v.id("quizzes"),
     question: v.string(),
     options: v.optional(v.array(v.string())),
     correctAnswerIndex: v.optional(v.number()),
     answer: v.optional(v.string()),
-  }).index("by_room", ["roomId"]),
-  rooms: defineTable({
+  }).index("by_quiz", ["quizId"]),
+  quizzes: defineTable({
     name: v.string(),
     duration: v.number(),
     status: v.union(v.literal("active"), v.literal("pause")),
@@ -52,20 +52,20 @@ export default defineSchema({
   }),
   students: defineTable({
     name: v.optional(v.string()),
-    roomId: v.id("rooms"),
+    quizId: v.id("quizzes"),
     uniqueId: v.optional(v.string()),
     secondaryIdentifier: v.optional(v.string()),
     completedQuestions: v.number(),
   })
-    .index("by_room", ["roomId"])
-    .index("by_uniqueId", ["uniqueId", "roomId"]),
+    .index("by_quiz", ["quizId"])
+    .index("by_uniqueId", ["uniqueId", "quizId"]),
   answers: defineTable({
     studentId: v.id("students"),
-    roomId: v.id("rooms"),
+    quizId: v.id("quizzes"),
     questionId: v.id("questions"),
     answer: v.union(v.string(), v.number()),
   })
-    .index("by_room", ["roomId"])
-    .index("by_student_and_room", ["studentId", "roomId"])
+    .index("by_quiz", ["quizId"])
+    .index("by_student_and_quiz", ["studentId", "quizId"])
     .index("by_question", ["questionId"]),
 });

@@ -8,7 +8,7 @@ function InValidQuiz() {
       <TriangleAlert className="h-5 w-5" />
       <AlertTitle>Invalid Room</AlertTitle>
       <AlertDescription>
-        The room you’re trying to access doesn’t exist or is no longer
+        The quiz you’re trying to access doesn’t exist or is no longer
         available.
       </AlertDescription>
     </Alert>
