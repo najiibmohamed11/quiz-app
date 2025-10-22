@@ -16,9 +16,7 @@ import {
 } from "@/components/ui/table";
 import { api } from "@/convex/_generated/api";
 import { Id, Doc } from "@/convex/_generated/dataModel";
-import { useQuery } from "convex/react";
 import { CheckCircle, CircleX, Eye, TriangleAlert } from "lucide-react";
-import { useParams } from "next/navigation";
 import LockRoom from "./LockRoomModal";
 import UnlockQuiz from "./UnlockQuiz";
 import { FunctionReturnType } from "convex/server";
@@ -32,7 +30,7 @@ type question = {
   options?: string[] | undefined;
   correctAnswerIndex?: number | undefined;
   answer?: string | undefined;
-  quizId: Id<"quizs">;
+  quizId: Id<"quizzes">;
   question: string;
   questionType: "MCQ" | "True/False" | "Short Answer";
 };
@@ -40,7 +38,7 @@ type question = {
 type answers = {
   _id: Id<"answers">;
   _creationTime: number;
-  quizId: Id<"quizs">;
+  quizId: Id<"quizzes">;
   answer: string | number;
   studentId: Id<"students">;
   questionId: Id<"questions">;
@@ -56,14 +54,14 @@ interface studentPerformanceProps {
 
   questions: Doc<"questions">[];
   students: FunctionReturnType<typeof api.student.getAllStudentsInRoom>;
+  quizId: string;
 }
 function StudentPerformance({
   restriction,
   questions,
   students,
+  quizId,
 }: studentPerformanceProps) {
-  const { quizId } = useParams();
-
   if (!questions || !students) {
     return <StudentPerformanceLoading />;
   }
@@ -124,13 +122,13 @@ function StudentPerformance({
     return answer;
   };
 
-  const calculateStudentsScore = (answer: answers[]) => {
+  const calculateStudentsScore = (answers: answers[]) => {
     let correctAnswerCount = 0;
     // if(answer.length>questions.length){
     //   return "---"
     // }
     questions.map((question) => {
-      const answerOfthisQuestion = answer.find(
+      const answerOfthisQuestion = answers.find(
         (answer) => answer.questionId === question._id,
       );
 

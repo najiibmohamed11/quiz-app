@@ -6,7 +6,7 @@ import QuizStatusBtn from "./QuizStatusBtn";
 import { Doc } from "@/convex/_generated/dataModel";
 import { useForceUpdate } from "@/app/hooks/useForceUpdate";
 interface upperCardProp {
-  quizDetails: Doc<"quizs">;
+  quizDetails: Doc<"quizzes">;
   questionLength: number;
   studnetsLength: number;
   quizId: string;

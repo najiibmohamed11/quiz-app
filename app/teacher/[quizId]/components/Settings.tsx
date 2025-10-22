@@ -35,7 +35,7 @@ function Settings({ settings }: settingProps) {
   const switchRandomizingQuestion = useMutation(
     api.quiz.SwitchRandomizingQuestions,
   );
-  const deletQuiz = useMutation(api.quiz.deleteRoom);
+  const deletQuiz = useMutation(api.quiz.deleteQuiz);
 
   const handleRandomizeQuestionToggle = async () => {
     try {
@@ -77,7 +77,7 @@ function Settings({ settings }: settingProps) {
             checked={settings.randomizingQuestions}
             onCheckedChange={handleRandomizeQuestionToggle}
             id="randomizing-questions"
-            className="cursor-pointer text-green-400"
+            className="cursor-pointer"
           />
         </div>
         <Separator className="my-4" />

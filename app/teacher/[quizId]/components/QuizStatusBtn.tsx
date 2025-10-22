@@ -29,7 +29,7 @@ function QuizStatusBtn({
   expiresAt,
   quizId,
 }: QuizStatusBtnProp) {
-  const changeRoomStatus = useMutation(api.quiz.changeRoomStatus);
+  const changeRoomStatus = useMutation(api.quiz.changeQuizStatus);
   const restartQuiz = useMutation(api.quiz.restartEndedQuiz);
   const [durationState, setDuration] = useState<number>(0);
   const [isloading, setIsloading] = useState(false);
@@ -44,16 +44,20 @@ function QuizStatusBtn({
   };
   const handleRestart = async () => {
     try {
+      setIsloading(true);
       await restartQuiz({
         duration: durationState,
-        quizId: quizId as Id<"quizs">,
+        quizId: quizId as Id<"quizzes">,
       });
     } catch (e) {
       console.log(e);
+      setErorr("some thing went wrong");
+    } finally {
+      setIsloading(false);
     }
   };
 
-  const isExpired = expiresAt && Date.now() > expiresAt; // 1s buffer
+  const isExpired = expiresAt && Date.now() > expiresAt;
 
   if (
     (isExpired && duration && quizStatus === "active") ||

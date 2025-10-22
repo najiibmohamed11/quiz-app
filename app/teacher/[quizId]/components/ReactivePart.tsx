@@ -54,6 +54,7 @@ function ReactivePart(propert: reactivePartProp) {
               restriction={quizDetails.quizInfo.restriction}
               questions={quizDetails.questions}
               students={students}
+              quizId={propert.quizId}
             />
           </TabsContent>
           {/* second tab is question lis and where you can add new questions  */}
