@@ -52,22 +52,6 @@ export const getQuizzes = query({
     return quizzes;
   },
 });
-//remove
-// export const getQuiz = query({
-//   args: { quizId: v.string() },
-//   handler: async (ctx, args) => {
-//     const quizId = ctx.db.normalizeId("quizzes", args.quizId);
-//     if (!quizId) {
-//       return "invalid quiz go back";
-//     }
-//     const quizInfo = await ctx.db.get(quizId);
-//     if (!quizInfo) {
-//       return "quiz doesn't exsist";
-//     }
-
-//     return quizInfo;
-//   },
-// });
 
 export const getQuizDetails = query({
   args: { quizId: v.string() },
@@ -173,9 +157,17 @@ export const lockQuiz = mutation({
     ctx,
     { columns, quizId, students, uniqueColumnForSearch },
   ) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (!user?.subject) {
+      throw new ConvexError("not authenticated");
+    }
     const valiQuizId = ctx.db.normalizeId("quizzes", quizId);
     if (!valiQuizId) {
-      return `invalid quiz id`;
+      throw new ConvexError("quiz is invalid one");
+    }
+    const quiz = await ctx.db.get(valiQuizId);
+    if (!quiz) {
+      throw new ConvexError("quiz data not found ");
     }
 
     await deleteAllStudentsInQuiz(valiQuizId, ctx);
@@ -214,9 +206,17 @@ export const lockQuiz = mutation({
 export const unlockQuiz = mutation({
   args: { quizId: v.string() },
   handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (!user?.subject) {
+      throw new ConvexError("not authenticated");
+    }
     const quizId = ctx.db.normalizeId("quizzes", args.quizId);
     if (!quizId) {
-      return "this quiz is not valid quiz";
+      throw new ConvexError("quiz is invalid one");
+    }
+    const quiz = await ctx.db.get(quizId);
+    if (!quiz) {
+      throw new ConvexError("quiz data not found ");
     }
 
     await deleteAllStudentsInQuiz(quizId, ctx);
@@ -243,13 +243,17 @@ const deleteAllStudentsInQuiz = async (
 export const SwitchRandomizingQuestions = mutation({
   args: { quizId: v.string() },
   handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (!user?.subject) {
+      throw new ConvexError("not authenticated");
+    }
     const quizId = ctx.db.normalizeId("quizzes", args.quizId);
     if (!quizId) {
-      return null;
+      throw new ConvexError("quiz is invalid one");
     }
     const quiz = await ctx.db.get(quizId);
     if (!quiz) {
-      return null;
+      throw new ConvexError("quiz data not found ");
     }
 
     await ctx.db.patch(quizId, {
@@ -263,13 +267,17 @@ export const SwitchRandomizingQuestions = mutation({
 export const SwitchAiPrevention = mutation({
   args: { quizId: v.string() },
   handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (!user?.subject) {
+      throw new ConvexError("not authenticated");
+    }
     const quizId = ctx.db.normalizeId("quizzes", args.quizId);
     if (!quizId) {
-      return null;
+      throw new ConvexError("quiz is invalid one");
     }
     const quiz = await ctx.db.get(quizId);
     if (!quiz) {
-      return null;
+      throw new ConvexError("quiz data not found ");
     }
 
     await ctx.db.patch(quizId, {
@@ -284,9 +292,17 @@ export const SwitchAiPrevention = mutation({
 export const deleteQuiz = mutation({
   args: { quizId: v.string() },
   handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (!user?.subject) {
+      throw new ConvexError("not authenticated");
+    }
     const quizId = ctx.db.normalizeId("quizzes", args.quizId);
     if (!quizId) {
-      throw new ConvexError("invalid errors");
+      throw new ConvexError("quiz is invalid one");
+    }
+    const quiz = await ctx.db.get(quizId);
+    if (!quiz) {
+      throw new ConvexError("quiz data not found ");
     }
 
     const studentsInQuiz = await ctx.db
@@ -326,6 +342,14 @@ export const restartEndedQuiz = mutation({
     const user = await ctx.auth.getUserIdentity();
     if (!user?.subject) {
       throw new ConvexError("not authenticated");
+    }
+    const quizId = ctx.db.normalizeId("quizzes", args.quizId);
+    if (!quizId) {
+      throw new ConvexError("quiz is invalid one");
+    }
+    const quiz = await ctx.db.get(quizId);
+    if (!quiz) {
+      throw new ConvexError("quiz data not found ");
     }
     if (args.duration === 0) {
       await ctx.db.patch(args.quizId, {
