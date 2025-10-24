@@ -1,15 +1,17 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { api } from "@/convex/_generated/api";
 import { Label } from "@radix-ui/react-label";
 import { useConvex } from "convex/react";
+import { ConvexError } from "convex/values";
 import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
 import z from "zod";
+
 const formSchema = z.string().min(1, "please enter quiz name");
-function FindQuiz() {
+
+function FindQuizClients() {
   const [quizName, setRoomName] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -20,7 +22,7 @@ function FindQuiz() {
     e.preventDefault();
     if (isLoading) return;
     setIsLoading(true);
-    const result = formSchema.safeParse(quizName);
+    const result = formSchema.safeParse(quizName.trim());
     if (!result.success) {
       setError(result.error.issues[0].message);
       setIsLoading(false);
@@ -34,43 +36,35 @@ function FindQuiz() {
         return;
       }
       navigator.push(`/${isRoomExsist._id}/student`);
-    } catch (e) {
-      setError("something went wrong!");
-      console.log(e);
+    } catch (error) {
+      const message =
+        error instanceof ConvexError ? error.data : "something went wrong!";
+      setError(message);
     } finally {
       setIsLoading(false);
     }
   };
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <Card className="w-80">
-        <CardHeader>
-          <h1 className="text-center font-bold">Quiz Details</h1>
-        </CardHeader>
-        <CardContent className="m-0">
-          <form action="submit" onSubmit={onSubmit}>
-            <Label htmlFor="quizName">Room Name</Label>
-            <Input
-              value={quizName}
-              id="quizName"
-              type="text"
-              placeholder="Enter Room Name"
-              onChange={(e) => setRoomName(e.target.value)}
-            />
-            <p className="text-red-700">{error && error}</p>
-            <Button
-              disabled={isLoading || !quizName}
-              type="submit"
-              className="mt-8 w-full"
-            >
-              {" "}
-              {isLoading ? "Loading..." : "Find Room"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+    <form action="submit" onSubmit={onSubmit} className="mx-4">
+      <Label htmlFor="quizName">Room Name</Label>
+      <Input
+        value={quizName}
+        id="quizName"
+        type="text"
+        placeholder="Enter Room Name"
+        onChange={(e) => setRoomName(e.target.value)}
+      />
+      <p className="text-red-700">{error && error}</p>
+      <Button
+        disabled={isLoading || !quizName}
+        type="submit"
+        className="mt-8 w-full"
+      >
+        {" "}
+        {isLoading ? "Loading..." : "Find Room"}
+      </Button>
+    </form>
   );
 }
 
-export default FindQuiz;
+export default FindQuizClients;

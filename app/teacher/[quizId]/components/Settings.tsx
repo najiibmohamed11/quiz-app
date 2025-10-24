@@ -20,7 +20,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Trash } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 interface settingProps {
   settings: {
@@ -36,6 +36,7 @@ function Settings({ settings }: settingProps) {
     api.quiz.SwitchRandomizingQuestions,
   );
   const deletQuiz = useMutation(api.quiz.deleteQuiz);
+  const navigator = useRouter();
 
   const handleRandomizeQuestionToggle = async () => {
     try {
@@ -54,6 +55,7 @@ function Settings({ settings }: settingProps) {
   const handleDelte = async () => {
     try {
       await deletQuiz({ quizId });
+      navigator.replace("/teacher");
     } catch (e) {
       console.log(e);
     }

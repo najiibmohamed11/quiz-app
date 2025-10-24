@@ -90,7 +90,7 @@ export const getQuizDetails = query({
 export const FindQuiz = query({
   args: { quizName: v.string() },
   handler: async (ctx, arg) => {
-    if (!arg.quizName) {
+    if (!arg.quizName.trim()) {
       return "please provide quiz name";
     }
 
@@ -98,9 +98,13 @@ export const FindQuiz = query({
       .query("quizzes")
       .filter((quiz) => quiz.eq(quiz.field("name"), arg.quizName))
       .first();
-    return isQuizExsist
-      ? isQuizExsist
-      : "This quiz does not exist. Please check the quiz name and try again.";
+
+    if (!isQuizExsist) {
+      throw new ConvexError(
+        "this quiz does not exist. Please check the quiz name and try again.",
+      );
+    }
+    return isQuizExsist;
   },
 });
 

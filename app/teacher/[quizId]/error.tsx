@@ -25,9 +25,6 @@ function Error({ error }: { error: Error }) {
       </div>
     );
   }
-  console.log(error.name === "ConvexError");
-  console.log(error.message.slice(error.message.indexOf("ConvexError:")));
-  console.log(error.message);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center">
