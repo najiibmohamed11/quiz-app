@@ -1,6 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Preloaded, usePreloadedQuery, useQuery } from "convex/react";
+import {
+  Preloaded,
+  useConvexAuth,
+  usePreloadedQuery,
+  useQuery,
+} from "convex/react";
 import { api } from "@/convex/_generated/api";
 import CreateRoom from "./CreatRoom";
 import { Card, CardFooter } from "@/components/ui/card";
@@ -16,13 +21,13 @@ function QuizList(propert: {
 }) {
   const data = usePreloadedQuery(propert.preloadedTasks);
   const [quizzes, setquizzes] = useState(data);
-  const { isLoaded } = useUser();
+  const { isLoading, isAuthenticated } = useConvexAuth();
   const [parent] = useAutoAnimate();
   useEffect(() => {
-    if (isLoaded) {
+    if (isAuthenticated) {
       setquizzes(data);
     }
-  }, [isLoaded, data]);
+  }, [isAuthenticated, data]);
   if (!quizzes) {
     return (
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
