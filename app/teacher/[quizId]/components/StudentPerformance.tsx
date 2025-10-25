@@ -17,7 +17,7 @@ import {
 import { api } from "@/convex/_generated/api";
 import { Id, Doc } from "@/convex/_generated/dataModel";
 import { CheckCircle, CircleX, Eye, TriangleAlert } from "lucide-react";
-import LockRoom from "./LockRoomModal";
+import LockRoom from "./LockQuizModal";
 import UnlockQuiz from "./UnlockQuiz";
 import { FunctionReturnType } from "convex/server";
 import StudentPerformanceLoading from "./StudentPerformanceLoading";

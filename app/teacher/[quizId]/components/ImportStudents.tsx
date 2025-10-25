@@ -20,7 +20,7 @@ const ImportStudents = () => {
   const [pickedUniqueColumn, setPickedUniqueColumn] = useState<string | null>(
     null,
   );
-  const lockQuiz = useMutation(api.quiz.lockRoom);
+  const lockQuiz = useMutation(api.quiz.lockQuiz);
   const { quizId } = useParams();
 
   // const [columns,setColumns]=useState<string[]|null>(null)
@@ -87,22 +87,20 @@ const ImportStudents = () => {
   };
 
   const validateTable = (columns: string[], rows: string[][]) => {
-    if ([...new Set(columns)].length !== columns.length) {
+    if ([...new Set(columns)].length !== columns.length)
       return "you have duplicate column names ";
-    }
-    if (columns.length > 2) {
-      return `Table:maximum 2 columns allowd you provided ${columns.length} (${columns.join(",")}) please provide 2 or less columns. e.g StudentId,StudentName`;
-    }
-    if (rows.length > 100) {
-      return `we can't handle student more than 100.  you table contains ${rows.length}!`;
-    }
-    if (!rows || rows.length == 0 || !columns || columns.length === 0) {
-      return `invalid Table. Please provide a properly structrued Table `;
-    }
 
-    if (columns.some((column) => column.trim() === "")) {
+    if (columns.length > 2)
+      return `Table:maximum 2 columns allowd you provided ${columns.length} (${columns.join(",")}) please provide 2 or less columns. e.g StudentId,StudentName`;
+
+    if (rows.length > 100)
+      return `we can't handle student more than 100.  you table contains ${rows.length}!`;
+
+    if (!rows || rows.length == 0 || !columns || columns.length === 0)
+      return `invalid Table. Please provide a properly structrued Table `;
+
+    if (columns.some((column) => column.trim() === ""))
       return `column name can't be blank `;
-    }
 
     return null;
   };

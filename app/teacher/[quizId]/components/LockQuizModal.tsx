@@ -11,7 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-const LockRoom = () => {
+const LockQuizModal = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -33,4 +33,4 @@ const LockRoom = () => {
   );
 };
 
-export default LockRoom;
+export default LockQuizModal;
