@@ -14,17 +14,19 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import QuizCardSkeliton from "./QuizCardSkeliton";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { useUser } from "@clerk/nextjs";
 
 function QuizList(propert: {
   preloadedTasks: Preloaded<typeof api.quiz.getQuizzes>;
 }) {
   const data = usePreloadedQuery(propert.preloadedTasks);
   const [quizzes, setquizzes] = useState(data);
-  const { isLoading, isAuthenticated } = useConvexAuth();
+  const { isAuthenticated } = useConvexAuth();
   const [parent] = useAutoAnimate();
+  console.log("first then .........");
+  console.log(isAuthenticated);
   useEffect(() => {
     if (isAuthenticated) {
+      console.log("called.........");
       setquizzes(data);
     }
   }, [isAuthenticated, data]);

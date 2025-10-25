@@ -6,8 +6,7 @@ import UpperCard from "./UpperCard";
 import StudentPerformance from "./StudentPerformance";
 import QuestionsList from "./QuestionsList";
 import Settings from "./Settings";
-import { Preloaded, usePreloadedQuery } from "convex/react";
-import { useUser } from "@clerk/nextjs";
+import { Preloaded, useConvexAuth, usePreloadedQuery } from "convex/react";
 interface reactivePartProp {
   preloadQuizDetails: Preloaded<typeof api.quiz.getQuizDetails>;
   students: Preloaded<typeof api.student.getAllStudentsInRoom>;
@@ -18,13 +17,13 @@ function ReactivePart(propert: reactivePartProp) {
   const studentData = usePreloadedQuery(propert.students);
   const [quizDetails, setQuizDetails] = useState(quizData);
   const [students, setStudents] = useState(studentData);
-  const { isLoaded } = useUser();
+  const { isAuthenticated } = useConvexAuth();
   useEffect(() => {
-    if (isLoaded) {
+    if (isAuthenticated) {
       setQuizDetails(quizData);
       setStudents(studentData);
     }
-  }, [isLoaded, quizData, studentData]);
+  }, [isAuthenticated, quizData, studentData]);
 
   return (
     <>
