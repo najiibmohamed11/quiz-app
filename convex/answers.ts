@@ -4,7 +4,7 @@ import { Id } from "./_generated/dataModel";
 
 export const submitAnswer = mutation({
   args: {
-    questionId: v.string(),
+    questionId: v.id("questions"),
     studentId: v.string(),
     answer: v.union(v.string(), v.number()),
     quizId: v.string(),
@@ -25,7 +25,7 @@ export const submitAnswer = mutation({
       studentId: studentId,
       quizId: quizId,
       answer: args.answer,
-      questionId: args.questionId as Id<"questions">,
+      questionId: args.questionId,
     });
   },
 });

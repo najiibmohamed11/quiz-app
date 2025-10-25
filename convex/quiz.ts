@@ -37,6 +37,22 @@ export const creatQuiz = mutation({
   },
 });
 
+export const getQuiz = query({
+  args: { quizId: v.string() },
+  handler: async (ctx, args) => {
+    const quizId = ctx.db.normalizeId("quizzes", args.quizId);
+    if (!quizId) {
+      return "Invalid quiz ID";
+    }
+    const quiz = await ctx.db.get(quizId);
+    if (!quiz) {
+      return "Quiz does not exist";
+    }
+
+    return quiz;
+  },
+});
+
 export const getQuizzes = query({
   args: {},
   handler: async (ctx) => {

@@ -12,7 +12,7 @@ import z from "zod";
 const formSchema = z.string().min(1, "please enter quiz name");
 
 function FindQuizClients() {
-  const [quizName, setRoomName] = useState("");
+  const [quizName, setQuizName] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const convex = useConvex();
@@ -30,12 +30,12 @@ function FindQuizClients() {
     }
 
     try {
-      const isRoomExsist = await convex.query(api.quiz.FindQuiz, { quizName });
-      if (typeof isRoomExsist === "string") {
-        setError(isRoomExsist);
+      const isQuizExsist = await convex.query(api.quiz.FindQuiz, { quizName });
+      if (typeof isQuizExsist === "string") {
+        setError(isQuizExsist);
         return;
       }
-      navigator.push(`/${isRoomExsist._id}/student`);
+      navigator.push(`/${isQuizExsist._id}/student`);
     } catch (error) {
       const message =
         error instanceof ConvexError ? error.data : "something went wrong!";
@@ -45,14 +45,14 @@ function FindQuizClients() {
     }
   };
   return (
-    <form action="submit" onSubmit={onSubmit} className="mx-4">
-      <Label htmlFor="quizName">Room Name</Label>
+    <form action="submit" onSubmit={onSubmit} className="mx-3">
+      <Label htmlFor="quizName">Quiz Name</Label>
       <Input
         value={quizName}
         id="quizName"
         type="text"
-        placeholder="Enter Room Name"
-        onChange={(e) => setRoomName(e.target.value)}
+        placeholder="Enter Quiz Name"
+        onChange={(e) => setQuizName(e.target.value)}
       />
       <p className="text-red-700">{error && error}</p>
       <Button
@@ -61,7 +61,7 @@ function FindQuizClients() {
         className="mt-8 w-full"
       >
         {" "}
-        {isLoading ? "Loading..." : "Find Room"}
+        {isLoading ? "Loading..." : "Find Quiz"}
       </Button>
     </form>
   );

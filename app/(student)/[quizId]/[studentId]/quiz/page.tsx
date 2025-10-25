@@ -18,6 +18,11 @@ import z from "zod";
 import Timer from "./components/Timer";
 import { Id } from "@/convex/_generated/dataModel";
 import { toast, Toaster } from "sonner";
+import Invalid from "@/app/components/Invalid";
+import NoQuestions from "./components/NoQuestions";
+import QuizPaused from "./components/QuizPaused";
+import QuizExpired from "./components/QuizExpired";
+import QuizSkeleton from "./components/QuizSkeleton";
 
 const answerSchema = z
   .object({
@@ -98,46 +103,14 @@ function Quiz() {
     };
   }, [fullQuizData]);
 
-  if (fullQuizData === undefined) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        loading....
-      </div>
-    );
-  }
-  if (fullQuizData === null) {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-5">
-        <h1>opps something went wrong in url please </h1>
-        <Link href={`/findquiz`}>
-          <Button>go back</Button>
-        </Link>
-      </div>
-    );
-  }
+  //validations
+  if (fullQuizData === undefined) return <QuizSkeleton />;
+  if (fullQuizData === null) return <Invalid />;
+  if (fullQuizData === "paused") return <QuizPaused />;
+  if (fullQuizData === "expired" || isTimerEnd) return <QuizExpired />;
+  if (fullQuizData === "no questions") return <NoQuestions />;
 
-  if (fullQuizData === "no questions") {
-    return (
-      <div className="flex items-center justify-center">
-        there is no question in this quiz
-      </div>
-    );
-  }
-  if (fullQuizData === "paused") {
-    return (
-      <div className="flex items-center justify-center">
-        wait until teacher starts the quiz
-      </div>
-    );
-  }
-  if (fullQuizData === "expired" || isTimerEnd) {
-    return (
-      <div className="flex items-center justify-center">
-        time of the quiz ended
-      </div>
-    );
-  }
-
+  //getting unique answered question id and then filtring
   const answeredSet = new Set(answeredQuestionsIds);
   const questions = fullQuizData.questions.filter(
     (question) => !answeredSet.has(question._id),
@@ -145,6 +118,7 @@ function Quiz() {
   const quizInfo = fullQuizData.quizInfo;
 
   const handleNext = async () => {
+    //validations
     const result = answerSchema.safeParse(answer);
     if (!result.success) {
       setError(result.error.issues[0].message);
@@ -157,7 +131,7 @@ function Quiz() {
 
     try {
       await submitAnswer({
-        questionId: answer.questionId,
+        questionId: answer.questionId as Id<"questions">,
         answer: answer.answer,
         studentId: studentId,
         quizId: quizId,
@@ -187,9 +161,7 @@ function Quiz() {
   const index = quizInfo.settings.randomizingQuestions
     ? Math.floor(randomeNumber * questions.length)
     : 0;
-  console.log(quizInfo.settings.randomizingQuestions);
-  console.log(index);
-  console.log(randomeNumber);
+
   const currentQuestion = questions[index];
   if (!currentQuestion) {
     return (

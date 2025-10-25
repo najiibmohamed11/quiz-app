@@ -1,8 +1,8 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { api } from "@/convex/_generated/api";
+import { Doc } from "@/convex/_generated/dataModel";
 import { Label } from "@radix-ui/react-label";
 import { useConvex, useMutation, useQuery } from "convex/react";
 import { ConvexError } from "convex/values";
@@ -11,23 +11,14 @@ import React, { FormEvent, useState } from "react";
 import z from "zod";
 const formSchema = z.string().min(1, "please enter your name");
 
-function StudentInfo() {
+function StudentInfoClient({ quizInfo }: { quizInfo: Doc<"quizzes"> }) {
   const [studentName, setStudentName] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const creatStudent = useMutation(api.student.createStudent);
   const { quizId } = useParams();
   const navigator = useRouter();
-  const quizInfo = useQuery(api.quiz.getRoom, { quizId: quizId as string });
   const convex = useConvex();
-
-  if (!quizInfo) {
-    return <div>loading...</div>;
-  }
-
-  if (typeof quizInfo === "string") {
-    return <div>{quizInfo}</div>;
-  }
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -83,39 +74,28 @@ function StudentInfo() {
     }
   };
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <Card className="w-96">
-        <CardHeader>
-          <h1 className="text-center font-bold">Student info</h1>
-        </CardHeader>
-        <CardContent className="m-0">
-          <form action="submit" onSubmit={onSubmit}>
-            <Label htmlFor="quizName">
-              {quizInfo.restriction
-                ? quizInfo.restriction.uniqueColumn
-                : "Your Name"}
-            </Label>
-            <Input
-              value={studentName}
-              id="quizName"
-              type="text"
-              placeholder={`Enter ${quizInfo?.restriction ? quizInfo.restriction.uniqueColumn : "Name"}`}
-              onChange={(e) => setStudentName(e.target.value)}
-            />
-            <p className="text-red-700">{error && error}</p>
-            <Button
-              disabled={isLoading || !studentName}
-              type="submit"
-              className="mt-8 w-full"
-            >
-              {" "}
-              {isLoading ? "Starting..." : "Start Quiz"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+    <form action="submit" onSubmit={onSubmit} className="mx-3">
+      <Label htmlFor="quizName">
+        {quizInfo.restriction ? quizInfo.restriction.uniqueColumn : "Your Name"}
+      </Label>
+      <Input
+        value={studentName}
+        id="quizName"
+        type="text"
+        placeholder={`Enter your ${quizInfo?.restriction ? quizInfo.restriction.uniqueColumn : "Name"}`}
+        onChange={(e) => setStudentName(e.target.value)}
+      />
+      <p className="text-red-700">{error && error}</p>
+      <Button
+        disabled={isLoading || !studentName}
+        type="submit"
+        className="mt-8 w-full"
+      >
+        {" "}
+        {isLoading ? "Starting..." : "Start Quiz"}
+      </Button>
+    </form>
   );
 }
 
-export default StudentInfo;
+export default StudentInfoClient;
