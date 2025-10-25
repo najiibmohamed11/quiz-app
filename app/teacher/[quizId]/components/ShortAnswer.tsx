@@ -45,7 +45,7 @@ function ShortAnswer() {
 
     const creatingPromise = createShortAnswerQuestion({
       ...form,
-      quizId: quizId as Id<"quizs">,
+      quizId: quizId as Id<"quizzes">,
     });
 
     toast.promise(creatingPromise, {

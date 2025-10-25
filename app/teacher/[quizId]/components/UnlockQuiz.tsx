@@ -22,7 +22,7 @@ const UnlockQuiz = ({
   quizId: string;
   studentsLength: number;
 }) => {
-  const unlock = useMutation(api.quiz.unlockRoom);
+  const unlock = useMutation(api.quiz.unlockQuiz);
   const handleUnLock = async () => {
     try {
       await unlock({ quizId: quizId });

@@ -73,7 +73,7 @@ function McqQuestions() {
     }
     setError("");
     setIsLoading(true);
-    const questionId = createMcq({ ...form, quizId: quizId as Id<"quizs"> });
+    const questionId = createMcq({ ...form, quizId: quizId as Id<"quizzes"> });
 
     toast.promise(questionId, {
       loading: "Loading....",

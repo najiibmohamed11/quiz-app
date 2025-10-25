@@ -41,7 +41,7 @@ function TrueFalse() {
 
     const creatingPromise = createTrueFalseQuestion({
       ...form,
-      quizId: quizId as Id<"quizs">,
+      quizId: quizId as Id<"quizzes">,
     });
 
     toast.promise(creatingPromise, {
