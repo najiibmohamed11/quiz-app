@@ -29,10 +29,12 @@ export const getStudent = query({
 export const getAllStudentsInRoom = query({
   args: { quizId: v.string() },
   handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (!user?.subject) return "not authenticated";
+
     const quizId = ctx.db.normalizeId("quizzes", args.quizId);
-    if (!quizId) {
-      return "this quiz  is not valid quiz";
-    }
+    if (!quizId) return "this quiz  is not valid quiz";
+
     const students = await ctx.db
       .query("students")
       .withIndex("by_quiz", (student) => {

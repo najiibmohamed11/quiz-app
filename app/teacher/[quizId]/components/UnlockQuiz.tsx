@@ -14,6 +14,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { ConvexError } from "convex/values";
+import { useRouter } from "next/navigation";
 
 const UnlockQuiz = ({
   quizId,
@@ -23,10 +25,15 @@ const UnlockQuiz = ({
   studentsLength: number;
 }) => {
   const unlock = useMutation(api.quiz.unlockQuiz);
+  const navigator = useRouter();
+
   const handleUnLock = async () => {
     try {
       await unlock({ quizId: quizId });
     } catch (e) {
+      if (e instanceof ConvexError) {
+        navigator.push("/teacher");
+      }
       console.log(e);
     }
   };

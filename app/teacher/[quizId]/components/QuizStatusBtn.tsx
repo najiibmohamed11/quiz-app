@@ -13,7 +13,9 @@ import { DurationPicker } from "@/components/ui/duration-picker";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useMutation } from "convex/react";
+import { ConvexError } from "convex/values";
 import { Pause, Play, RotateCcw } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 interface QuizStatusBtnProp {
   quizStatus: "active" | "pause";
@@ -34,11 +36,15 @@ function QuizStatusBtn({
   const [durationState, setDuration] = useState<number>(0);
   const [isloading, setIsloading] = useState(false);
   const [error, setErorr] = useState("");
+  const navigator = useRouter();
 
   const handleRoomStatusChange = async () => {
     try {
       await changeRoomStatus({ quizId: quizId as string });
     } catch (e) {
+      if (e instanceof ConvexError) {
+        navigator.push("/teacher");
+      }
       console.log(e);
     }
   };
@@ -52,6 +58,9 @@ function QuizStatusBtn({
     } catch (e) {
       console.log(e);
       setErorr("some thing went wrong");
+      if (e instanceof ConvexError) {
+        navigator.push("/teacher");
+      }
     } finally {
       setIsloading(false);
     }

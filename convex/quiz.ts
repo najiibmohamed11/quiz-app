@@ -58,7 +58,7 @@ export const getQuizzes = query({
   handler: async (ctx) => {
     const user = await ctx.auth.getUserIdentity();
     if (!user?.subject) {
-      throw new ConvexError("not authenticated");
+      return "not authenticated";
     }
     const quizzes = await ctx.db
       .query("quizzes")
@@ -74,18 +74,18 @@ export const getQuizDetails = query({
   handler: async (ctx, args) => {
     const user = await ctx.auth.getUserIdentity();
     if (!user?.subject) {
-      throw new ConvexError("not authenticated");
+      return "not authenticated";
     }
     const quizId = ctx.db.normalizeId("quizzes", args.quizId);
     if (!quizId) {
-      throw new ConvexError("Invalid quiz ID");
+      return "Invalid quiz ID";
     }
     const quizInfo = await ctx.db.get(quizId);
     if (!quizInfo) {
-      throw new ConvexError("Quiz does not exist");
+      return "Quiz does not exist";
     }
     if (quizInfo.teacher !== user.subject) {
-      throw new ConvexError("this quiz is not your's");
+      return "this quiz is not your's";
     }
     const questions = await ctx.db
       .query("questions")

@@ -30,9 +30,6 @@ export default async function Room({ params }: RoomPageProps) {
 
   return (
     <div className="mx-auto min-h-screen max-w-6xl">
-      <header className="mt-8 flex flex-col gap-3">
-        <Back />
-      </header>
       <ReactivePart
         preloadQuizDetails={preloadQuizDetails}
         students={preloadStudents}

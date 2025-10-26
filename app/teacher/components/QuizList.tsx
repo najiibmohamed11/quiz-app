@@ -14,6 +14,8 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import QuizCardSkeliton from "./QuizCardSkeliton";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import Invalid from "@/app/components/Invalid";
+import UnAuthanticated from "@/app/components/UnAuthanticated";
 
 function QuizList(propert: {
   preloadedTasks: Preloaded<typeof api.quiz.getQuizzes>;
@@ -38,6 +40,9 @@ function QuizList(propert: {
         ))}
       </div>
     );
+  }
+  if (typeof quizzes === "string") {
+    return <UnAuthanticated />;
   }
 
   if (quizzes.length === 0) {

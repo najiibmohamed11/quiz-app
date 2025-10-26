@@ -7,6 +7,9 @@ import StudentPerformance from "./StudentPerformance";
 import QuestionsList from "./QuestionsList";
 import Settings from "./Settings";
 import { Preloaded, useConvexAuth, usePreloadedQuery } from "convex/react";
+import Invalid from "@/app/components/Invalid";
+import UnAuthanticated from "@/app/components/UnAuthanticated";
+import Back from "./Back";
 interface reactivePartProp {
   preloadQuizDetails: Preloaded<typeof api.quiz.getQuizDetails>;
   students: Preloaded<typeof api.student.getAllStudentsInRoom>;
@@ -24,9 +27,16 @@ function ReactivePart(propert: reactivePartProp) {
       setStudents(studentData);
     }
   }, [isAuthenticated, quizData, studentData]);
+  if (quizData === "not authenticated" || students === "not authenticated")
+    return <UnAuthanticated />;
+  if (typeof quizDetails === "string" || typeof students === "string")
+    return <Invalid />;
 
   return (
     <>
+      <header className="mt-8 flex flex-col gap-3">
+        <Back />
+      </header>
       <h1 className="mx-5 text-2xl font-bold">{quizDetails?.quizInfo.name}</h1>
       {/* upper part of the quiz */}
       <UpperCard

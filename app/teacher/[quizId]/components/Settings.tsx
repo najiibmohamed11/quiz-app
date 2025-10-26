@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
+import { ConvexError } from "convex/values";
 
 interface settingProps {
   settings: {
@@ -42,6 +43,9 @@ function Settings({ settings }: settingProps) {
     try {
       await switchRandomizingQuestion({ quizId });
     } catch (e) {
+      if (e instanceof ConvexError) {
+        navigator.push("/teacher");
+      }
       console.log(e);
     }
   };
@@ -49,13 +53,19 @@ function Settings({ settings }: settingProps) {
     try {
       await switchAiPrevention({ quizId });
     } catch (e) {
+      if (e instanceof ConvexError) {
+        navigator.push("/teacher");
+      }
       console.log(e);
     }
   };
   const handleDelte = async () => {
     try {
-      await deletQuiz({ quizId });
-      navigator.replace("/teacher");
+      navigator.push("/teacher");
+      setTimeout(async () => {
+        await deletQuiz({ quizId });
+        console.log("called it .......");
+      }, 1000);
     } catch (e) {
       console.log(e);
     }

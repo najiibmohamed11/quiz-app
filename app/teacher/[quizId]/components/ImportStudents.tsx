@@ -8,6 +8,8 @@ import { UniqueColumnDropDown } from "./UniqueColumnDropDown";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useParams } from "next/navigation";
+import { ConvexError } from "convex/values";
+import { useRouter } from "next/router";
 
 const ImportStudents = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -22,6 +24,7 @@ const ImportStudents = () => {
   );
   const lockQuiz = useMutation(api.quiz.lockQuiz);
   const { quizId } = useParams();
+  const navigator = useRouter();
 
   // const [columns,setColumns]=useState<string[]|null>(null)
   const handleFormChange = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -150,6 +153,9 @@ const ImportStudents = () => {
         uniqueColumnForSearch: pickedUniqueColumn,
       });
     } catch (e) {
+      if (e instanceof ConvexError) {
+        navigator.push("/teacher");
+      }
       setError("some thing went wrong during locking..");
       console.log(e);
     }
