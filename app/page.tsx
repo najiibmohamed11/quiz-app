@@ -3,20 +3,18 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex gap-6 flex-col justify-center items-center min-h-screen ">
-      <h2 className="text-xl font-semibold text-purple-900 text-center mb-4">
-        I am a...
-      </h2>{" "}
-      <div className="flex gap-10 ">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-6">
+      <h2 className="mb-4 text-center text-xl font-semibold">I am a...</h2>{" "}
+      <div className="flex gap-10">
         <Link
-          href="/sign-in"
-          className="w-44 h-34 bg-purple-700 font-medium  text-center items-center flex justify-center text-l text-amber-50 border rounded-lg"
+          href="/teacher"
+          className="bg-primary flex h-34 w-44 items-center justify-center rounded-lg border text-center font-medium text-white dark:text-black"
         >
           teacher
         </Link>
         <Link
-          href="/findroom"
-          className="w-44 h-34 border-purple-700  font-medium  text-center items-center flex justify-center text-l text-black border rounded-lg"
+          href="/find-quiz"
+          className="text-l flex h-34 w-44 items-center justify-center rounded-lg border border-[#A5D6A7] text-center font-medium dark:text-white"
         >
           student
         </Link>

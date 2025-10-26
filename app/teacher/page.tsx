@@ -1,21 +1,40 @@
-"use client";
-
 import CreateRoom from "./components/CreatRoom";
 import Profile from "../components/Profile";
-import RoomsList from "./components/RoomsList";
-export default function Teacher() {
+import { ModeToggle } from "../components/ModeToggle";
+import { Rubik } from "next/font/google";
+import { preloadQuery } from "convex/nextjs";
+import { api } from "@/convex/_generated/api";
+import { getToken } from "../hooks/getToken";
+import QuizList from "./components/QuizList";
+
+const rubik = Rubik({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+});
+
+export default async function Teacher() {
+  const token = await getToken();
+
+  if (!token) return null;
+
+  const preloadedTasks = await preloadQuery(
+    api.quiz.getQuizzes,
+    {},
+    { token: token },
+  );
+
   return (
-    <div className="max-w-6xl px-8 min-h-screen mx-auto ">
-      <header className=" -700 flex  justify-between mt-4  ">
-        <h1>A</h1>
-        <div className="flex gap-4 justify-center">
+    <div className="mx-auto min-h-screen max-w-6xl px-8">
+      <header className="mt-4 flex h-fit justify-between text-2xl font-bold">
+        <h1 className={`${rubik.className}`}>knowy</h1>
+
+        <div className="flex justify-center gap-4">
+          <ModeToggle />
           <CreateRoom />
           <Profile />
         </div>
       </header>
-      {/* <ErrorBoundary fallback={<div>this shit is crashed</div>} > */}
-      <RoomsList />
-      {/* </ErrorBoundary> */}
+      <QuizList preloadedTasks={preloadedTasks} />
     </div>
   );
 }

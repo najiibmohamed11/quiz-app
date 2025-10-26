@@ -12,7 +12,7 @@ export const createQuestion = mutation({
     options: v.optional(v.array(v.string())),
     correctAnswerIndex: v.optional(v.number()),
     answer: v.optional(v.string()),
-    roomId: v.id("rooms"),
+    quizId: v.id("quizzes"),
   },
   handler: async (ctx, args) => {
     //common checks
@@ -37,25 +37,29 @@ export const createQuestion = mutation({
       correctAnswerIndex: args.correctAnswerIndex,
       answer: args.answer,
       questionType: args.questionType,
-      roomId: args.roomId,
-    });
 
+      quizId: args.quizId,
+    });
+    const quiz = await ctx.db.get(args.quizId);
+    await ctx.db.patch(args.quizId, {
+      numberOfQuestions: quiz?.numberOfQuestions,
+    });
     return id;
   },
 });
 
 export const getRoomeQuestions = query({
-  args: { roomId: v.string() },
+  args: { quizId: v.string() },
   handler: (ctx, arg) => {
-    const roomId = ctx.db.normalizeId("rooms", arg.roomId);
-    if (!roomId) {
-      return "invalid room id";
+    const quizId = ctx.db.normalizeId("quizzes", arg.quizId);
+    if (!quizId) {
+      return "invalid quiz id";
     }
 
     const questions = ctx.db
       .query("questions")
-      .withIndex("by_room", (question) => {
-        return question.eq("roomId", roomId);
+      .withIndex("by_quiz", (question) => {
+        return question.eq("quizId", quizId);
       })
       .collect();
     return questions;

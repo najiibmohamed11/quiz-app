@@ -2,13 +2,13 @@ import { ConvexError, v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
 export const createStudent = mutation({
-  args: { name: v.string(), roomId: v.string() },
+  args: { name: v.string(), quizId: v.string() },
   handler: async (ctx, args) => {
-    const roomId = ctx.db.normalizeId("rooms", args.roomId);
-    if (!roomId) throw new ConvexError("this room is not valid");
+    const quizId = ctx.db.normalizeId("quizzes", args.quizId);
+    if (!quizId) throw new ConvexError("this quiz is not valid");
     const studentId = await ctx.db.insert("students", {
       name: args.name,
-      roomId: roomId,
+      quizId: quizId,
       completedQuestions: 0,
     });
     return studentId;
@@ -16,32 +16,34 @@ export const createStudent = mutation({
 });
 
 export const getStudent = query({
-  args: { studentId: v.string(), roomId: v.string() },
+  args: { studentId: v.string(), quizId: v.string() },
   handler: async (ctx, args) => {
     const id = ctx.db.normalizeId("students", args.studentId);
     if (!id) return null;
     const studentInfo = await ctx.db.get(id);
-    if (studentInfo?.roomId !== args.roomId) return null;
+    if (studentInfo?.quizId !== args.quizId) return null;
     return studentInfo;
   },
 });
 
 export const getAllStudentsInRoom = query({
-  args: { roomId: v.string() },
+  args: { quizId: v.string() },
   handler: async (ctx, args) => {
-    const roomId = ctx.db.normalizeId("rooms", args.roomId);
-    if (!roomId) {
-      return "this room  is not valid room";
-    }
+    const user = await ctx.auth.getUserIdentity();
+    if (!user?.subject) return "not authenticated";
+
+    const quizId = ctx.db.normalizeId("quizzes", args.quizId);
+    if (!quizId) return "this quiz  is not valid quiz";
+
     const students = await ctx.db
       .query("students")
-      .withIndex("by_room", (student) => {
-        return student.eq("roomId", roomId);
+      .withIndex("by_quiz", (student) => {
+        return student.eq("quizId", quizId);
       })
       .collect();
     const studentAnswers = await ctx.db
       .query("answers")
-      .withIndex("by_room", (answer) => answer.eq("roomId", roomId))
+      .withIndex("by_quiz", (answer) => answer.eq("quizId", quizId))
       .collect();
     const studentWithAnswers = students.map((student) => {
       const thisStudentsAnswers = studentAnswers.filter(
@@ -55,44 +57,44 @@ export const getAllStudentsInRoom = query({
 });
 
 export const getFullQuizData = query({
-  args: { studentId: v.string(), roomId: v.string() },
+  args: { studentId: v.string(), quizId: v.string() },
   handler: async (ctx, args) => {
     const studentId = ctx.db.normalizeId("students", args.studentId);
-    const roomId = ctx.db.normalizeId("rooms", args.roomId);
-    if (!roomId || !studentId) return null;
+    const quizId = ctx.db.normalizeId("quizzes", args.quizId);
+    if (!quizId || !studentId) return null;
+    const quizInfo = await ctx.db.get(quizId);
+    if (!quizInfo) return null;
     const studentInfo = await ctx.db.get(studentId);
     if (!studentInfo) return null;
-    if (studentInfo.roomId !== roomId) return null;
-    const questions = await ctx.db
-      .query("questions")
-      .withIndex("by_room", (question) => {
-        return question.eq("roomId", roomId);
-      })
-      .collect();
-
-    const roomInfo = await ctx.db.get(roomId);
-    if (!roomInfo) return null;
-    if (questions.length === 0) return "no questions";
-    if (roomInfo.status === "pause") return "paused";
-    if (roomInfo.duration && roomInfo.expiresAt) {
-      const remainingTime = Math.max(0, roomInfo.expiresAt - Date.now());
+    if (studentInfo.quizId !== quizId) return null;
+    if (quizInfo.status === "pause") return "paused";
+    if (quizInfo.duration && quizInfo.expiresAt) {
+      const remainingTime = Math.max(0, quizInfo.expiresAt - Date.now());
       if (remainingTime === 0) return "expired";
     }
-    return { questions, roomInfo, studentInfo };
+
+    const questions = await ctx.db
+      .query("questions")
+      .withIndex("by_quiz", (question) => {
+        return question.eq("quizId", quizId);
+      })
+      .collect();
+    if (questions.length === 0) return "no questions";
+    return { questions, quizInfo, studentInfo };
   },
 });
 
 export const findStudentInLockedQuiz = query({
-  args: { uniqueId: v.string(), roomId: v.string() },
+  args: { uniqueId: v.string(), quizId: v.string() },
   handler: async (ctx, args) => {
-    const roomId = ctx.db.normalizeId("rooms", args.roomId);
-    if (!roomId) {
-      throw new ConvexError("invalid room id");
+    const quizId = ctx.db.normalizeId("quizzes", args.quizId);
+    if (!quizId) {
+      throw new ConvexError("invalid quiz id");
     }
     const student = await ctx.db
       .query("students")
       .withIndex("by_uniqueId", (student) =>
-        student.eq("uniqueId", args.uniqueId).eq("roomId", roomId),
+        student.eq("uniqueId", args.uniqueId).eq("quizId", quizId),
       )
       .unique();
     if (!student) {
