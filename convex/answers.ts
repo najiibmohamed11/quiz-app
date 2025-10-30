@@ -8,6 +8,11 @@ export const submitAnswer = mutation({
     studentId: v.string(),
     answer: v.union(v.string(), v.number()),
     quizId: v.string(),
+    decision: v.union(
+      v.literal("correct"),
+      v.literal("incorrect"),
+      v.literal("waiting"),
+    ),
   },
   handler: async (ctx, args) => {
     const studentId = ctx.db.normalizeId("students", args.studentId);
@@ -26,6 +31,7 @@ export const submitAnswer = mutation({
       quizId: quizId,
       answer: args.answer,
       questionId: args.questionId,
+      decision: args.decision,
     });
   },
 });

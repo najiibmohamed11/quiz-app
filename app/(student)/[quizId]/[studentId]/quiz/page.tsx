@@ -28,6 +28,7 @@ const answerSchema = z
   .object({
     questionId: z.string(),
     answer: z.optional(z.union([z.string(), z.number()])),
+    decision: z.literal(["correct", "incorrect", "waiting"]),
   })
   .superRefine((data, ctx) => {
     if (data.answer == undefined) {
@@ -51,6 +52,7 @@ function Quiz() {
   const [answer, setAnswer] = useState<z.infer<typeof answerSchema>>({
     questionId: "",
     answer: undefined,
+    decision: "waiting",
   });
 
   const fullQuizData = useQuery(api.student.getFullQuizData, {
@@ -135,6 +137,7 @@ function Quiz() {
         answer: answer.answer,
         studentId: studentId,
         quizId: quizId,
+        decision: answer.decision,
       });
 
       setAnsweredQuestionsIds((prev) => {
@@ -149,7 +152,7 @@ function Quiz() {
       });
 
       setRandomNumber(Math.random());
-      setAnswer({ questionId: "", answer: undefined });
+      setAnswer({ questionId: "", answer: undefined, decision: "waiting" });
       setError("");
     } catch (e) {
       const errorMessage =
@@ -202,6 +205,10 @@ function Quiz() {
                       setAnswer({
                         questionId: currentQuestion._id,
                         answer: index,
+                        decision:
+                          currentQuestion.correctAnswerIndex === index
+                            ? "correct"
+                            : "incorrect",
                       })
                     }
                   >
@@ -217,6 +224,10 @@ function Quiz() {
                       setAnswer({
                         questionId: currentQuestion._id,
                         answer: 0,
+                        decision:
+                          currentQuestion.correctAnswerIndex === 0
+                            ? "correct"
+                            : "incorrect",
                       });
                     }}
                   >
@@ -229,6 +240,10 @@ function Quiz() {
                       setAnswer({
                         questionId: currentQuestion._id,
                         answer: 1,
+                        decision:
+                          currentQuestion.correctAnswerIndex === 1
+                            ? "correct"
+                            : "incorrect",
                       });
                     }}
                   >
@@ -246,6 +261,7 @@ function Quiz() {
                   setAnswer({
                     questionId: currentQuestion._id,
                     answer: e.target.value,
+                    decision: "waiting",
                   })
                 }
               />
