@@ -23,6 +23,8 @@ import { FunctionReturnType } from "convex/server";
 import StudentPerformanceLoading from "./StudentPerformanceLoading";
 import InValidQuiz from "./InValidQuiz";
 import AddQuestion from "./AddQuestion";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@radix-ui/react-dropdown-menu";
 
 type question = {
   _id: Id<"questions">;
@@ -42,6 +44,7 @@ type answers = {
   answer: string | number;
   studentId: Id<"students">;
   questionId: Id<"questions">;
+  decision: "correct" | "incorrect" | "waiting";
 };
 
 interface studentPerformanceProps {
@@ -86,20 +89,23 @@ function StudentPerformance({
   const formatStudentAnswers = (
     question: question,
     answer: string | number | undefined,
+    decision: "correct" | "incorrect" | "waiting" | undefined,
   ) => {
     //if there is no answer for this question return --
-    if (answer === undefined) {
-      return "---";
-    }
+    console.log(answer);
+    if (answer === undefined || !decision) return "---";
+
     //if answer there options in question and answers are number it is mcq
+    const decisionIcon =
+      decision === "correct" ? (
+        <CheckCircle className="h-4 w-4 text-green-600" />
+      ) : decision === "incorrect" ? (
+        <CircleX className="h-4 w-4 text-red-600" />
+      ) : null;
     if (question.options && typeof answer === "number") {
       return (
         <div className="flex items-center justify-center gap-2">
-          {question.correctAnswerIndex === answer ? (
-            <CheckCircle className="h-4 w-4 text-green-600" />
-          ) : (
-            <CircleX className="h-4 w-4 text-red-600" />
-          )}
+          {decisionIcon}
           {String.fromCharCode(answer + 65)}
         </div>
       );
@@ -108,12 +114,7 @@ function StudentPerformance({
     if (typeof answer === "number") {
       return (
         <div className="flex items-center justify-center gap-2">
-          {/* check if it is correct answe or not */}
-          {question.correctAnswerIndex === answer ? (
-            <CheckCircle className="h-4 w-4 text-green-600" />
-          ) : (
-            <CircleX className="h-4 w-4 text-red-600" />
-          )}
+          {decisionIcon}
           {answer === 0 ? "True" : "False"}
         </div>
       );
@@ -135,16 +136,7 @@ function StudentPerformance({
       if (!answerOfthisQuestion) {
         return;
       }
-      if (
-        question.options &&
-        typeof answerOfthisQuestion.answer === "number" &&
-        question.correctAnswerIndex === answerOfthisQuestion.answer
-      ) {
-        correctAnswerCount++;
-      } else if (
-        typeof answerOfthisQuestion.answer === "number" &&
-        question.correctAnswerIndex === answerOfthisQuestion.answer
-      ) {
+      if (answerOfthisQuestion.decision === "correct") {
         correctAnswerCount++;
       }
     });
@@ -286,6 +278,7 @@ function StudentPerformance({
                             {formatStudentAnswers(
                               question,
                               answerOfThisQuestion?.answer,
+                              answerOfThisQuestion?.decision,
                             )}
                           </div>
                         ) : (
@@ -296,15 +289,27 @@ function StudentPerformance({
                                   {formatStudentAnswers(
                                     question,
                                     answerOfThisQuestion?.answer,
+                                    answerOfThisQuestion?.decision,
                                   )}
                                 </p>
                               </div>
                             </HoverCardTrigger>
                             <HoverCardContent className="">
                               <div className="space-y-1">
-                                <p className="text-sm">
+                                <p className="text-center text-sm">
                                   {answerOfThisQuestion?.answer}
                                 </p>
+                                <hr />
+                                <p className="text-primary">is it correct?</p>
+
+                                <div className="flex items-center justify-center gap-2">
+                                  <Button variant="ghost">
+                                    <CheckCircle className="h-4 w-4 text-green-600" />
+                                  </Button>
+                                  <Button variant="ghost">
+                                    <CircleX className="h-4 w-4 text-red-600" />
+                                  </Button>
+                                </div>
                               </div>
                             </HoverCardContent>
                           </HoverCard>
