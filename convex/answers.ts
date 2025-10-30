@@ -35,3 +35,15 @@ export const submitAnswer = mutation({
     });
   },
 });
+
+export const teacherDecision = mutation({
+  args: {
+    answeId: v.id("answers"),
+    decision: v.union(v.literal("correct"), v.literal("incorrect")),
+  },
+  handler: async (ctx, args) => {
+    const teacher = ctx.auth.getUserIdentity();
+    if (!teacher) throw new ConvexError("not authenticated");
+    await ctx.db.patch(args.answeId, { decision: args.decision });
+  },
+});
