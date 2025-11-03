@@ -72,5 +72,6 @@ export default defineSchema({
   })
     .index("by_quiz", ["quizId"])
     .index("by_student_and_quiz", ["studentId", "quizId"])
-    .index("by_question", ["questionId"]),
+    .index("by_question", ["questionId"])
+    .index("by_student", ["studentId"]),
 });

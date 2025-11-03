@@ -11,8 +11,9 @@ interface studentProps {
 }
 
 async function Student({ params }: studentProps) {
+  const { quizId } = await params;
   const quizInfo = await fetchQuery(api.quiz.getQuiz, {
-    quizId: params.quizId,
+    quizId: quizId,
   });
   if (typeof quizInfo === "string") {
     return <Invalid />;
