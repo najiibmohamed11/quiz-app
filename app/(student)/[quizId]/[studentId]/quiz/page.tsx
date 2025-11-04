@@ -140,16 +140,17 @@ function Quiz() {
         decision: answer.decision,
       });
 
-      setAnsweredQuestionsIds((prev) => {
-        const updated = [...prev, answer.questionId as Id<"questions">];
-        if (updated.length === fullQuizData.questions.length) {
-          localStorage.removeItem(studentId);
-          navigator.push(`/${quizId}/${studentId}/result`);
-          return updated;
-        }
-        localStorage.setItem(studentId, JSON.stringify(updated));
-        return updated;
-      });
+      const updated = [
+        ...answeredQuestionsIds,
+        answer.questionId as Id<"questions">,
+      ];
+      if (updated.length === fullQuizData.questions.length) {
+        localStorage.removeItem(studentId);
+        navigator.replace(`/${quizId}/${studentId}/result`);
+        return;
+      }
+      setAnsweredQuestionsIds(updated);
+      localStorage.setItem(studentId, JSON.stringify(updated));
 
       setRandomNumber(Math.random());
       setAnswer({ questionId: "", answer: undefined, decision: "waiting" });
