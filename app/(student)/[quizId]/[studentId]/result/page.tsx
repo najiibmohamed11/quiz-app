@@ -27,9 +27,6 @@ export default async function StudentScoreDisplay({
   const correctAnswers = info.correctAnswers;
   const waitingForReview = info.waiting;
   const scorePercentage = Math.round((correctAnswers / totalQuestions) * 100);
-  const progressPercentage = Math.round(
-    (answeredQuestions / totalQuestions) * 100,
-  );
 
   return (
     <div className="flex min-h-[100vh] items-center justify-center">
@@ -64,7 +61,7 @@ export default async function StudentScoreDisplay({
             <div className="text-muted-foreground mt-2 flex items-center gap-1 text-xs">
               <CheckCircle className="text-primary h-3 w-3" />
               <span>
-                {correctAnswers} out of {answeredQuestions} correct
+                {correctAnswers} out of {totalQuestions} correct
               </span>
             </div>
           </CardContent>
