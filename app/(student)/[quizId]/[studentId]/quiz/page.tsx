@@ -111,6 +111,17 @@ function Quiz() {
   if (fullQuizData === "paused") return <QuizPaused />;
   if (fullQuizData === "expired" || isTimerEnd) return <QuizExpired />;
   if (fullQuizData === "no questions") return <NoQuestions />;
+  if (
+    fullQuizData.studentInfo.completedQuestions >= fullQuizData.questions.length
+  ) {
+    console.log(fullQuizData.studentInfo.completedQuestions);
+    navigator.replace(`/${quizId}/${studentId}/result`);
+    return (
+      <div className="flex min-h-[100vh] items-center justify-center">
+        redarecting.....
+      </div>
+    );
+  }
 
   //getting unique answered question id and then filtring
   const answeredSet = new Set(answeredQuestionsIds);
@@ -176,7 +187,7 @@ function Quiz() {
   }
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <Toaster position="top-center" />
+      <Toaster position="top-center" className="bg-" />
       <Card className="w-2xl">
         <CardHeader className="flex justify-between">
           <Badge>

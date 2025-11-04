@@ -26,6 +26,10 @@ export const submitAnswer = mutation({
     if (args.answer == undefined) {
       throw new ConvexError("answer is required");
     }
+    const student = await ctx.db.get(studentId);
+    if (!student) {
+      throw new ConvexError("student is exsist");
+    }
     await ctx.db.insert("answers", {
       studentId: studentId,
       quizId: quizId,
@@ -33,6 +37,11 @@ export const submitAnswer = mutation({
       questionId: args.questionId,
       decision: args.decision,
     });
+    const id = await ctx.db.patch(studentId, {
+      completedQuestions: student.completedQuestions + 1,
+    });
+    console.log(student.completedQuestions);
+    console.log("studentId", studentId);
   },
 });
 
