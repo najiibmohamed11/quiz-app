@@ -7,9 +7,8 @@ import ImportedStudentsTable from "./ImportedStudentsTable";
 import { UniqueColumnDropDown } from "./UniqueColumnDropDown";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { ConvexError } from "convex/values";
-import { useRouter } from "next/router";
 
 const ImportStudents = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -25,6 +24,7 @@ const ImportStudents = () => {
   const lockQuiz = useMutation(api.quiz.lockQuiz);
   const { quizId } = useParams();
   const navigator = useRouter();
+  const [isLoading, setIsloading] = useState(false);
 
   // const [columns,setColumns]=useState<string[]|null>(null)
   const handleFormChange = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -136,6 +136,7 @@ const ImportStudents = () => {
   };
 
   const handleLock = async () => {
+    setIsloading(true);
     if (
       !importedData ||
       importedData?.length === 0 ||
@@ -158,6 +159,8 @@ const ImportStudents = () => {
       }
       setError("some thing went wrong during locking..");
       console.log(e);
+    } finally {
+      setIsloading(true);
     }
   };
 
@@ -195,15 +198,40 @@ const ImportStudents = () => {
           <>
             <p>
               students would use{" "}
-              <span className="bg-primary text-background mx-1 rounded-md px-2 text-center font-bold">
+              <span className="bg-primary text-background mx-1 rounded-md px-2 text-center font-semibold">
                 {pickedUniqueColumn}{" "}
               </span>
               to enter the quiz
             </p>
             <ImportedStudentsTable rows={importedData} />
             <Button onClick={handleLock}>
-              <Lock />
-              Lock
+              {isLoading ? (
+                <svg
+                  className="h-12 w-12 animate-spin text-black"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+              ) : (
+                <>
+                  <Lock />
+                  LOCK
+                </>
+              )}
             </Button>
           </>
         )}

@@ -28,6 +28,7 @@ const answerSchema = z
   .object({
     questionId: z.string(),
     answer: z.optional(z.union([z.string(), z.number()])),
+    decision: z.literal(["correct", "incorrect", "waiting"]),
   })
   .superRefine((data, ctx) => {
     if (data.answer == undefined) {
@@ -51,6 +52,7 @@ function Quiz() {
   const [answer, setAnswer] = useState<z.infer<typeof answerSchema>>({
     questionId: "",
     answer: undefined,
+    decision: "waiting",
   });
 
   const fullQuizData = useQuery(api.student.getFullQuizData, {
@@ -109,6 +111,17 @@ function Quiz() {
   if (fullQuizData === "paused") return <QuizPaused />;
   if (fullQuizData === "expired" || isTimerEnd) return <QuizExpired />;
   if (fullQuizData === "no questions") return <NoQuestions />;
+  if (
+    fullQuizData.studentInfo.completedQuestions >= fullQuizData.questions.length
+  ) {
+    console.log(fullQuizData.studentInfo.completedQuestions);
+    navigator.replace(`/${quizId}/${studentId}/result`);
+    return (
+      <div className="flex min-h-[100vh] items-center justify-center">
+        redarecting.....
+      </div>
+    );
+  }
 
   //getting unique answered question id and then filtring
   const answeredSet = new Set(answeredQuestionsIds);
@@ -135,21 +148,23 @@ function Quiz() {
         answer: answer.answer,
         studentId: studentId,
         quizId: quizId,
+        decision: answer.decision,
       });
 
-      setAnsweredQuestionsIds((prev) => {
-        const updated = [...prev, answer.questionId as Id<"questions">];
-        if (updated.length === fullQuizData.questions.length) {
-          localStorage.removeItem(studentId);
-          navigator.push(`/${quizId}/${studentId}/result`);
-          return updated;
-        }
-        localStorage.setItem(studentId, JSON.stringify(updated));
-        return updated;
-      });
+      const updated = [
+        ...answeredQuestionsIds,
+        answer.questionId as Id<"questions">,
+      ];
+      if (updated.length === fullQuizData.questions.length) {
+        localStorage.removeItem(studentId);
+        navigator.replace(`/${quizId}/${studentId}/result`);
+        return;
+      }
+      setAnsweredQuestionsIds(updated);
+      localStorage.setItem(studentId, JSON.stringify(updated));
 
       setRandomNumber(Math.random());
-      setAnswer({ questionId: "", answer: undefined });
+      setAnswer({ questionId: "", answer: undefined, decision: "waiting" });
       setError("");
     } catch (e) {
       const errorMessage =
@@ -172,7 +187,7 @@ function Quiz() {
   }
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <Toaster position="top-center" />
+      <Toaster position="top-center" className="bg-" />
       <Card className="w-2xl">
         <CardHeader className="flex justify-between">
           <Badge>
@@ -202,6 +217,10 @@ function Quiz() {
                       setAnswer({
                         questionId: currentQuestion._id,
                         answer: index,
+                        decision:
+                          currentQuestion.correctAnswerIndex === index
+                            ? "correct"
+                            : "incorrect",
                       })
                     }
                   >
@@ -217,6 +236,10 @@ function Quiz() {
                       setAnswer({
                         questionId: currentQuestion._id,
                         answer: 0,
+                        decision:
+                          currentQuestion.correctAnswerIndex === 0
+                            ? "correct"
+                            : "incorrect",
                       });
                     }}
                   >
@@ -229,6 +252,10 @@ function Quiz() {
                       setAnswer({
                         questionId: currentQuestion._id,
                         answer: 1,
+                        decision:
+                          currentQuestion.correctAnswerIndex === 1
+                            ? "correct"
+                            : "incorrect",
                       });
                     }}
                   >
@@ -246,6 +273,7 @@ function Quiz() {
                   setAnswer({
                     questionId: currentQuestion._id,
                     answer: e.target.value,
+                    decision: "waiting",
                   })
                 }
               />

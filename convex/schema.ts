@@ -64,8 +64,14 @@ export default defineSchema({
     quizId: v.id("quizzes"),
     questionId: v.id("questions"),
     answer: v.union(v.string(), v.number()),
+    decision: v.union(
+      v.literal("correct"),
+      v.literal("incorrect"),
+      v.literal("waiting"),
+    ),
   })
     .index("by_quiz", ["quizId"])
     .index("by_student_and_quiz", ["studentId", "quizId"])
-    .index("by_question", ["questionId"]),
+    .index("by_question", ["questionId"])
+    .index("by_student", ["studentId"]),
 });

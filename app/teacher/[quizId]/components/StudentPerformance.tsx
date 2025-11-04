@@ -16,13 +16,22 @@ import {
 } from "@/components/ui/table";
 import { api } from "@/convex/_generated/api";
 import { Id, Doc } from "@/convex/_generated/dataModel";
-import { CheckCircle, CircleX, Eye, TriangleAlert } from "lucide-react";
+import {
+  CheckCircle,
+  CircleX,
+  EllipsisVertical,
+  Eye,
+  TriangleAlert,
+} from "lucide-react";
 import LockRoom from "./LockQuizModal";
 import UnlockQuiz from "./UnlockQuiz";
 import { FunctionReturnType } from "convex/server";
 import StudentPerformanceLoading from "./StudentPerformanceLoading";
 import InValidQuiz from "./InValidQuiz";
 import AddQuestion from "./AddQuestion";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@radix-ui/react-dropdown-menu";
+import HoverAnswer from "./HoverAnswer";
 
 type question = {
   _id: Id<"questions">;
@@ -42,6 +51,7 @@ type answers = {
   answer: string | number;
   studentId: Id<"students">;
   questionId: Id<"questions">;
+  decision: "correct" | "incorrect" | "waiting";
 };
 
 interface studentPerformanceProps {
@@ -86,20 +96,25 @@ function StudentPerformance({
   const formatStudentAnswers = (
     question: question,
     answer: string | number | undefined,
+    decision: "correct" | "incorrect" | "waiting" | undefined,
   ) => {
     //if there is no answer for this question return --
-    if (answer === undefined) {
-      return "---";
-    }
+    console.log(answer);
+    if (answer === undefined || !decision) return "---";
+
     //if answer there options in question and answers are number it is mcq
+    const decisionIcon =
+      decision === "correct" ? (
+        <CheckCircle className="h-4 w-4 text-green-600" />
+      ) : decision === "incorrect" ? (
+        <CircleX className="h-4 w-4 text-red-600" />
+      ) : (
+        <EllipsisVertical className="text-yellow-500" />
+      );
     if (question.options && typeof answer === "number") {
       return (
         <div className="flex items-center justify-center gap-2">
-          {question.correctAnswerIndex === answer ? (
-            <CheckCircle className="h-4 w-4 text-green-600" />
-          ) : (
-            <CircleX className="h-4 w-4 text-red-600" />
-          )}
+          {decisionIcon}
           {String.fromCharCode(answer + 65)}
         </div>
       );
@@ -108,18 +123,18 @@ function StudentPerformance({
     if (typeof answer === "number") {
       return (
         <div className="flex items-center justify-center gap-2">
-          {/* check if it is correct answe or not */}
-          {question.correctAnswerIndex === answer ? (
-            <CheckCircle className="h-4 w-4 text-green-600" />
-          ) : (
-            <CircleX className="h-4 w-4 text-red-600" />
-          )}
+          {decisionIcon}
           {answer === 0 ? "True" : "False"}
         </div>
       );
     }
     //if answer is not one of the above it is short answer so return answer we cant notice if it is correct or incorrect
-    return answer;
+    return (
+      <>
+        {decisionIcon}
+        <p className="w-full truncate px-2 text-center">{answer}</p>
+      </>
+    );
   };
 
   const calculateStudentsScore = (answers: answers[]) => {
@@ -135,16 +150,7 @@ function StudentPerformance({
       if (!answerOfthisQuestion) {
         return;
       }
-      if (
-        question.options &&
-        typeof answerOfthisQuestion.answer === "number" &&
-        question.correctAnswerIndex === answerOfthisQuestion.answer
-      ) {
-        correctAnswerCount++;
-      } else if (
-        typeof answerOfthisQuestion.answer === "number" &&
-        question.correctAnswerIndex === answerOfthisQuestion.answer
-      ) {
+      if (answerOfthisQuestion.decision === "correct") {
         correctAnswerCount++;
       }
     });
@@ -286,27 +292,27 @@ function StudentPerformance({
                             {formatStudentAnswers(
                               question,
                               answerOfThisQuestion?.answer,
+                              answerOfThisQuestion?.decision,
                             )}
                           </div>
                         ) : (
                           <HoverCard>
                             <HoverCardTrigger asChild>
-                              <div className="dark:bg-border flex h-10 w-24 items-center justify-center rounded-md bg-gray-200">
-                                <p className="w-full truncate px-2 text-center">
-                                  {formatStudentAnswers(
-                                    question,
-                                    answerOfThisQuestion?.answer,
-                                  )}
-                                </p>
+                              <div className="dark:bg-border flex h-10 w-24 items-center justify-center rounded-md bg-gray-200 p-1">
+                                {formatStudentAnswers(
+                                  question,
+                                  answerOfThisQuestion?.answer,
+                                  answerOfThisQuestion?.decision,
+                                )}
                               </div>
                             </HoverCardTrigger>
-                            <HoverCardContent className="">
-                              <div className="space-y-1">
-                                <p className="text-sm">
-                                  {answerOfThisQuestion?.answer}
-                                </p>
-                              </div>
-                            </HoverCardContent>
+                            {answerOfThisQuestion?.answer !== undefined && (
+                              <HoverAnswer
+                                answer={answerOfThisQuestion?.answer}
+                                decision={answerOfThisQuestion.decision}
+                                answerId={answerOfThisQuestion._id}
+                              />
+                            )}
                           </HoverCard>
                         )}
                       </TableCell>
