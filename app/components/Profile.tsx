@@ -71,7 +71,9 @@ function Profile() {
       >
         <Avatar>
           <AvatarImage src={user.imageUrl} alt="profile" />
-          <AvatarFallback>{getAvaterName(user.fullName ?? "")}</AvatarFallback>
+          <AvatarFallback className="text-background bg-foreground flex w-full items-center justify-center text-sm">
+            {getAvaterName(user.fullName ?? "")}
+          </AvatarFallback>
         </Avatar>
         <ChevronDown
           size={20}
@@ -83,7 +85,7 @@ function Profile() {
           <CardContent className="flex items-center gap-2 truncate font-medium">
             <Avatar>
               <AvatarImage src={user.imageUrl} alt="profile" />
-              <AvatarFallback>
+              <AvatarFallback className="text-background bg-foreground flex w-full items-center justify-center text-sm">
                 {getAvaterName(user.fullName ?? "")}
               </AvatarFallback>
             </Avatar>
