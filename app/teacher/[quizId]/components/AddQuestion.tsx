@@ -14,6 +14,7 @@ import McqQuestions from "./McqQuestions";
 import TrueFalse from "./TrueFalse";
 import ShortAnswer from "./ShortAnswer";
 import { Toaster } from "sonner";
+import { Plus } from "lucide-react";
 
 type questionType = "MCQ" | "True/False" | "shortAnswer";
 
@@ -25,7 +26,9 @@ function AddQuestion() {
       <Toaster position="top-center" />
 
       <DialogTrigger asChild>
-        <Button>add question</Button>
+        <Button>
+          <Plus /> add question
+        </Button>
       </DialogTrigger>
 
       <DialogContent className="">

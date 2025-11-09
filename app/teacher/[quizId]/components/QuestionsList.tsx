@@ -4,10 +4,11 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Pen, Trash } from "lucide-react";
+import { CheckCircle, Pen, Sparkles, Trash } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import AddQuestion from "./AddQuestion";
 import { Doc } from "@/convex/_generated/dataModel";
+import GenerateQuestions from "./GenerateQuestions";
 function QuestionsList({ questions }: { questions: Doc<"questions">[] }) {
   if (!questions) {
     return (
@@ -44,7 +45,10 @@ function QuestionsList({ questions }: { questions: Doc<"questions">[] }) {
         <CardHeader>
           <div className="flex justify-between">
             <h1 className="font-medium">Student Performance</h1>
-            <AddQuestion />
+            <div className="flex items-center justify-center gap-4">
+              <GenerateQuestions />
+              <AddQuestion />
+            </div>
           </div>
         </CardHeader>
         {questions.map((question, index) => {
