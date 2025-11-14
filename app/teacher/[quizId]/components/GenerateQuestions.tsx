@@ -7,7 +7,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ArrowUpIcon, RotateCw, Sparkles } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   InputGroup,
   InputGroupAddon,
@@ -51,6 +51,13 @@ function GenerateQuestions() {
   ]);
   const [questionsLength, setQuestionsLength] = useState("10");
   const [topicAboutTheQuiz, setTopicAboutTheQuiz] = useState("");
+  const lastElementRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!questions || !lastElementRef.current) return;
+    lastElementRef.current.scrollIntoView({ behavior: "smooth" });
+  }, [questions]);
+
   const handleCheckChange = (
     state: CheckedState,
     questionType: questionType,
@@ -64,14 +71,14 @@ function GenerateQuestions() {
     );
     setQuestionsTypes(filtredQuestionTypes);
   };
+
   const clearQuestions = () => {
     setQuestionsTypes(["Multiple Choice"]);
     setQuestionsLength("10");
     setTopicAboutTheQuiz("");
     clear();
   };
-  console.log(error);
-  console.log(questions);
+
   return (
     <Dialog>
       <Toaster position="top-center" />
@@ -233,6 +240,7 @@ function GenerateQuestions() {
                   />
                 );
               })}
+              <div ref={lastElementRef}></div>
             </ScrollArea>
             <div className="flex items-center justify-end gap-3">
               <Button variant="ghost" onClick={clearQuestions}>
