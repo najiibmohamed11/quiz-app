@@ -124,7 +124,10 @@ const TrueFalseMcqOptions = ({ question }: { question: Doc<"questions"> }) => {
     <div className="ml-8 flex list-none flex-col gap-2">
       {question.options.map((option, optionIndex) => {
         return question.correctAnswerIndex === optionIndex ? (
-          <div className="bg-primary text-primary-foreground hover:bg-primary/90 flex w-fit items-center justify-center gap-2 rounded-sm p-2 font-medium shadow-xs">
+          <div
+            key={optionIndex}
+            className="bg-primary text-primary-foreground hover:bg-primary/90 flex w-fit items-center justify-center gap-2 rounded-sm p-2 font-medium shadow-xs"
+          >
             {" "}
             <CheckCircle className="text-primary-foreground h-4 w-4" />
             {option}
