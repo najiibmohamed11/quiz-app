@@ -69,6 +69,6 @@ export const getRoomeQuestions = query({
 export const deleteQuestion = mutation({
   args: { questionId: v.id("questions") },
   handler: async (ctx, args) => {
-    ctx.db.delete(args.questionId);
+    await ctx.db.delete(args.questionId);
   },
 });

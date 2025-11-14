@@ -9,7 +9,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import AddQuestion from "./AddQuestion";
 import { Doc } from "@/convex/_generated/dataModel";
 import GenerateQuestions from "./GenerateQuestions";
+import { api } from "@/convex/_generated/api";
+import { useMutation } from "convex/react";
 function QuestionsList({ questions }: { questions: Doc<"questions">[] }) {
+  const deleteQuestion = useMutation(api.question.deleteQuestion);
   if (!questions) {
     return (
       <div className="grid gap-4">
@@ -67,7 +70,12 @@ function QuestionsList({ questions }: { questions: Doc<"questions">[] }) {
                     <Button variant="ghost">
                       <Pen />
                     </Button>
-                    <Button variant="ghost">
+                    <Button
+                      variant="ghost"
+                      onClick={() =>
+                        deleteQuestion({ questionId: question._id })
+                      }
+                    >
                       <Trash className="text-red-700" />
                     </Button>
                   </div>
