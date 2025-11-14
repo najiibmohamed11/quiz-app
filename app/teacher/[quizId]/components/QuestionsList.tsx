@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Pen, Sparkles, Trash } from "lucide-react";
+import { CheckCircle, Pen, Trash } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import AddQuestion from "./AddQuestion";
 import { Doc } from "@/convex/_generated/dataModel";
@@ -75,47 +75,7 @@ function QuestionsList({ questions }: { questions: Doc<"questions">[] }) {
               </CardHeader>
               <CardContent>
                 {question.questionType != "Short Answer" ? (
-                  <div className="ml-8 flex list-none flex-col">
-                    {question.options ? (
-                      question.options.map((option, optionIndex) => {
-                        return question.correctAnswerIndex === optionIndex ? (
-                          <span
-                            className="text-primary flex items-center gap-1"
-                            key={optionIndex}
-                          >
-                            {" "}
-                            <CheckCircle className="text-primary h-4 w-4" />
-                            {option}
-                          </span>
-                        ) : (
-                          <span className="ml-4" key={optionIndex}>
-                            {option}
-                          </span>
-                        );
-                      })
-                    ) : (
-                      <div className="flex gap-2">
-                        <>
-                          <div
-                            className={`${question.correctAnswerIndex === 0 ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs" : "hover:bg-accent hover:text-accent-foreground border shadow-xs"} flex w-18 items-center justify-center gap-1 rounded-sm font-medium`}
-                          >
-                            {question.correctAnswerIndex === 0 && (
-                              <CheckCircle className="h-4 w-4" />
-                            )}
-                            <p>True</p>
-                          </div>
-                          <div
-                            className={`${question.correctAnswerIndex === 1 ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs" : "hover:bg-accent hover:text-accent-foreground border shadow-xs"} flex h-10 w-18 items-center justify-center gap-1 rounded-sm font-medium`}
-                          >
-                            {question.correctAnswerIndex === 1 && (
-                              <CheckCircle className="h-4 w-4" />
-                            )}
-                            <p>false</p>
-                          </div>
-                        </>
-                      </div>
-                    )}
-                  </div>
+                  <TrueFalseMcqOptions question={question} />
                 ) : (
                   <div>
                     <div className="ml-8 flex gap-2">
@@ -134,3 +94,50 @@ function QuestionsList({ questions }: { questions: Doc<"questions">[] }) {
 }
 
 export default QuestionsList;
+
+const TrueFalseMcqOptions = ({ question }: { question: Doc<"questions"> }) => {
+  if (!question.options) {
+    return (
+      <div className="flex gap-2">
+        <>
+          <div
+            className={`${question.correctAnswerIndex === 0 ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs" : "hover:bg-accent hover:text-accent-foreground border shadow-xs"} flex w-18 items-center justify-center gap-1 rounded-sm font-medium`}
+          >
+            {question.correctAnswerIndex === 0 && (
+              <CheckCircle className="h-4 w-4" />
+            )}
+            <p>True</p>
+          </div>
+          <div
+            className={`${question.correctAnswerIndex === 1 ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs" : "hover:bg-accent hover:text-accent-foreground border shadow-xs"} flex h-10 w-18 items-center justify-center gap-1 rounded-sm font-medium`}
+          >
+            {question.correctAnswerIndex === 1 && (
+              <CheckCircle className="h-4 w-4" />
+            )}
+            <p>false</p>
+          </div>
+        </>
+      </div>
+    );
+  }
+  return (
+    <div className="ml-8 flex list-none flex-col gap-2">
+      {question.options.map((option, optionIndex) => {
+        return question.correctAnswerIndex === optionIndex ? (
+          <div className="bg-primary text-primary-foreground hover:bg-primary/90 flex w-fit items-center justify-center gap-2 rounded-sm p-2 font-medium shadow-xs">
+            {" "}
+            <CheckCircle className="text-primary-foreground h-4 w-4" />
+            {option}
+          </div>
+        ) : (
+          <span
+            className="hover:bg-accent hover:text-accent-foreground flex w-fit items-center justify-center rounded-sm border p-3 font-medium shadow-xs"
+            key={optionIndex}
+          >
+            {option}
+          </span>
+        );
+      })}
+    </div>
+  );
+};

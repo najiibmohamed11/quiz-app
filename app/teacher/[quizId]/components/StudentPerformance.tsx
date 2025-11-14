@@ -29,8 +29,6 @@ import { FunctionReturnType } from "convex/server";
 import StudentPerformanceLoading from "./StudentPerformanceLoading";
 import InValidQuiz from "./InValidQuiz";
 import AddQuestion from "./AddQuestion";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@radix-ui/react-dropdown-menu";
 import HoverAnswer from "./HoverAnswer";
 
 type question = {
@@ -99,7 +97,6 @@ function StudentPerformance({
     decision: "correct" | "incorrect" | "waiting" | undefined,
   ) => {
     //if there is no answer for this question return --
-    console.log(answer);
     if (answer === undefined || !decision) return "---";
 
     //if answer there options in question and answers are number it is mcq
