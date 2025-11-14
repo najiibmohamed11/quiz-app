@@ -81,7 +81,7 @@ function ShortAnswer() {
         />
       </div>
 
-      <Alert className="border-yellow-500 bg-yellow-50 text-yellow-700">
+      <Alert className="bg-secondary bg border-yellow-500 text-yellow-700">
         <AlertCircle className="h-4 w-4" />
         <AlertTitle>Warning</AlertTitle>
         <AlertDescription>
