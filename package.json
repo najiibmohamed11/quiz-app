@@ -39,6 +39,7 @@
     "@radix-ui/react-tooltip": "^1.2.8",
     "@tanstack/react-form": "^1.19.5",
     "class-variance-authority": "^0.7.1",
+    "cloc": "2.6.0-cloc",
     "clsx": "^2.1.1",
     "convex": "^1.26.2",
     "convex-helpers": "^0.1.104",
