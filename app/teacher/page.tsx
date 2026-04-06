@@ -1,12 +1,16 @@
+// app/teacher/page.tsx
 import CreateRoom from "./components/CreatRoom";
 import Profile from "../components/Profile";
 import { ModeToggle } from "../components/ModeToggle";
 import { Rubik } from "next/font/google";
+import { getToken } from "../hooks/getToken";
+import Link from "next/link";
+import { Suspense } from "react";
 import { preloadQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
-import { getToken } from "../hooks/getToken";
 import QuizList from "./components/QuizList";
-import Link from "next/link";
+import TeacherLoading from "./components/Loading";
+
 
 const rubik = Rubik({
   subsets: ["latin"],
@@ -14,15 +18,7 @@ const rubik = Rubik({
 });
 
 export default async function Teacher() {
-  const token = await getToken();
 
-  if (!token) return null;
-
-  const preloadedTasks = await preloadQuery(
-    api.quiz.getQuizzes,
-    {},
-    { token: token },
-  );
 
   return (
     <div className="mx-auto min-h-screen max-w-6xl px-8">
@@ -49,7 +45,25 @@ export default async function Teacher() {
           <Profile />
         </div>
       </header>
-      <QuizList preloadedTasks={preloadedTasks} />
+      <Suspense fallback={<TeacherLoading/>}>
+        <DynamicQuizList />
+      </Suspense>
     </div>
   );
+}
+
+
+
+  async function DynamicQuizList() {
+  // This will suspend if it takes time
+  const token = await getToken();
+
+  if (!token) return null;
+  const preloadedTasks = await preloadQuery(
+    api.quiz.getQuizzes,
+    {},
+    { token }
+  );
+
+  return <QuizList preloadedTasks={preloadedTasks} />;
 }
